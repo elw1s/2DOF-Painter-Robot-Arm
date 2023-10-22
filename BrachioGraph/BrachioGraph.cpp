@@ -14,13 +14,6 @@ const std::string svg_folder = "images/";
 const std::string json_folder = "images/";
 const bool NO_CV = false;
 
-//try :
-//import numpy as np
-//import cv2
-//    except :
-//print("Cannot import numpy/openCV. Switching to NO_CV mode.")
-//no_cv = True
-
 
 void linesToFile(const std::vector<std::vector<std::pair<int, int>>>& lines, const std::string& filename) {
     nlohmann::json jsonLines = nlohmann::json::array();
@@ -231,53 +224,6 @@ std::vector<std::vector<std::pair<int, int>>> join_lines(std::vector<std::vector
 
     return lines;
 }
-
-// std::vector<std::vector<std::pair<int, int>>> connectdots(std::vector<std::vector<std::pair<int, int>>> dots) {
-//     std::cout << "Connecting contour points..." << std::endl;
-//     std::vector<std::vector<std::pair<int, int>>> contours;
-//     for (size_t y = 0; y < dots.size(); y++) {
-//         for (size_t x = 0; x < dots[y].size(); x++) {
-//             if (dots[y][x].second > -1) {
-//                 if (y == 0) {
-//                     contours.push_back(std::vector<std::pair<int, int>>{{dots[y][x].first, dots[y][x].second}});
-//                 }
-//                 else {
-//                     int closest = -1;
-//                     int cdist = 100;
-//                     for (size_t i = 0; i < dots[y - 1].size(); i++) {
-//                         if (abs(dots[y - 1][i].first - dots[y][x].first) < cdist) {
-//                             cdist = abs(dots[y - 1][i].first - dots[y][x].first);
-//                             closest = dots[y - 1][i].first;
-//                         }
-//                     }
-
-//                     if (cdist > 3) {
-//                         contours.push_back(std::vector<std::pair<int, int>>{{dots[y][x].first, dots[y][x].second}});
-//                     }
-//                     else {
-//                         bool found = false;
-//                         for (size_t i = 0; i < contours.size(); i++) {
-//                             if (contours[i].back() == std::pair<int, int>(closest, dots[y - 1][i].second)) {
-//                                 contours[i].push_back(std::pair<int, int>(dots[y][x].first, dots[y][x].second));
-//                                 found = true;
-//                                 break;
-//                             }
-//                         }
-//                         if (!found) {
-//                             contours.push_back(std::vector<std::pair<int, int>>{{dots[y][x].first, dots[y][x].second}});
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//         for (size_t i = 0; i < contours.size(); i++) {
-//             if (contours[i].back().second < dots[y - 1][i].second && contours[i].size() < 4) {
-//                 contours.erase(contours.begin() + i);
-//             }
-//         }
-//     }
-//     return contours;
-// }
 
 std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vector<std::pair<int, int>>>& dots) {
     std::cout << "Connecting contour points..." << std::endl;
