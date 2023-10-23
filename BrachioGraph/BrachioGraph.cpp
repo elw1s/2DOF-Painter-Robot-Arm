@@ -12,8 +12,6 @@
 const std::string export_path = "images/out.svg";
 const std::string svg_folder = "images/";
 const std::string json_folder = "images/";
-const bool NO_CV = false;
-
 
 void linesToFile(const std::vector<std::vector<std::pair<int, int>>>& lines, const std::string& filename) {
     nlohmann::json jsonLines = nlohmann::json::array();
@@ -129,9 +127,9 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
         }
     }
 
-    for (const auto& line : lines) {
-        std::cout << "[(" << line[0].first << ", " << line[0].second << "), ("<< line[1].first << ", " << line[1].second << ")]," << std::endl;
-    }    
+    // for (const auto& line : lines) {
+    //     std::cout << "[(" << line[0].first << ", " << line[0].second << "), ("<< line[1].first << ", " << line[1].second << ")]," << std::endl;
+    // }    
 
     return lines;
 }
@@ -142,22 +140,33 @@ std::vector<std::vector<std::pair<int,int>>> hatch(cv::Mat image, int line_spaci
     std::cout << "inside hatch" << std::endl;
     lines = get_lines(image, "y", E, line_spacing, 160);
     std::cout << "after get_lines" << std::endl;
-    lines.insert(lines.end(), get_lines(image, "x", S, line_spacing, 80).begin(), get_lines(image, "x", S, line_spacing, 80).end());
-    std::cout << "after insert 1" << std::endl;
-    lines.insert(lines.end(), get_lines(image, "y", SE, line_spacing, 40).begin(), get_lines(image, "y", SE, line_spacing, 40).end());
-    std::cout << "after insert 2" << std::endl;
-    lines.insert(lines.end(), get_lines(image, "x", SE, line_spacing, 40).begin(), get_lines(image, "x", SE, line_spacing, 40).end());
-    std::cout << "after insert 3" << std::endl;
-    lines.insert(lines.end(), get_lines(image, "y", NE, line_spacing, 20).begin(), get_lines(image, "y", NE, line_spacing, 20).end());
-    std::cout << "after insert 4" << std::endl;
-    lines.insert(lines.end(), get_lines(image, "x", NE, line_spacing, 20).begin(), get_lines(image, "x", NE, line_spacing, 20).end());
-    std::cout << "after insert 5" << std::endl;
-
+    std::vector<std::vector<std::pair<int,int>>> returnedLines = get_lines(image, "x", S, line_spacing, 80);
+    for(int i = 0; i < returnedLines.size(); i++){
+        lines.push_back(returnedLines.at(i));
+    }
+    returnedLines = get_lines(image, "y", SE, line_spacing, 40);
+    for(int i = 0; i < returnedLines.size(); i++){
+        lines.push_back(returnedLines.at(i));
+    }
+    returnedLines = get_lines(image, "x", SE, line_spacing, 40);
+    for(int i = 0; i < returnedLines.size(); i++){
+        lines.push_back(returnedLines.at(i));
+    }
+    returnedLines = get_lines(image, "y", NE, line_spacing, 20);
+    for(int i = 0; i < returnedLines.size(); i++){
+        lines.push_back(returnedLines.at(i));
+    }
+    returnedLines = get_lines(image, "x", NE, line_spacing, 20);
+    for(int i = 0; i < returnedLines.size(); i++){
+        lines.push_back(returnedLines.at(i));
+    }
     return lines;
 }
 
 cv::Mat resizeImage(const cv::Mat& image, int resolution, int divider = 1) {
     cv::Size newSize(resolution / divider, resolution / divider * image.rows / image.cols);
+    std::cout<< "resolution:" << resolution << " - divider:" << divider << std::endl; 
+    std::cout<< "Expected size:"<<(resolution / divider) << "," << (resolution / divider * image.rows / image.cols) << std::endl;
     cv::Mat resizedImage;
     cv::resize(image, resizedImage, newSize);
     return resizedImage;
@@ -284,6 +293,8 @@ std::vector<std::vector<std::pair<int, int>>> getdots(const cv::Mat& image) {
     int w = image.cols;
     int h = image.rows;
 
+    std::cout << "IM.size=" << w << "," << h << std::endl;
+
     for (int y = 0; y < h - 1; ++y) {
         std::vector<std::pair<int, int>> row;
         for (int x = 1; x < w; ++x) {
@@ -361,7 +372,7 @@ std::vector<std::vector<std::pair<int, int>>> sortlines(std::vector<std::vector<
 
             if (dr < s) {
                 x = l;
-                s = dr;
+                s = s;
                 r = true;
             }
         }
@@ -378,6 +389,7 @@ std::vector<std::vector<std::pair<int, int>>> sortlines(std::vector<std::vector<
     return slines;
 }
 
+// BURADA SIKINTI VAR
 std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int draw_contours = 2) {
     std::cout << "Generating contours..." << std::endl;
     image = find_edges(image);
@@ -387,9 +399,53 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
     cv::flip(IM2, IM2, 1);
 
     std::vector<std::vector<std::pair<int, int>>> dots1 = getdots(IM1);
+
+    std::ofstream myfile("/home/arda/Desktop/output_cpp");
+    myfile << "dots1:";
+    for(int i = 0; i < dots1.size(); i++){
+        myfile << "[";
+        for(int k = 0; k < dots1.at(i).size(); k++){
+            myfile << "(" << dots1.at(i).at(k).first << "," << dots1.at(i).at(k).second << "),";
+        }
+        myfile << "],";
+    }
+    myfile << std::endl;
+
     std::vector<std::vector<std::pair<int, int>>> contours1 = connectdots(dots1);
+
+    myfile << "contours1:";
+    for(int i = 0; i < contours1.size(); i++){
+        myfile << "[";
+        for(int k = 0; k < contours1.at(i).size(); k++){
+            myfile << "(" << contours1.at(i).at(k).first << "," << contours1.at(i).at(k).second << "),";
+        }
+        myfile << "],";
+    }
+    myfile << std::endl;
+
     std::vector<std::vector<std::pair<int, int>>> dots2 = getdots(IM2);
+
+    myfile << "dots2:";
+    for(int i = 0; i < dots2.size(); i++){
+        myfile << "[";
+        for(int k = 0; k < dots2.at(i).size(); k++){
+            myfile << "(" << dots2.at(i).at(k).first << "," << dots2.at(i).at(k).second << "),";
+        }
+        myfile << "],";
+    }
+    myfile << std::endl;
+
     std::vector<std::vector<std::pair<int, int>>> contours2 = connectdots(dots2);
+
+    myfile << "contours2:";
+    for(int i = 0; i < contours2.size(); i++){
+        myfile << "[";
+        for(int k = 0; k < contours2.at(i).size(); k++){
+            myfile << "(" << contours2.at(i).at(k).first << "," << contours2.at(i).at(k).second << "),";
+        }
+        myfile << "],";
+    }
+    myfile << std::endl;
 
     for (int i = 0; i < contours2.size(); i++) {
         for (int j = 0; j < contours2[i].size(); j++) {
@@ -451,12 +507,25 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
     std::vector<std::vector<std::pair<int,int>>> hatches;
 
     if (draw_contours && repeat_contours) {
+        std::cout << "image.size before resizeImage:" << image.cols << "," << image.rows << std::endl;
         contours = getcontours(resizeImage(image,resolution,draw_contours), draw_contours);
+        std::cout << "A Contours.size() = " << contours.size() << std::endl;
+        std::cout << "A contours[0][0] = " << contours.at(0).at(0).first << std::endl;
+        std::cout << "A contours[0][0] = " << contours.at(0).at(0).second << std::endl;
         contours = sortlines(contours);
+        std::cout << "B Contours.size() = " << contours.size() << std::endl;
+        std::cout << "B contours[0][0] = " << contours.at(0).at(0).first << std::endl;
+        std::cout << "B contours[0][0] = " << contours.at(0).at(0).second << std::endl;
         contours = join_lines(contours);
-        std::cout << "A BEFORE LOOP" << std::endl;
+        std::cout << "C Contours.size() = " << contours.size() << std::endl;
+        std::cout << "C contours[0][0] = " << contours.at(0).at(0).first << std::endl;
+        std::cout << "C contours[0][0] = " << contours.at(0).at(0).second << std::endl;
+
         for (int r = 0; r < repeat_contours; r++) {
-            lines.insert(lines.end(), contours.begin(), contours.end());
+            for(int i = 0; i < contours.size(); i++){
+                lines.push_back(contours.at(i));
+            }
+            //lines.insert(lines.end(), contours.begin(), contours.end());
         }
         std::cout << "A AFTER LOOP" << std::endl;
     }
@@ -470,7 +539,10 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
         hatches = join_lines(hatches);
         std::cout << "after join_lines" << std::endl;
         for (int r = 0; r < repeat_hatch; r++) {
-            lines.insert(lines.end(), hatches.begin(), hatches.end());
+            for(int i = 0; i < hatches.size(); i++){
+                lines.push_back(hatches.at(i));
+            }
+            //lines.insert(lines.end(), hatches.begin(), hatches.end());
         }
         std::cout << "B AFTER LOOP" << std::endl;
     }
@@ -496,14 +568,14 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
     return lines;
 }
 
-void imageToJson(const std::string& imageFilename,int resolution = 1024,bool drawContours = false,int repeatContours = 1,bool drawHatch = false,int repeatHatch = 1) 
+void imageToJson(const std::string& imageFilename,int resolution = 1024,int drawContours = 0,int repeatContours = 1,int drawHatch = 0,int repeatHatch = 1) 
 {
     std::vector<std::vector<std::pair<int, int>>> lines;
 
     lines = vectorise(imageFilename, resolution, drawContours, repeatContours, drawHatch, repeatHatch);
 
     //std::string filename = json_folder + imageFilename + ".json";
-    std::string filename = "/home/ardakilic/Desktop/CSE396/BrachioGraph/images/cat.json";
+    std::string filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json";
     linesToFile(lines, filename);
 }
 
@@ -511,7 +583,7 @@ void imageToJson(const std::string& imageFilename,int resolution = 1024,bool dra
 
 int main()
 {
-    std::string imagePath = "/home/ardakilic/Desktop/CSE396/BrachioGraph/images/cat.jpeg";
+    std::string imagePath = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.jpeg";
     imageToJson(imagePath, 1024, 2, 1 , 16, 1);
 }
 
