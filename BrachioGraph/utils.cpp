@@ -118,5 +118,48 @@ namespace utils{
         return _lut(image, lut);
     }
 
+    cv::Mat rotate(
+    const cv::Mat& image,
+    double angle,
+    int resample = cv::INTER_NEAREST,
+    int expand = 0,
+    const cv::Point2f& center = cv::Point2f(-1, -1),
+    const cv::Scalar& fillcolor = cv::Scalar(0, 0, 0)
+) {
+    angle = fmod(angle, 360.0);
+
+    if (angle == 0.0) {
+        return image.clone();
+    }
+
+    cv::Mat rotated;
+    cv::Point2f actualCenter = center;
+
+    if (center == cv::Point2f(-1, -1)) {
+        actualCenter.x = image.cols / 2.0;
+        actualCenter.y = image.rows / 2.0;
+    }
+
+    cv::Mat rotationMatrix = cv::getRotationMatrix2D(actualCenter, -angle, 1.0);
+
+    if (expand) {
+        double angleRadians = angle * (CV_PI / 180.0);
+        double sinAngle = std::abs(std::sin(angleRadians));
+        double cosAngle = std::abs(std::cos(angleRadians));
+        int newWidth = static_cast<int>(image.cols * cosAngle + image.rows * sinAngle);
+        int newHeight = static_cast<int>(image.cols * sinAngle + image.rows * cosAngle);
+
+        // Adjust the translation to keep the image centered
+        rotationMatrix.at<double>(0, 2) += (newWidth - image.cols) / 2;
+        rotationMatrix.at<double>(1, 2) += (newHeight - image.rows) / 2;
+
+        cv::warpAffine(image, rotated, rotationMatrix, cv::Size(newWidth, newHeight), resample, cv::BORDER_CONSTANT, fillcolor);
+    } else {
+        cv::warpAffine(image, rotated, rotationMatrix, image.size(), resample);
+    }
+
+    return rotated;
+}
+
 }
 

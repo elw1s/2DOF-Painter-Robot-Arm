@@ -60,6 +60,8 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
         }
     }
 
+    std::vector<std::pair<int,int>> tempVec;
+
     for (int i = i_start; i < i_range; i += line_spacing) {
         std::pair<int, int> start_point;
 
@@ -79,7 +81,10 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
                     if (pixels.at<uchar>(y, x) >= level) {
                         end_point.first = x;
                         end_point.second = y;
-                        lines.push_back({start_point, end_point});
+                        tempVec.push_back(start_point);
+                        tempVec.push_back(end_point);
+                        lines.push_back(tempVec);
+                        tempVec.clear();
                         start_point.first = start_point.second = 0;
                     }
                 }
@@ -91,7 +96,10 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
             }
 
             if (start_point.first && start_point.second) {
-                lines.push_back({start_point, end_point});
+                tempVec.push_back(start_point);
+                tempVec.push_back(end_point);
+                lines.push_back(tempVec);
+                tempVec.clear();
             }
         }
         else if (scan == "x") {
@@ -110,7 +118,10 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
                     if (pixels.at<uchar>(y, x) >= level) {
                         end_point.first = x;
                         end_point.second = y;
-                        lines.push_back({start_point, end_point});
+                        tempVec.push_back(start_point);
+                        tempVec.push_back(end_point);
+                        lines.push_back(tempVec);
+                        tempVec.clear();
                         start_point.first = start_point.second = 0;
                     }
                 }
@@ -122,7 +133,10 @@ std::vector<std::vector<std::pair<int, int>>> get_lines(cv::Mat& image, const st
             }
 
             if (start_point.first && start_point.second) {
-                lines.push_back({start_point, end_point});
+                tempVec.push_back(start_point);
+                tempVec.push_back(end_point);
+                lines.push_back(tempVec);
+                tempVec.clear();
             }
         }
     }
@@ -331,6 +345,7 @@ double distsum(const std::pair<int, int>& point1, const std::pair<int, int>& poi
 
 cv::Mat find_edges(const cv::Mat& image) {
     std::cout << "Finding edges..." << std::endl;
+    
     // Apply Gaussian blur
     cv::Mat blurred;
     cv::GaussianBlur(image, blurred, cv::Size(3, 3), 0);
@@ -388,83 +403,27 @@ std::vector<std::vector<std::pair<int, int>>> sortlines(std::vector<std::vector<
     return slines;
 }
 
-// BURADA SIKINTI VAR
 std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int draw_contours = 2) {
     std::cout << "Generating contours..." << std::endl;
 
-
-    // Print the first pixel of the input image
-    std::cout << "First pixel of the input image (BGR): ";
     cv::Vec3b pixel = image.at<cv::Vec3b>(0, 0);
-    std::cout << "B=" << static_cast<int>(pixel[0]) << " G=" << static_cast<int>(pixel[1]) << " R=" << static_cast<int>(pixel[2]) << std::endl;
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/imageBeforeFindEdgesCPP.jpg", image);
     image = find_edges(image);
-    // Print the first pixel of the thresholded image
-    std::cout << "First pixel of the thresholded image: " << static_cast<int>(image.at<uchar>(0, 0)) << std::endl;
 
     cv::Mat IM1 = image.clone();
-    cv::Mat IM2 = image.clone();
-    cv::transpose(IM2, IM2);
-    cv::flip(IM2, IM2, 1);
-
-    cv::imwrite("/home/arda/Desktop/imageCPP.jpg", image);
-    cv::imwrite("/home/arda/Desktop/IM1CPP.jpg", IM1);
-    cv::imwrite("/home/arda/Desktop/IM2CPP.jpg", IM2);
+    //cv::Mat IM2 = image.clone();
+    cv::Mat IM2 = utils::rotate(image, -90, 0, 1);
+    //cv::transpose(IM2, IM2);
+    //cv::flip(IM2, IM2, 1);
+    
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/imageAfterFindEdgesCPP.jpg", image);
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/IM1CPP.jpg", IM1);
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/IM2CPP.jpg", IM2);
 
     std::vector<std::vector<std::pair<int, int>>> dots1 = getdots(IM1);
-
-    std::cout << "dots1: "<< dots1[0][0].first << "," << dots1[0][0].second << std::endl;
-
-
-    std::ofstream myfile("/home/arda/Desktop/output_cpp");
-    myfile << "dots1:";
-    for(int i = 0; i < dots1.size(); i++){
-        myfile << "[";
-        for(int k = 0; k < dots1.at(i).size(); k++){
-            myfile << "(" << dots1.at(i).at(k).first << "," << dots1.at(i).at(k).second << "),";
-        }
-        myfile << "],";
-    }
-    myfile << std::endl;
-
     std::vector<std::vector<std::pair<int, int>>> contours1 = connectdots(dots1);
-    
-    std::cout << "connectdots: "<< contours1[0][0].first << "," << contours1[0][0].second << std::endl;
-
-    myfile << "contours1:";
-    for(int i = 0; i < contours1.size(); i++){
-        myfile << "[";
-        for(int k = 0; k < contours1.at(i).size(); k++){
-            myfile << "(" << contours1.at(i).at(k).first << "," << contours1.at(i).at(k).second << "),";
-        }
-        myfile << "],";
-    }
-    myfile << std::endl;
-
     std::vector<std::vector<std::pair<int, int>>> dots2 = getdots(IM2);
-    std::cout << "dots2: "<< dots2[0][0].first << "," << dots2[0][0].second << std::endl;
-
-    myfile << "dots2:";
-    for(int i = 0; i < dots2.size(); i++){
-        myfile << "[";
-        for(int k = 0; k < dots2.at(i).size(); k++){
-            myfile << "(" << dots2.at(i).at(k).first << "," << dots2.at(i).at(k).second << "),";
-        }
-        myfile << "],";
-    }
-    myfile << std::endl;
-
     std::vector<std::vector<std::pair<int, int>>> contours2 = connectdots(dots2);
-    std::cout << "contours2: "<< contours2[0][0].first << "," << contours2[0][0].second << std::endl;
-
-    myfile << "contours2:";
-    for(int i = 0; i < contours2.size(); i++){
-        myfile << "[";
-        for(int k = 0; k < contours2.at(i).size(); k++){
-            myfile << "(" << contours2.at(i).at(k).first << "," << contours2.at(i).at(k).second << "),";
-        }
-        myfile << "],";
-    }
-    myfile << std::endl;
 
     for (int i = 0; i < contours2.size(); i++) {
         for (int j = 0; j < contours2[i].size(); j++) {
@@ -472,10 +431,8 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
         }
     }
 
-    std::cout << "AAA" << std::endl;
     std::vector<std::vector<std::pair<int, int>>> contours = contours1;
     contours.insert(contours.end(), contours2.begin(), contours2.end());
-    std::cout << "BBB" << std::endl;
 
     for (int i = 0; i < contours.size(); i++) {
         for (int j = 0; j < contours.size(); j++) {
@@ -487,24 +444,34 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
             }
         }
     }
-    std::cout << "CCC" << std::endl;
 
+    std::vector<std::pair<int,int>> tempVec;
     for (int i = 0; i < contours.size(); i++) {
+        tempVec.clear();
         for (int j = 0; j < contours[i].size(); j += 8) {
-            contours[i].erase(contours[i].begin() + j + 1, contours[i].begin() + j + 8);
+            //contours[i].erase(contours[i].begin() + j + 1, contours[i].begin() + j + 8);
+            tempVec.push_back(contours[i][j]);
+        }
+        contours[i] = tempVec;
+    }
+    
+    //contours.erase(std::remove_if(contours.begin(), contours.end(), [](const std::vector<std::pair<int,int>>& c) { return c.size() <= 1; }), contours.end());
+    
+    std::vector<std::vector<std::pair<int,int>>> contoursTemp;
+
+    for(int i = 0; i < contours.size(); i++){
+        if(contours[i].size() > 1){
+            contoursTemp.push_back(contours[i]);
         }
     }
-    std::cout << "DDD" << std::endl;
-
-    contours.erase(std::remove_if(contours.begin(), contours.end(), [](const std::vector<std::pair<int,int>>& c) { return c.size() <= 1; }), contours.end());
-    std::cout << "EEE" << std::endl;
+    contours = contoursTemp;
+    
     for (int i = 0; i < contours.size(); i++) {
         for (int j = 0; j < contours[i].size(); j++) {
             contours[i][j].first *= draw_contours;
             contours[i][j].second *= draw_contours;
         }
     }
-    std::cout << "FFF" << std::endl;
 
     return contours;
 }
