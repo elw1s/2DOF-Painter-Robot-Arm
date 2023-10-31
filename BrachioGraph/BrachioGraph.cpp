@@ -251,6 +251,7 @@ std::vector<std::vector<std::pair<int, int>>> join_lines(std::vector<std::vector
 std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vector<std::pair<int, int>>>& dots) {
     std::cout << "Connecting contour points..." << std::endl;
     std::vector<std::vector<std::pair<int, int>> > contours;
+    std::vector<std::pair<int,int>> temp;
 
     for (size_t y = 0; y < dots.size(); y++) {
         for (const std::pair<int, int>& dot : dots[y]) {
@@ -259,7 +260,9 @@ std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vect
 
             if (v > -1) {
                 if (y == 0) {
-                    contours.push_back({{x, y}});
+                    temp.push_back(std::make_pair(x,y));
+                    contours.push_back(temp);
+                    temp.clear();
                 } else {
                     int closest = -1;
                     int cdist = 100;
@@ -275,7 +278,9 @@ std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vect
                     }
 
                     if (cdist > 3) {
-                        contours.push_back({{x, y}});
+                        temp.push_back(std::make_pair(x,y));
+                        contours.push_back(temp);
+                        temp.clear();
                     } else {
                         bool found = false;
                         for (size_t i = 0; i < contours.size(); i++) {
@@ -286,16 +291,23 @@ std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vect
                             }
                         }
                         if (!found) {
-                            contours.push_back({{x, y}});
+                            temp.push_back(std::make_pair(x,y));
+                            contours.push_back(temp);
+                            temp.clear();
                         }
                     }
                 }
             }
         }
+        for (auto it = contours.begin(); it != contours.end(); /* no increment in loop */) {
+            if (it->back().second < y - 1 && it->size() < 4) {
+                it = contours.erase(it);  // Remove the element
+            } else {
+                ++it;  // Move to the next element
+            }
+        }
     }
-
-    contours.erase(std::remove_if(contours.begin(), contours.end(), [](const std::vector<std::pair<int, int>>& c) { return c.back().second < c.front().second && c.size() < 4; }), contours.end());
-
+    //contours.erase(std::remove_if(contours.begin(), contours.end(), [](const std::vector<std::pair<int, int>>& c) { return c.back().second < c.front().second && c.size() < 4; }), contours.end());
     return contours;
 }
 
@@ -307,8 +319,37 @@ std::vector<std::vector<std::pair<int, int>>> getdots(const cv::Mat& image) {
     int w = image.cols;
     int h = image.rows;
 
-    std::cout << "IM.size=" << w << "," << h << std::endl;
+    // std::cout << "IM.size=" << w << "," << h << std::endl;
+    // int mode = image.type();
 
+    // switch (mode) {
+    //     case CV_8UC1:
+    //         std::cout << "The mode of the image is grayscale (8UC1)." << std::endl;
+    //         break;
+    //     case CV_8UC3:
+    //         std::cout << "The mode of the image is color (8UC3)." << std::endl;
+    //         break;
+    //     default:
+    //         std::cout << "The mode of the image is unknown." << std::endl;
+    //         break;
+    // }
+
+    // // Print the first row of pixels in the image
+    // if (h > 0 && w > 0) {
+    //     for (int x = 0; x < w; ++x) {
+    //         cv::Vec3b pixel = image.at<cv::Vec3b>(0, x);
+    //         int value;
+            
+    //         if (mode == CV_8UC3) {
+    //             value = pixel[0]; // You can choose the channel you want (0 for Blue, 1 for Green, 2 for Red)
+    //             std::cout << value << " ";
+    //         } else if (mode == CV_8UC1) {
+    //             value = pixel[0];
+    //             std::cout << value << " ";
+    //         }
+    //     }
+    //     std::cout << std::endl;
+    // }
     for (int y = 0; y < h - 1; ++y) {
         std::vector<std::pair<int, int>> row;
         for (int x = 1; x < w; ++x) {
@@ -319,7 +360,8 @@ std::vector<std::vector<std::pair<int, int>>> getdots(const cv::Mat& image) {
             if (value == 255) {
                 if (!row.empty()) {
                     if (x - row.back().first == row.back().second + 1) {
-                        row.back().second += 1;
+                        row.back().first = row.back().first;
+                        row.back().second = row.back().second + 1;
                     } else {
                         row.push_back(std::make_pair(x, 0));
                     }
@@ -330,7 +372,6 @@ std::vector<std::vector<std::pair<int, int>>> getdots(const cv::Mat& image) {
         }
         dots.push_back(row);
     }
-
     return dots;
 }
 
@@ -349,14 +390,20 @@ cv::Mat find_edges(const cv::Mat& image) {
     // Apply Gaussian blur
     cv::Mat blurred;
     cv::GaussianBlur(image, blurred, cv::Size(3, 3), 0);
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/blurredCPP.jpg", blurred);
+
 
     // Apply Canny edge detection
     cv::Mat edges;
     cv::Canny(blurred, edges, 100, 200); // Adjust the parameters as needed
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/edgesCPP.jpg", edges);
+
 
     // Threshold the edges
     cv::Mat thresholded;
     cv::threshold(edges, thresholded, 128, 255, cv::THRESH_BINARY);
+    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/thresholdCPP.jpg", thresholded);
+
 
     return thresholded;
 }
@@ -421,7 +468,22 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
     cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/IM2CPP.jpg", IM2);
 
     std::vector<std::vector<std::pair<int, int>>> dots1 = getdots(IM1);
+    
+    std::string svgDOTS1 = makesvg(dots1);
+    // Write SVG content to a file
+    std::string image_filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.jpeg";
+    std::ofstream dots1FILE(image_filename +"svgDOTS1CPP" + ".svg");
+    dots1FILE << svgDOTS1;
+    dots1FILE.close();
+
     std::vector<std::vector<std::pair<int, int>>> contours1 = connectdots(dots1);
+
+    std::string svgContours1 = makesvg(contours1);
+    // Write SVG content to a file
+    std::ofstream contours1File(image_filename +"svgContours1CPP" + ".svg");
+    contours1File << svgContours1;
+    contours1File.close();
+
     std::vector<std::vector<std::pair<int, int>>> dots2 = getdots(IM2);
     std::vector<std::vector<std::pair<int, int>>> contours2 = connectdots(dots2);
 
@@ -476,9 +538,7 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
     return contours;
 }
 
-
-
-std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image_filename, int resolution, int draw_contours, int repeat_contours, int draw_hatch, int repeat_hatch) {
+std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image_filename, int resolution = 1024, int draw_contours = 0, int repeat_contours = 1, int draw_hatch = 0, int repeat_hatch = 1) {
     // Load the image using OpenCV
     std::cout << "Image Path:" << image_filename << std::endl;
     cv::Mat image = cv::imread(image_filename);
@@ -515,17 +575,48 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
     if (draw_contours && repeat_contours) {
         std::cout << "image.size before resizeImage:" << image.cols << "," << image.rows << std::endl;
         contours = getcontours(resizeImage(image,resolution,draw_contours), draw_contours);
-        std::cout << "A Contours.size() = " << contours.size() << std::endl;
-        std::cout << "A contours[0][0] = " << contours.at(0).at(0).first << std::endl;
-        std::cout << "A contours[0][0] = " << contours.at(0).at(0).second << std::endl;
+        // std::cout<<"***********************************************************" << std::endl;
+        // std::cout << "[";
+        // for(int i = 0; i < contours.size(); i++){
+        //     std::cout << "[";
+        //     for(int k = 0; k < contours[i].size(); k++){
+        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
+        //     }
+        //     std::cout << "]";
+        // }
+        // std::cout << "]"<< std::endl;
+
+        // Generate SVG content
+        std::string svgContours = makesvg(contours);
+
+        // Write SVG content to a file
+        std::ofstream contoursFILE(image_filename +"contoursCPP" + ".svg");
+        contoursFILE << svgContours;
+        contoursFILE.close();
+
+
         contours = sortlines(contours);
-        std::cout << "B Contours.size() = " << contours.size() << std::endl;
-        std::cout << "B contours[0][0] = " << contours.at(0).at(0).first << std::endl;
-        std::cout << "B contours[0][0] = " << contours.at(0).at(0).second << std::endl;
+        // std::cout<<"***********************************************************" << std::endl;
+        // std::cout << "[";
+        // for(int i = 0; i < contours.size(); i++){
+        //     std::cout << "[";
+        //     for(int k = 0; k < contours[i].size(); k++){
+        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
+        //     }
+        //     std::cout << "]";
+        // }
+        // std::cout << "]"<< std::endl;
         contours = join_lines(contours);
-        std::cout << "C Contours.size() = " << contours.size() << std::endl;
-        std::cout << "C contours[0][0] = " << contours.at(0).at(0).first << std::endl;
-        std::cout << "C contours[0][0] = " << contours.at(0).at(0).second << std::endl;
+        // std::cout<<"***********************************************************" << std::endl;
+        // std::cout << "[";
+        // for(int i = 0; i < contours.size(); i++){
+        //     std::cout << "[";
+        //     for(int k = 0; k < contours[i].size(); k++){
+        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
+        //     }
+        //     std::cout << "]";
+        // }
+        // std::cout << "]"<< std::endl;
 
         for (int r = 0; r < repeat_contours; r++) {
             for(int i = 0; i < contours.size(); i++){
@@ -535,6 +626,15 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
         }
         std::cout << "A AFTER LOOP" << std::endl;
     }
+
+        // Generate SVG content
+    std::string svgContentBefHatch = makesvg(lines);
+
+    // Write SVG content to a file
+    std::ofstream befHatch(image_filename +"befHatch" + ".svg");
+    befHatch << svgContentBefHatch;
+    befHatch.close();
+
 
     if (draw_hatch && repeat_hatch) {
         std::cout << "B BEFORE LOOP" << std::endl;
@@ -552,6 +652,14 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
         }
         std::cout << "B AFTER LOOP" << std::endl;
     }
+
+        // Generate SVG content
+    std::string hatchStr = makesvg(hatches);
+
+    // Write SVG content to a file
+    std::ofstream hatchFile(image_filename +"hatchFile" + ".svg");
+    hatchFile << hatchStr;
+    hatchFile.close();
 
     // Calculate the number of segments
     int segments = 0;
