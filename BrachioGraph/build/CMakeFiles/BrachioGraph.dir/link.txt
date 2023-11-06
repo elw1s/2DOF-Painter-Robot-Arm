@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/BrachioGraph.dir/BrachioGraph.cpp.o -o BrachioGraph   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lopencv_imgcodecs -lopencv_core -lopencv_imgproc -lPillowResize 

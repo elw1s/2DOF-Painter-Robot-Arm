@@ -6,6 +6,74 @@
 
 namespace utils{
 
+    cv::Rect getSafeBox(const cv::Size& size, int resample, const cv::Rect& box) {
+        const double filter_support = cv::INTER_CUBIC - 0.5;
+        const double scale_x = (box.width) / static_cast<double>(size.width);
+        const double scale_y = (box.height) / static_cast<double>(size.height);
+        const double support_x = filter_support * scale_x;
+        const double support_y = filter_support * scale_y;
+
+        int x1 = std::max(0, static_cast<int>(box.x - support_x));
+        int y1 = std::max(0, static_cast<int>(box.y - support_y));
+        int x2 = std::min(box.x + box.width + support_x, static_cast<double>(box.x + box.width));
+        int y2 = std::min(box.y + box.height + support_y, static_cast<double>(box.y + box.height));
+
+        return cv::Rect(x1, y1, x2 - x1, y2 - y1);
+    }
+
+    cv::Mat resize(const cv::Mat& image, cv::Size size, int resample = cv::INTER_LINEAR, cv::Rect box = cv::Rect(), double reducing_gap = 0.0) {
+    cv::Mat result;
+
+    if (resample == -1) {
+        // Determine the default resampling filter based on image mode
+        bool type_special = (image.type() == CV_16U);
+        resample = (type_special) ? cv::INTER_NEAREST : cv::INTER_LINEAR;
+    } else if (resample != cv::INTER_NEAREST &&
+               resample != cv::INTER_LINEAR &&
+               resample != cv::INTER_CUBIC &&
+               resample != cv::INTER_LANCZOS4 &&
+               resample != cv::INTER_AREA) {
+        throw std::invalid_argument("Unknown resampling filter");
+    }
+
+    if (reducing_gap != 0.0 && reducing_gap < 1.0) {
+        throw std::invalid_argument("reducing_gap must be 1.0 or greater");
+    }
+
+    if (box == cv::Rect()) {
+        box = cv::Rect(0, 0, image.cols, image.rows);
+    }
+
+    if (image.size() == size && box == cv::Rect(0, 0, image.cols, image.rows)) {
+        return image.clone();
+    }
+
+    if (image.type() == CV_8U || image.type() == CV_8S) {
+        resample = cv::INTER_NEAREST;
+    }
+
+    if ((image.type() == CV_8UC2 || image.type() == CV_8UC4) && resample != cv::INTER_NEAREST) {
+        cv::cvtColor(image, result, (image.type() == CV_8UC2) ? cv::COLOR_Lab2BGR : cv::COLOR_Lab2BGR);
+        result = resize(result, size, resample, box, reducing_gap);
+        cv::cvtColor(result, result, (image.type() == CV_8UC2) ? cv::COLOR_BGR2Lab : cv::COLOR_BGR2Lab);
+        return result;
+    } 
+
+    if (reducing_gap != 0.0 && resample != cv::INTER_NEAREST) {
+        int factor_x = static_cast<int>((box.width) / size.width / reducing_gap) || 1;
+        int factor_y = static_cast<int>((box.height) / size.height / reducing_gap) || 1;
+
+        if (factor_x > 1 || factor_y > 1) {
+            cv::Rect reduce_box = getSafeBox(size, resample, box); // Implement getSafeBox function
+            cv::resize(image(box), result, size, 0, 0, resample);
+            box = cv::Rect((box.x - reduce_box.x) / factor_x, (box.y - reduce_box.y) / factor_y, (box.width - reduce_box.x) / factor_x, (box.height - reduce_box.y) / factor_y);
+        }
+    }
+
+    cv::resize(image(box), result, size, 0, 0, resample);
+    return result;
+}
+
     // Define the _lut function
     cv::Mat _lut(const cv::Mat& image, const std::vector<uchar>& lut) {
         cv::Mat result;
