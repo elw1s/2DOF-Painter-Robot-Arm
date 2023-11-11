@@ -1,0 +1,9 @@
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/scara_gui.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/edit_cache.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/rebuild_cache.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/list_install_components.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install/local.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/install/strip.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/scara_gui_autogen_timestamp_deps.dir
+/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/scara_gui_autogen.dir
