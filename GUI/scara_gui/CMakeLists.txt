@@ -23,6 +23,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(scara_gui
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        DrawingArea.h
+        DrawingArea.cpp
+        DrawingApp.h
+        DrawingApp.cpp
+        ImageUploader.h
+        ImageUploader.cpp
+        ImagePathsConfig.h
+        ImagePathsConfig.cpp
+        CropFeature.h
+        CropFeature.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET scara_gui APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
