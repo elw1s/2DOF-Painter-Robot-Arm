@@ -1,29 +1,30 @@
 #include "CropFeature.h"
-
 #include <QGraphicsSceneMouseEvent>
-#include <QtWidgets/QGraphicsPixmapItem>
-#include <QtWidgets/QGraphicsRectItem>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
+#include <QMessageBox>
 
-
-CropFeature::CropFeature(QObject* parent) : QGraphicsScene(parent)
+CropFeature::CropFeature(QObject* parent) : QGraphicsScene(parent), m_leftMouseButtonPressed(false), m_cropEnabled(false), m_currentImageItem(nullptr)
 {
-
 }
 
 void CropFeature::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() & Qt::LeftButton)
     {
-        // With the left mouse button pressed, remember the position
-        m_leftMouseButtonPressed = true;
-        setPreviousPosition(event->scenePos());
+        if (m_cropEnabled)
+        {
+            // With the left mouse button pressed, remember the position
+            m_leftMouseButtonPressed = true;
+            setPreviousPosition(event->scenePos());
 
-        // Create a selection square
-        m_selection = new QGraphicsRectItem();
-        m_selection->setBrush(QBrush(QColor(158,182,255,96)));
-        m_selection->setPen(QPen(QColor(158,182,255,200),1));
-        // Add it to the graphic scene
-        addItem(m_selection);
+            // Create a selection square
+            m_selection = new QGraphicsRectItem();
+            m_selection->setBrush(QBrush(QColor(158, 182, 255, 96)));
+            m_selection->setPen(QPen(QColor(158, 182, 255, 200), 1));
+            // Add it to the graphic scene
+            addItem(m_selection);
+        }
     }
 
     QGraphicsScene::mousePressEvent(event);
@@ -31,7 +32,7 @@ void CropFeature::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void CropFeature::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (m_leftMouseButtonPressed)
+    if (m_leftMouseButtonPressed && m_cropEnabled)
     {
         // Form the selection area when moving with the mouse while pressing the LMB
         auto dx = event->scenePos().x() - m_previousPosition.x();
@@ -47,14 +48,22 @@ void CropFeature::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void CropFeature::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (event->button() & Qt::LeftButton)
+    if (event->button() & Qt::LeftButton && m_leftMouseButtonPressed && m_cropEnabled)
     {
         m_leftMouseButtonPressed = false;
 
         // When releasing the LMB, we form the cut off area
         QRect selectionRect = m_selection->boundingRect().toRect();
-        clippedImage(m_currentImageItem->pixmap().copy(selectionRect));
-        delete m_selection;
+        if (m_currentImageItem)
+        {
+            clippedImage(m_currentImageItem->pixmap().copy(selectionRect));
+            delete m_selection;
+        }
+        else
+        {
+            QMessageBox::warning(nullptr, "Warning", "No image loaded!");
+            delete m_selection;
+        }
     }
     QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -106,4 +115,14 @@ void CropFeature::setImage(const QPixmap& pixmap)
         addItem(m_currentImageItem);
         // You might need to call this->update() or view->update() to force a redraw
     }
+}
+
+bool CropFeature::isCropEnabled() const
+{
+    return m_cropEnabled;
+}
+
+void CropFeature::setCropEnabled(bool enabled)
+{
+    m_cropEnabled = enabled;
 }

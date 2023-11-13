@@ -17,6 +17,7 @@ scara_gui_autogen/timestamp: \
   /home/arda/Desktop/CSE396/GUI/scara_gui/main.cpp \
   /home/arda/Desktop/CSE396/GUI/scara_gui/mainwindow.cpp \
   /home/arda/Desktop/CSE396/GUI/scara_gui/mainwindow.h \
+  /home/arda/Desktop/CSE396/GUI/scara_gui/resources.qrc \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20functional.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20memory.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20type_traits.h \
@@ -156,12 +157,14 @@ scara_gui_autogen/timestamp: \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpainterpath.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpalette.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpen.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qpicture.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpixelformat.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpixmap.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpolygon.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qregion.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qrgb.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qrgba64.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qtextdocument.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtextoption.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtgui-config.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtguiexports.h \
@@ -173,6 +176,8 @@ scara_gui_autogen/timestamp: \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsRectItem \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsScene \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsView \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGridLayout \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QLabel \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QMainWindow \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QPushButton \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QVBoxLayout \
@@ -187,6 +192,7 @@ scara_gui_autogen/timestamp: \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgraphicsscene.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgraphicsview.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgridlayout.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlabel.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlayout.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlayoutitem.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qmainwindow.h \

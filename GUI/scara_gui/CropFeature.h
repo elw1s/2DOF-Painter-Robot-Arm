@@ -21,7 +21,8 @@ public:
     // Method for replacing an image in QGraphicsScene
     void setImage(const QString& filePath);
     void setImage(const QPixmap& pixmap);
-
+    bool isCropEnabled() const;
+    void setCropEnabled(bool enabled);
 signals:
     void previousPositionChanged(const QPointF previousPosition);
     void clippedImage(const QPixmap& pixmap);  // A signal that transmits the cut out area to the application window to install it in the label
@@ -40,4 +41,5 @@ private:
     QGraphicsPixmapItem* m_currentImageItem {nullptr};
     QPointF m_previousPosition;
     bool m_leftMouseButtonPressed           {false};
+    bool m_cropEnabled                      {false};
 };

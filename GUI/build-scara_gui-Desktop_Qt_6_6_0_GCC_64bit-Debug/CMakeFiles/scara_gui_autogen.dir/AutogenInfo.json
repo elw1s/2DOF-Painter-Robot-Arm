@@ -350,7 +350,8 @@
 		"/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Widgets/Qt6WidgetsAdditionalTargetInfo.cmake",
 		"/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessTargets.cmake",
 		"/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Widgets/Qt6WidgetsMacros.cmake",
-		"/opt/Qt/Tools/CMake/share/cmake-3.24/Modules/GNUInstallDirs.cmake"
+		"/opt/Qt/Tools/CMake/share/cmake-3.24/Modules/GNUInstallDirs.cmake",
+		"/home/arda/Desktop/CSE396/GUI/scara_gui/resources.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "/home/arda/Desktop/CSE396/GUI/scara_gui",
 	"DEP_FILE" : "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/deps",

@@ -1,5 +1,7 @@
 /home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/EWIEGA46WW/moc_ImageUploader.cpp: /home/arda/Desktop/CSE396/GUI/scara_gui/ImageUploader.h \
   /home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/moc_predefs.h \
+  /home/arda/Desktop/CSE396/GUI/scara_gui/CropFeature.h \
+  /home/arda/Desktop/CSE396/GUI/scara_gui/ImagePathsConfig.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20functional.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20memory.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/q20type_traits.h \
@@ -18,6 +20,7 @@
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qbytearrayalgorithms.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qbytearraylist.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qbytearrayview.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qcalendar.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qchar.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qcompare.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qcompare_impl.h \
@@ -30,8 +33,13 @@
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qcontiguouscache.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qdarwinhelpers.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qdatastream.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qdatetime.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qdebug.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qdir.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qexceptionhandling.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qfile.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qfiledevice.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qfileinfo.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qflags.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qfloat16.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qforeach.h \
@@ -42,12 +50,14 @@
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qglobalstatic.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qhash.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qhashfunctions.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qiodevice.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qiodevicebase.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qiterable.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qiterator.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qlatin1stringview.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qline.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qlist.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qlocale.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qlogging.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qmalloc.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qmap.h \
@@ -98,6 +108,7 @@
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtdeprecationmarkers.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtenvironmentvariables.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtextstream.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qtimezone.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtmetamacros.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtnoop.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtpreprocessorsupport.h \
@@ -108,6 +119,7 @@
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtversionchecks.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtypeinfo.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qtypes.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtCore/qurl.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qutf8stringview.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qvariant.h \
   /opt/Qt/6.6.0/gcc_64/include/QtCore/qvarlengtharray.h \
@@ -125,19 +137,48 @@
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qimage.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qkeysequence.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpaintdevice.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qpainter.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qpainterpath.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpalette.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qpen.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qpicture.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpixelformat.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpixmap.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qpolygon.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qregion.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qrgb.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qrgba64.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qtextdocument.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtGui/qtextoption.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtgui-config.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtguiexports.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtguiglobal.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qtransform.h \
   /opt/Qt/6.6.0/gcc_64/include/QtGui/qwindowdefs.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QFileDialog \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsPixmapItem \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsRectItem \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsScene \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGraphicsView \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QGridLayout \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QLabel \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QPushButton \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/QWidget \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qabstractbutton.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qboxlayout.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qdialog.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qfiledialog.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qframe.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgraphicsitem.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgraphicsscene.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgraphicsview.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qgridlayout.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlabel.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlayout.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qpushbutton.h \
+  /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qscrollarea.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qsizepolicy.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
   /opt/Qt/6.6.0/gcc_64/include/QtWidgets/qtwidgetsexports.h \
@@ -160,10 +201,13 @@
   /usr/include/c++/11/bits/allocator.h \
   /usr/include/c++/11/bits/atomic_base.h \
   /usr/include/c++/11/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/11/bits/basic_ios.h \
+  /usr/include/c++/11/bits/basic_ios.tcc \
   /usr/include/c++/11/bits/basic_string.h \
   /usr/include/c++/11/bits/basic_string.tcc \
   /usr/include/c++/11/bits/char_traits.h \
   /usr/include/c++/11/bits/charconv.h \
+  /usr/include/c++/11/bits/codecvt.h \
   /usr/include/c++/11/bits/concept_check.h \
   /usr/include/c++/11/bits/cpp_type_traits.h \
   /usr/include/c++/11/bits/cxxabi_forced.h \
@@ -173,6 +217,10 @@
   /usr/include/c++/11/bits/exception.h \
   /usr/include/c++/11/bits/exception_defines.h \
   /usr/include/c++/11/bits/exception_ptr.h \
+  /usr/include/c++/11/bits/fs_dir.h \
+  /usr/include/c++/11/bits/fs_fwd.h \
+  /usr/include/c++/11/bits/fs_ops.h \
+  /usr/include/c++/11/bits/fs_path.h \
   /usr/include/c++/11/bits/functexcept.h \
   /usr/include/c++/11/bits/functional_hash.h \
   /usr/include/c++/11/bits/hash_bytes.h \
@@ -180,25 +228,34 @@
   /usr/include/c++/11/bits/hashtable_policy.h \
   /usr/include/c++/11/bits/invoke.h \
   /usr/include/c++/11/bits/ios_base.h \
+  /usr/include/c++/11/bits/istream.tcc \
   /usr/include/c++/11/bits/list.tcc \
   /usr/include/c++/11/bits/locale_classes.h \
   /usr/include/c++/11/bits/locale_classes.tcc \
+  /usr/include/c++/11/bits/locale_conv.h \
+  /usr/include/c++/11/bits/locale_facets.h \
+  /usr/include/c++/11/bits/locale_facets.tcc \
+  /usr/include/c++/11/bits/locale_facets_nonio.h \
+  /usr/include/c++/11/bits/locale_facets_nonio.tcc \
   /usr/include/c++/11/bits/localefwd.h \
   /usr/include/c++/11/bits/memoryfwd.h \
   /usr/include/c++/11/bits/move.h \
   /usr/include/c++/11/bits/nested_exception.h \
   /usr/include/c++/11/bits/node_handle.h \
+  /usr/include/c++/11/bits/ostream.tcc \
   /usr/include/c++/11/bits/ostream_insert.h \
   /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/c++/11/bits/postypes.h \
   /usr/include/c++/11/bits/predefined_ops.h \
   /usr/include/c++/11/bits/ptr_traits.h \
+  /usr/include/c++/11/bits/quoted_string.h \
   /usr/include/c++/11/bits/range_access.h \
   /usr/include/c++/11/bits/refwrap.h \
   /usr/include/c++/11/bits/shared_ptr.h \
   /usr/include/c++/11/bits/shared_ptr_atomic.h \
   /usr/include/c++/11/bits/shared_ptr_base.h \
   /usr/include/c++/11/bits/specfun.h \
+  /usr/include/c++/11/bits/sstream.tcc \
   /usr/include/c++/11/bits/std_abs.h \
   /usr/include/c++/11/bits/std_function.h \
   /usr/include/c++/11/bits/stl_algo.h \
@@ -237,6 +294,7 @@
   /usr/include/c++/11/climits \
   /usr/include/c++/11/clocale \
   /usr/include/c++/11/cmath \
+  /usr/include/c++/11/codecvt \
   /usr/include/c++/11/cstddef \
   /usr/include/c++/11/cstdint \
   /usr/include/c++/11/cstdio \
@@ -244,6 +302,7 @@
   /usr/include/c++/11/cstring \
   /usr/include/c++/11/ctime \
   /usr/include/c++/11/cwchar \
+  /usr/include/c++/11/cwctype \
   /usr/include/c++/11/debug/assertions.h \
   /usr/include/c++/11/debug/debug.h \
   /usr/include/c++/11/exception \
@@ -255,22 +314,29 @@
   /usr/include/c++/11/ext/numeric_traits.h \
   /usr/include/c++/11/ext/string_conversions.h \
   /usr/include/c++/11/ext/type_traits.h \
+  /usr/include/c++/11/filesystem \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/initializer_list \
+  /usr/include/c++/11/iomanip \
+  /usr/include/c++/11/ios \
   /usr/include/c++/11/iosfwd \
+  /usr/include/c++/11/istream \
   /usr/include/c++/11/iterator \
   /usr/include/c++/11/limits \
   /usr/include/c++/11/list \
+  /usr/include/c++/11/locale \
   /usr/include/c++/11/map \
   /usr/include/c++/11/memory \
   /usr/include/c++/11/new \
   /usr/include/c++/11/numeric \
   /usr/include/c++/11/optional \
+  /usr/include/c++/11/ostream \
   /usr/include/c++/11/pstl/execution_defs.h \
   /usr/include/c++/11/pstl/glue_algorithm_defs.h \
   /usr/include/c++/11/pstl/glue_memory_defs.h \
   /usr/include/c++/11/pstl/glue_numeric_defs.h \
   /usr/include/c++/11/ratio \
+  /usr/include/c++/11/sstream \
   /usr/include/c++/11/stdexcept \
   /usr/include/c++/11/streambuf \
   /usr/include/c++/11/string \
@@ -300,6 +366,7 @@
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
@@ -314,6 +381,7 @@
   /usr/include/strings.h \
   /usr/include/time.h \
   /usr/include/wchar.h \
+  /usr/include/wctype.h \
   /usr/include/x86_64-linux-gnu/asm/errno.h \
   /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h \
   /usr/include/x86_64-linux-gnu/bits/byteswap.h \
@@ -377,6 +445,7 @@
   /usr/include/x86_64-linux-gnu/bits/waitflags.h \
   /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
+  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
   /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h \
@@ -384,10 +453,14 @@
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++locale.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr-default.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \

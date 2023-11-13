@@ -1,12 +1,13 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
-
-class QGridLayout;
-class QPushButton;
-class QGraphicsView;
-class QLabel;
-class CropFeature;
+#include <QGridLayout>
+#include <QGraphicsView>
+#include <QPushButton>
+#include <QLabel>
+#include <QFileDialog>
+#include "CropFeature.h"  // Include the header for CropFeature
+#include "ImagePathsConfig.h"
 
 class ImageUploader : public QWidget
 {
@@ -20,7 +21,9 @@ public:
 private slots:
     void onAddFile();                           // Slot for adding an image to the application
     void onClippedImage(const QPixmap& pixmap); // Slot for accepting a cropped application area
+    void onCropButtonClicked();
 private:
+    QPushButton* m_cropButton;
     QGridLayout* m_gridLayout;
     QPushButton* m_pushButton;
     QGraphicsView* m_graphicsView;
