@@ -178,31 +178,6 @@ std::vector<std::vector<std::pair<int,int>>> hatch(cv::Mat image, int line_spaci
     return lines;
 }
 
-// cv::Mat resizeImage(const cv::Mat& image, int resolution, int divider = 1) {
-//     cv::Size newSize(resolution / divider, resolution / divider * image.rows / image.cols);
-//     std::cout<< "resolution:" << resolution << " - divider:" << divider << std::endl; 
-//     std::cout<< "Expected size:"<<(resolution / divider) << "," << (resolution / divider * image.rows / image.cols) << std::endl;
-//     if (image.rows > 0) {
-//     std::cout << "Values of the first row in resizeImage (before): ";
-//     for (int x = 0; x < image.cols; ++x) {
-//         int value = image.at<uchar>(0, x);
-//         std::cout << value << " ";
-//     }
-//         std::cout << std::endl;
-//     }
-//     cv::Mat resizedImage;
-//     cv::resize(image, resizedImage, newSize, cv::INTER_LINEAR);
-//     if (resizedImage.rows > 0) {
-//     std::cout << "Values of the first row in resizeImage (after): ";
-//     for (int x = 0; x < resizedImage.cols; ++x) {
-//         int value = resizedImage.at<uchar>(0, x);
-//         std::cout << value << " ";
-//     }
-//         std::cout << std::endl;
-//     }
-//     return resizedImage;
-// }
-
 cv::Mat resizeImage(const cv::Mat& image, int resolution, int divider = 1) {
     if (image.rows > 0) {
      std::cout << "Values of the first row in resizeImage (before): ";
@@ -288,69 +263,6 @@ std::vector<std::vector<std::pair<int, int>>> join_lines(std::vector<std::vector
     return lines;
 }
 
-/*std::vector<std::vector<std::pair<int, int>> > connectdots(std::vector<std::vector<std::pair<int, int>>>& dots) {
-    std::cout << "Connecting contour points..." << std::endl;
-    std::vector<std::vector<std::pair<int, int>> > contours;
-    std::vector<std::pair<int,int>> temp;
-
-    for (size_t y = 0; y < dots.size(); y++) {
-        for (const std::pair<int, int>& dot : dots[y]) {
-            int x = dot.first;
-            int v = dot.second;
-
-            if (v > -1) {
-                if (y == 0) {
-                    temp.push_back(std::make_pair(x,y));
-                    contours.push_back(temp);
-                    temp.clear();
-                } else {
-                    int closest = -1;
-                    int cdist = 100;
-
-                    for (const std::pair<int, int>& dotPrev : dots[y - 1]) {
-                        int x0 = dotPrev.first;
-                        int v0 = dotPrev.second;
-
-                        if (std::abs(x0 - x) < cdist) {
-                            cdist = std::abs(x0 - x);
-                            closest = x0;
-                        }
-                    }
-
-                    if (cdist > 3) {
-                        temp.push_back(std::make_pair(x,y));
-                        contours.push_back(temp);
-                        temp.clear();
-                    } else {
-                        bool found = false;
-                        for (size_t i = 0; i < contours.size(); i++) {
-                            if (contours[i].back() == std::pair<int, int>(closest, y - 1)) {
-                                contours[i].push_back(std::pair<int, int>(x, y));
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            temp.push_back(std::make_pair(x,y));
-                            contours.push_back(temp);
-                            temp.clear();
-                        }
-                    }
-                }
-            }
-        }
-        for (auto it = contours.begin(); it != contours.end();) {
-            if (it->back().second < y - 1 && it->size() < 4) {
-                it = contours.erase(it);  // Remove the element
-            } else {
-                ++it;  // Move to the next element
-            }
-        }
-    }
-    //contours.erase(std::remove_if(contours.begin(), contours.end(), [](const std::vector<std::pair<int, int>>& c) { return c.back().second < c.front().second && c.size() < 4; }), contours.end());
-    return contours;
-}*/
-
 std::vector<std::vector<std::pair<int, int>>> connectdots(const std::vector<std::vector<std::pair<int, int>>>& dots) {
     std::cout << "Connecting contour points..." << std::endl;
     std::vector<std::vector<std::pair<int, int>>> contours;
@@ -401,39 +313,7 @@ std::vector<std::vector<std::pair<int, int>>> connectdots(const std::vector<std:
     return contours;
 }
 
-
-
-
 std::vector<std::vector<std::pair<int, int>>> getdots(const cv::Mat& image) {
-    // std::cout << "Getting contour points..." << std::endl;
-
-    // std::vector<std::vector<std::pair<int, int>>> dots;
-    // int w = image.cols;
-    // int h = image.rows;
-
-    // for (int y = 0; y < h - 1; ++y) {
-    //     std::vector<std::pair<int, int>> row;
-    //     for (int x = 1; x < w; ++x) {
-            
-    //         cv::Vec3b pixel = image.at<cv::Vec3b>(y, x);
-    //         int value = pixel[0]; 
-
-    //         if (value == 255) {
-    //             if (!row.empty()) {
-    //                 if (x - row.back().first == row.back().second + 1) {
-    //                     row.back().first = row.back().first;
-    //                     row.back().second = row.back().second + 1;
-    //                 } else {
-    //                     row.push_back(std::make_pair(x, 0));
-    //                 }
-    //             } else {
-    //                 row.push_back(std::make_pair(x, 0));
-    //             }
-    //         }
-    //     }
-    //     dots.push_back(row);
-    // }
-    // return dots;
     std::cout << "Getting contour points..." << std::endl;
     std::vector<std::vector<std::pair<int, int>>> dots;
 
@@ -659,16 +539,6 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
     if (draw_contours && repeat_contours) {
         std::cout << "image.size before resizeImage:" << image.cols << "," << image.rows << std::endl;
         contours = getcontours(resizeImage(image,resolution,draw_contours), draw_contours);
-        // std::cout<<"***********************************************************" << std::endl;
-        // std::cout << "[";
-        // for(int i = 0; i < contours.size(); i++){
-        //     std::cout << "[";
-        //     for(int k = 0; k < contours[i].size(); k++){
-        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
-        //     }
-        //     std::cout << "]";
-        // }
-        // std::cout << "]"<< std::endl;
 
         // Generate SVG content
         std::string svgContours = makesvg(contours);
@@ -681,27 +551,7 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
 
 
         contours = sortlines(contours);
-        // std::cout<<"***********************************************************" << std::endl;
-        // std::cout << "[";
-        // for(int i = 0; i < contours.size(); i++){
-        //     std::cout << "[";
-        //     for(int k = 0; k < contours[i].size(); k++){
-        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
-        //     }
-        //     std::cout << "]";
-        // }
-        // std::cout << "]"<< std::endl;
         contours = join_lines(contours);
-        // std::cout<<"***********************************************************" << std::endl;
-        // std::cout << "[";
-        // for(int i = 0; i < contours.size(); i++){
-        //     std::cout << "[";
-        //     for(int k = 0; k < contours[i].size(); k++){
-        //         std::cout << "(" << contours[i][k].first << "," <<contours[i][k].second << "),";
-        //     }
-        //     std::cout << "]";
-        // }
-        // std::cout << "]"<< std::endl;
 
         for (int r = 0; r < repeat_contours; r++) {
             for(int i = 0; i < contours.size(); i++){
@@ -720,22 +570,16 @@ std::vector<std::vector<std::pair<int, int>>> vectorise(const std::string& image
     befHatch << svgContentBefHatch;
     befHatch.close();
 
-
     if (draw_hatch && repeat_hatch) {
-        std::cout << "B BEFORE LOOP" << std::endl;
         hatches = hatch(resizeImage(image, resolution), draw_hatch);
-        std::cout << "after hatch" << std::endl;
         hatches = sortlines(hatches);
-        std::cout << "after sortlines" << std::endl;
         hatches = join_lines(hatches);
-        std::cout << "after join_lines" << std::endl;
         for (int r = 0; r < repeat_hatch; r++) {
             for(int i = 0; i < hatches.size(); i++){
                 lines.push_back(hatches.at(i));
             }
             //lines.insert(lines.end(), hatches.begin(), hatches.end());
         }
-        std::cout << "B AFTER LOOP" << std::endl;
     }
 
         // Generate SVG content
@@ -777,8 +621,6 @@ void imageToJson(const std::string& imageFilename,int resolution = 1024,int draw
     std::string filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json";
     linesToFile(lines, filename);
 }
-
-
 
 int main()
 {
