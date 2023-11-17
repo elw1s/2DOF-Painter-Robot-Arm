@@ -1,8 +1,4 @@
 #include "CropFeature.h"
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsRectItem>
-#include <QMessageBox>
 
 CropFeature::CropFeature(QObject* parent) : QGraphicsScene(parent), m_leftMouseButtonPressed(false), m_cropEnabled(false), m_currentImageItem(nullptr)
 {
@@ -101,20 +97,7 @@ void CropFeature::setImage(const QPixmap& pixmap)
     }
 
     m_currentImageItem = new QGraphicsPixmapItem(pixmap);
-
-    // Access the QGraphicsView associated with this scene
-    QGraphicsView* view = views().first();
-
-    if (view)
-    {
-        // Scale the pixmap to fit into the QGraphicsView
-        QSize viewSize = view->size();
-        QPixmap scaledPixmap = pixmap.scaled(viewSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        m_currentImageItem->setPixmap(scaledPixmap);
-        addItem(m_currentImageItem);
-        // You might need to call this->update() or view->update() to force a redraw
-    }
+    addItem(m_currentImageItem);
 }
 
 bool CropFeature::isCropEnabled() const

@@ -5,6 +5,10 @@
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtWidgets/QGraphicsRectItem>
 #include <QtWidgets/QGraphicsView>  // Include the header for QGraphicsView
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
+#include <QMessageBox>
 
 class QGraphicsSceneMouseEvent;
 class QGraphicsPixmapItem;

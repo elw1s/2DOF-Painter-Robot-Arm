@@ -1,10 +1,9 @@
 #include "DrawingArea.h"
-#include <QPainter>
-#include <QResizeEvent>
 
     DrawingArea::DrawingArea(QWidget *parent) : QWidget(parent), drawing(false) {
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         setMouseTracking(true);
+        currentStroke = 1;
     }
 
     const QPixmap& DrawingArea::getPixmap() const {
@@ -16,7 +15,15 @@
 
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing);
+        // Calculate the drawing area excluding the margins
+        //QRect drawingRect = rect().adjusted(25, 75, -75, -20);
 
+        // Draw the pixmap within the adjusted area
+        //painter.drawPixmap(drawingRect, pixmap, pixmap.rect());
+        QPen pen;
+        qDebug() << currentStroke;
+        pen.setWidth(1000);
+        painter.setPen(pen);
         painter.drawPixmap(0, 0, pixmap);
     }
 
@@ -27,24 +34,23 @@
 
     void DrawingArea::mouseMoveEvent(QMouseEvent *event){
         if (drawing) {
-            drawLineTo(event->pos());
+            QPoint currentPos = event->pos();
+            drawLineTo(lastPoint, currentPos);
+            lastPoint = currentPos;
         }
     }
-
     void DrawingArea::mouseReleaseEvent(QMouseEvent *event){
         if (drawing) {
-            drawLineTo(event->pos());
+            drawLineTo(lastPoint, event->pos());
             drawing = false;
         }
     }
 
-    void DrawingArea::drawLineTo(const QPoint &endPoint) {
+    void DrawingArea::drawLineTo(const QPoint &startPoint, const QPoint &endPoint) {
         QPainter painter(&pixmap);
         painter.setRenderHint(QPainter::Antialiasing);
 
-        painter.drawLine(lastPoint, endPoint);
-        lastPoint = endPoint;
-
+        painter.drawLine(startPoint, endPoint);
         update();
     }
 
@@ -68,4 +74,9 @@
         QPainter painter(&newImage);
         painter.drawPixmap(QPoint(0, 0), *image);
         *image = newImage;
+    }
+
+    void DrawingArea::setPenStroke(int stroke) {
+        currentStroke = stroke;
+        update(); // Trigger a repaint to apply the new stroke width
     }

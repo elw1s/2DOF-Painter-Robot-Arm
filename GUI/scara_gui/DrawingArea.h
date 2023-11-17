@@ -4,15 +4,17 @@
 #pragma once
 
 #include <QWidget>
+#include <QPainter>
+#include <QResizeEvent>
 
 class DrawingArea : public QWidget {
     Q_OBJECT
 
 public:
     DrawingArea(QWidget *parent = nullptr);
+    void setPenStroke(int stroke);
 
     const QPixmap &getPixmap() const;
-
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -21,13 +23,14 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void drawLineTo(const QPoint &endPoint);
+    void drawLineTo(const QPoint &startPoint, const QPoint &endPoint);
     static void resizeImage(QPixmap *image, const QSize &newSize);
 
 private:
     QPoint lastPoint;
     QPixmap pixmap;
     bool drawing;
+    int currentStroke;
 };
 
 

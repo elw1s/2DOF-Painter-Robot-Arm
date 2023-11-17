@@ -1,4 +1,4 @@
-# Install script for directory: /home/arda/Desktop/CSE396/GUI/scara_gui
+# Install script for directory: /home/ardakilic/Desktop/CSE396/GUI/scara_gui
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -49,12 +49,12 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/scara_gui"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/scara_gui" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/scara_gui")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/scara_gui"
-         OLD_RPATH "/opt/Qt/6.6.0/gcc_64/lib:"
+         OLD_RPATH "/home/ardakilic/Qt/6.6.0/gcc_64/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/scara_gui")
@@ -70,5 +70,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

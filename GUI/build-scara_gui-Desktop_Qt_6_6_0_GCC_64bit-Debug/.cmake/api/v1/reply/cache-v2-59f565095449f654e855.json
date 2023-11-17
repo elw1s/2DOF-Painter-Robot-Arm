@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -103,7 +103,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/Qt/Tools/CMake/bin/cmake"
+			"value" : "/home/ardakilic/Qt/Tools/CMake/bin/cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -115,7 +115,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/Qt/Tools/CMake/bin/cpack"
+			"value" : "/home/ardakilic/Qt/Tools/CMake/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -127,7 +127,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/Qt/Tools/CMake/bin/ctest"
+			"value" : "/home/ardakilic/Qt/Tools/CMake/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER",
@@ -191,7 +191,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "-DQT_QML_DEBUG"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_DEBUG",
@@ -219,7 +219,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : "-DQT_QML_DEBUG"
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
@@ -307,7 +307,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/Qt/Tools/CMake/bin/ccmake"
+			"value" : "/home/ardakilic/Qt/Tools/CMake/bin/ccmake"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -427,7 +427,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/pkgRedirects"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -499,7 +499,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/arda/Desktop/CSE396/GUI/scara_gui"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/scara_gui"
 		},
 		{
 			"name" : "CMAKE_INSTALL_BINDIR",
@@ -811,7 +811,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/Qt/Tools/Ninja/ninja"
+			"value" : "/home/ardakilic/Qt/Tools/Ninja/ninja"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -975,7 +975,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64"
 		},
 		{
 			"name" : "CMAKE_PROJECT_DESCRIPTION",
@@ -1011,7 +1011,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/.qtc/package-manager/auto-setup.cmake"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/.qtc/package-manager/auto-setup.cmake"
 		},
 		{
 			"name" : "CMAKE_PROJECT_NAME",
@@ -1127,7 +1127,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/opt/Qt/Tools/CMake/share/cmake-3.24"
+			"value" : "/home/ardakilic/Qt/Tools/CMake/share/cmake-3.24"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1375,7 +1375,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[/usr/lib/x86_64-linux-gnu/libGL.so][/usr/include][c ][v()]"
+			"value" : "[/usr/lib/x86_64-linux-gnu/libOpenGL.so][/usr/lib/x86_64-linux-gnu/libGLX.so][/usr/include][c ][v()]"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Threads",
@@ -1439,7 +1439,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "OPENGL_EGL_INCLUDE_DIR-NOTFOUND"
+			"value" : "/usr/include"
 		},
 		{
 			"name" : "OPENGL_GLX_INCLUDE_DIR",
@@ -1487,23 +1487,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "OPENGL_egl_LIBRARY-NOTFOUND"
-		},
-		{
-			"name" : "OPENGL_gl_LIBRARY",
-			"properties" : 
-			[
-				{
-					"name" : "ADVANCED",
-					"value" : "1"
-				},
-				{
-					"name" : "HELPSTRING",
-					"value" : "Path to a library."
-				}
-			],
-			"type" : "FILEPATH",
-			"value" : "/usr/lib/x86_64-linux-gnu/libGL.so"
+			"value" : "/usr/lib/x86_64-linux-gnu/libEGL.so"
 		},
 		{
 			"name" : "OPENGL_glu_LIBRARY",
@@ -1551,7 +1535,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "OPENGL_opengl_LIBRARY-NOTFOUND"
+			"value" : "/usr/lib/x86_64-linux-gnu/libOpenGL.so"
 		},
 		{
 			"name" : "OPENGL_xmesa_INCLUDE_DIR",
@@ -1947,7 +1931,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6"
 		},
 		{
 			"name" : "QT_FEATURE_abstractbutton",
@@ -6327,7 +6311,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/bin/qmake"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/bin/qmake"
 		},
 		{
 			"name" : "Qt6CoreTools_DIR",
@@ -6339,7 +6323,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6CoreTools"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6CoreTools"
 		},
 		{
 			"name" : "Qt6Core_DIR",
@@ -6351,7 +6335,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Core"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6Core"
 		},
 		{
 			"name" : "Qt6DBusTools_DIR",
@@ -6363,7 +6347,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6DBusTools"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6DBusTools"
 		},
 		{
 			"name" : "Qt6DBus_DIR",
@@ -6375,7 +6359,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6DBus"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6DBus"
 		},
 		{
 			"name" : "Qt6GuiTools_DIR",
@@ -6387,7 +6371,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6GuiTools"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6GuiTools"
 		},
 		{
 			"name" : "Qt6Gui_DIR",
@@ -6399,7 +6383,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Gui"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6Gui"
 		},
 		{
 			"name" : "Qt6WidgetsTools_DIR",
@@ -6411,7 +6395,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6WidgetsTools"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6WidgetsTools"
 		},
 		{
 			"name" : "Qt6Widgets_DIR",
@@ -6423,7 +6407,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6Widgets"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6Widgets"
 		},
 		{
 			"name" : "Qt6_DIR",
@@ -6435,7 +6419,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/opt/Qt/6.6.0/gcc_64/lib/cmake/Qt6"
+			"value" : "/home/ardakilic/Qt/6.6.0/gcc_64/lib/cmake/Qt6"
 		},
 		{
 			"name" : "Vulkan_GLSLANG_VALIDATOR_EXECUTABLE",
@@ -6571,7 +6555,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/arda/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug"
 		},
 		{
 			"name" : "scara_gui_IS_TOP_LEVEL",
@@ -6595,7 +6579,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/arda/Desktop/CSE396/GUI/scara_gui"
+			"value" : "/home/ardakilic/Desktop/CSE396/GUI/scara_gui"
 		}
 	],
 	"kind" : "cache",

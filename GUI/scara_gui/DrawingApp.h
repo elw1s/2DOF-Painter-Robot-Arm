@@ -7,7 +7,9 @@
 #include <QPushButton>  // Include QPushButton header
 #include <QFileDialog>
 #include <QVBoxLayout>
+#include <QComboBox>
 #include "DrawingArea.h"  // Include DrawingArea header
+
 class DrawingArea;
 class QPushButton;
 
@@ -19,10 +21,13 @@ public:
 
 private slots:
     void saveImage();
+    void setPenStroke(int stroke);
 
 private:
     DrawingArea *drawingArea;
     QPushButton *saveButton;
+    QComboBox *penStrokeDropdown;
+
 };
 
 

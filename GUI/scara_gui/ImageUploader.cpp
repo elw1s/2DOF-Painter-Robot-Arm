@@ -14,14 +14,20 @@ ImageUploader::ImageUploader(QWidget* parent) : BaseClass(parent)
     m_cropButton->setIcon(QIcon(QString::fromStdString(CROP_ICON)));  // Set the path to your icon
     m_cropButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     m_gridLayout->addWidget(m_cropButton, 1, 1);
-
+    m_graphicsView->setBackgroundBrush(QColor("#D9D9D9"));  // Set the background color
+    m_gridLayout->setContentsMargins(25, 75, 75, 20); // Set the margins
     m_clipScene = new CropFeature(this);
-    m_graphicsView->setScene(m_clipScene);
+    m_dragdropScene = new DragDropScene(this);
+
+    //m_graphicsView->setScene(m_clipScene);
+    //m_gridLayout->addWidget(m_dragdrop);
+    m_graphicsView->setScene(m_dragdropScene);
 
     // Connections
     connect(m_pushButton, &QPushButton::clicked, this, &ImageUploader::onAddFile);
     connect(m_clipScene, &CropFeature::clippedImage, this, &ImageUploader::onClippedImage);
     connect(m_cropButton, &QPushButton::clicked, this, &ImageUploader::onCropButtonClicked);
+    connect(m_dragdropScene, &DragDropScene::imageDropped, this, &ImageUploader::onImageDropped);
 
     resize(640, 480);
 }
@@ -40,4 +46,20 @@ void ImageUploader::onClippedImage(const QPixmap& pixmap)
 void ImageUploader::onCropButtonClicked()
 {
     m_clipScene->setCropEnabled(!m_clipScene->isCropEnabled());
+}
+
+void ImageUploader::onImageDropped() {
+    QGraphicsScene *currentScene = m_graphicsView->scene(); // Assuming m_graphicsView points to m_dragdropScene
+    QPixmap droppedPixmap = m_dragdropScene->getDroppedPixmap();
+    qDebug() << "onImageDropped!";
+    // Use the obtained pixmap as needed in m_clipScene (CropFeature)
+    if (!droppedPixmap.isNull()) {
+        qDebug() << "Dropped image is not null";
+        m_clipScene->setImage(droppedPixmap); // Set the dropped pixmap in m_clipScene
+        qDebug() << "Image is set in m_clipScene";
+        m_graphicsView->setScene(m_clipScene); // Set m_graphicsView to display m_clipScene
+        qDebug() << "scene is changed!";
+        delete currentScene; // Delete the old scene
+        qDebug() << "the other scene is removed!";
+    }
 }
