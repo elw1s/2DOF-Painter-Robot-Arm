@@ -35,7 +35,13 @@ ImageUploader::ImageUploader(QWidget* parent) : BaseClass(parent)
 void ImageUploader::onAddFile()
 {
     QString imagePath = QFileDialog::getOpenFileName(this, "Open Image File", QString(), tr("Image (*.png *.jpg *.jpeg)"));
-    m_clipScene->setImage(imagePath);
+    if (!imagePath.isEmpty()) {
+        QPixmap pixmap(imagePath);
+        m_clipScene->setImage(pixmap);
+        QGraphicsScene *currentScene = m_graphicsView->scene();
+        m_graphicsView->setScene(m_clipScene);
+        delete currentScene;
+    }
 }
 
 void ImageUploader::onClippedImage(const QPixmap& pixmap)

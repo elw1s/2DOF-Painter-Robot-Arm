@@ -7,9 +7,18 @@
 	"INCLUDE_DIR" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/include",
 	"INPUTS" : 
 	[
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/playXOX.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/playSudoku.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/eraser.png",
 		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/crop.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/stroke.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/dragdrop.png",
 		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/upload_image.png",
-		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/draw_image.png"
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/pen.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/draw_image.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/draw.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/robot_projection.png",
+		"/home/ardakilic/Desktop/CSE396/GUI/scara_gui/resources/stroke1.png"
 	],
 	"LOCK_FILE" : "/home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/CMakeFiles/scara_gui_autogen.dir/AutoRcc_resources_EWIEGA46WW_Lock.lock",
 	"MULTI_CONFIG" : false,

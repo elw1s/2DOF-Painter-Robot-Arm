@@ -13,7 +13,7 @@ class DrawingArea : public QWidget {
 public:
     DrawingArea(QWidget *parent = nullptr);
     void setPenStroke(int stroke);
-
+    void eraserMode(bool mode);
     const QPixmap &getPixmap() const;
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -23,7 +23,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void drawLineTo(const QPoint &startPoint, const QPoint &endPoint);
+    void drawLineTo(const QPoint &startPoint, const QPoint &endPoint, const QColor &color);
     static void resizeImage(QPixmap *image, const QSize &newSize);
 
 private:
@@ -31,6 +31,7 @@ private:
     QPixmap pixmap;
     bool drawing;
     int currentStroke;
+    bool eraser;
 };
 
 

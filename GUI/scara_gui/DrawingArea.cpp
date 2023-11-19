@@ -20,10 +20,6 @@
 
         // Draw the pixmap within the adjusted area
         //painter.drawPixmap(drawingRect, pixmap, pixmap.rect());
-        QPen pen;
-        qDebug() << currentStroke;
-        pen.setWidth(1000);
-        painter.setPen(pen);
         painter.drawPixmap(0, 0, pixmap);
     }
 
@@ -35,21 +31,37 @@
     void DrawingArea::mouseMoveEvent(QMouseEvent *event){
         if (drawing) {
             QPoint currentPos = event->pos();
-            drawLineTo(lastPoint, currentPos);
+            if(eraser){
+                drawLineTo(lastPoint, currentPos,QColor(255,255,255));
+
+            }
+            else{
+                drawLineTo(lastPoint, currentPos,QColor(0,0,0));
+
+            }
+
             lastPoint = currentPos;
         }
     }
     void DrawingArea::mouseReleaseEvent(QMouseEvent *event){
         if (drawing) {
-            drawLineTo(lastPoint, event->pos());
+            if(eraser){
+                drawLineTo(lastPoint, event->pos(),QColor(255,255,255));
+            }
+            else{
+                drawLineTo(lastPoint, event->pos(),QColor(0,0,0));
+            }
             drawing = false;
         }
     }
 
-    void DrawingArea::drawLineTo(const QPoint &startPoint, const QPoint &endPoint) {
+    void DrawingArea::drawLineTo(const QPoint &startPoint, const QPoint &endPoint, const QColor &color) {
         QPainter painter(&pixmap);
         painter.setRenderHint(QPainter::Antialiasing);
-
+        QPen pen;
+        pen.setWidth(currentStroke);
+        pen.setColor(color);
+        painter.setPen(pen);
         painter.drawLine(startPoint, endPoint);
         update();
     }
@@ -79,4 +91,8 @@
     void DrawingArea::setPenStroke(int stroke) {
         currentStroke = stroke;
         update(); // Trigger a repaint to apply the new stroke width
+    }
+
+    void DrawingArea::eraserMode(bool mode){
+        eraser = mode;
     }

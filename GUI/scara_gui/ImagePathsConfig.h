@@ -8,5 +8,11 @@ extern const std::string ACCEPT_CROP_ICON;
 extern const std::string DRAW_IMAGE_TAB;
 extern const std::string UPLOAD_IMAGE_TAB;
 extern const std::string DRAG_DROP_ICON;
+extern const std::string PEN_ICON;
+extern const std::string ERASER_ICON;
+extern const std::string STROKE_ICON;
+extern const std::string ROBOT_PROJECTION_TAB;
+extern const std::string PLAY_XOX_TAB;
+extern const std::string PLAY_SUDOKU_TAB;
 
 #endif // IMAGEPATHSCONFIG_H

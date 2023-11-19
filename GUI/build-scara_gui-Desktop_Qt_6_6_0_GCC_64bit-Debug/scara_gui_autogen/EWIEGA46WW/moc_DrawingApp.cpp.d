@@ -1,6 +1,7 @@
 /home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/EWIEGA46WW/moc_DrawingApp.cpp: /home/ardakilic/Desktop/CSE396/GUI/scara_gui/DrawingApp.h \
   /home/ardakilic/Desktop/CSE396/GUI/build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/scara_gui_autogen/moc_predefs.h \
   /home/ardakilic/Desktop/CSE396/GUI/scara_gui/DrawingArea.h \
+  /home/ardakilic/Desktop/CSE396/GUI/scara_gui/ImagePathsConfig.h \
   /home/ardakilic/Qt/6.6.0/gcc_64/include/QtCore/QList \
   /home/ardakilic/Qt/6.6.0/gcc_64/include/QtCore/QObject \
   /home/ardakilic/Qt/6.6.0/gcc_64/include/QtCore/QRect \

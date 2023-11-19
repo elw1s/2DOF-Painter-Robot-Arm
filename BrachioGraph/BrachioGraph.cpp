@@ -624,7 +624,7 @@ void imageToJson(const std::string& imageFilename,int resolution = 1024,int draw
 
 int main()
 {
-    std::string imagePath = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.jpeg";
+    std::string imagePath = "/home/arda/Downloads/MicrosoftTeams-image.png";
     //std::string imagePath = "/home/arda/Desktop/CSE396/BrachioGraph/images/test.jpg";
     imageToJson(imagePath, 1024, 2, 1 , 16, 1);
 }
