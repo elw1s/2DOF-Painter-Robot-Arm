@@ -1,0 +1,9 @@
+# Ignore build artifacts and generated files
+
+# Ignore Qt Creator files
+*.user
+*.pro.user
+*.pro.user.*
+
+# Ignore build directory
+build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/

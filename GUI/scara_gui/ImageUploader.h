@@ -12,16 +12,14 @@
 
 class ImageUploader : public QWidget
 {
-    using BaseClass = QWidget;
-
     Q_OBJECT
 
 public:
     ImageUploader(QWidget* parent = nullptr);
 
 private slots:
-    void onAddFile();                           // Slot for adding an image to the application
-    void onClippedImage(const QPixmap& pixmap); // Slot for accepting a cropped application area
+    void onAddFile();
+    void onClippedImage(const QPixmap& pixmap);
     void onCropButtonClicked();
     void onImageDropped();
 private:
@@ -29,7 +27,7 @@ private:
     QGridLayout* m_gridLayout;
     QPushButton* m_pushButton;
     QGraphicsView* m_graphicsView;
-    QLabel* m_clippedLabel;         // A label in which the cropped image will be placed
-    CropFeature* m_clipScene;         // The graphical scene in which the image trimming functionality is implemented
+    QLabel* m_clippedLabel;
+    CropFeature* m_clipScene;
     DragDropScene* m_dragdropScene;
 };

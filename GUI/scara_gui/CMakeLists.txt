@@ -36,6 +36,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         DragDropScene.h
         DragDropScene.cpp
+        RobotProjectionWidget.h
+        RobotProjectionWidget.cpp
+        RobotMainMenu.h
+        RobotMainMenu.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET scara_gui APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

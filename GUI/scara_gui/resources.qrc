@@ -3,14 +3,18 @@
         <file>resources/upload_image.png</file>
         <file>resources/draw_image.png</file>
         <file>resources/crop.png</file>
-        <file>resources/dragdrop.png</file>
         <file>resources/draw.png</file>
         <file>resources/eraser.png</file>
         <file>resources/pen.png</file>
         <file>resources/stroke.png</file>
-        <file>resources/stroke1.png</file>
         <file>resources/playSudoku.png</file>
         <file>resources/playXOX.png</file>
         <file>resources/robot_projection.png</file>
+        <file>resources/upload_image_selected.png</file>
+        <file>resources/robot_projection_selected.png</file>
+        <file>resources/playXOX_selected.png</file>
+        <file>resources/playSudoku_selected.png</file>
+        <file>resources/draw_image_selected.png</file>
+        <file>resources/dragdrop.png</file>
     </qresource>
 </RCC>

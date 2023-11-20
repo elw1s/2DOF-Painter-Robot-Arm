@@ -1,6 +1,6 @@
 #include "ImageUploader.h"
 
-ImageUploader::ImageUploader(QWidget* parent) : BaseClass(parent)
+ImageUploader::ImageUploader(QWidget* parent)
 {
     m_gridLayout = new QGridLayout(this);
     m_graphicsView = new QGraphicsView(this);

@@ -15,11 +15,6 @@
 
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing);
-        // Calculate the drawing area excluding the margins
-        //QRect drawingRect = rect().adjusted(25, 75, -75, -20);
-
-        // Draw the pixmap within the adjusted area
-        //painter.drawPixmap(drawingRect, pixmap, pixmap.rect());
         painter.drawPixmap(0, 0, pixmap);
     }
 

@@ -11,8 +11,8 @@
 #include "DrawingArea.h"  // Include DrawingArea header
 #include "ImagePathsConfig.h"
 
-class DrawingArea;
-class QPushButton;
+//class DrawingArea;
+//class QPushButton;
 
 class DrawingApp : public QWidget {
     Q_OBJECT
