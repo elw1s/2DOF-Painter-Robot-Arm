@@ -2,26 +2,39 @@
 #define ROBOTPROJECTIONWIDGET_H
 
 #include <QWidget>
-#include <QJsonArray>
+#include <QPoint>
 #include <QPainter>
-#include <QFile>
-#include <QJsonDocument>
-#include <QPixmap>
-#include <QResizeEvent>
+#include <QWheelEvent>
+#include <QMouseEvent>
+#include <QJsonArray>
+#include <QScrollBar>
 
 class RobotProjectionWidget : public QWidget {
     Q_OBJECT
 
 public:
-    RobotProjectionWidget(QWidget *parent = nullptr);
-    void setPointsData(const QString& filePath);
-    void drawPointsOnPixmap();
+    explicit RobotProjectionWidget(QWidget *parent = nullptr);
+
+    void loadLinesFromJson(const QJsonArray &jsonArray);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
 private:
-    QVector<QVector<QJsonArray>> pointsData;
-    QPixmap pixmap;
-    static void resizeImage(QPixmap *image, const QSize &newSize);
+    qreal scaleFactor;
+    qreal scaleIncrement;
+    QVector<QVector<QPoint>> lines;
+    QPoint lastPanPos;
+    bool isPanning;
+    qreal minScaleFactor;
+    QPoint drawingOffset;
+
+    void parseJson(const QJsonArray &jsonArray);
+    void updateScaleFactor();
 };
+
 #endif // ROBOTPROJECTIONWIDGET_H

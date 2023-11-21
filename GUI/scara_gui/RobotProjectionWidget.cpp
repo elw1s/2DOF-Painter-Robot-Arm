@@ -1,95 +1,110 @@
 #include "RobotProjectionWidget.h"
 
-RobotProjectionWidget::RobotProjectionWidget(QWidget *parent) : QWidget(parent) {
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    pixmap = QPixmap(size()); // Initialize the pixmap with the widget size
-    //pixmap.fill(Qt::white); // Fill the pixmap with a white background
+RobotProjectionWidget::RobotProjectionWidget(QWidget *parent)
+    : QWidget(parent), scaleFactor(1.0), scaleIncrement(0.1),
+    isPanning(false), minScaleFactor(0.2) {
+    setFocusPolicy(Qt::WheelFocus); // Ensure the widget can receive focus for wheel events
+    setMouseTracking(true); // Enable mouse move events even without clicking
 }
 
-void RobotProjectionWidget::setPointsData(const QString& filePath) {
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Failed to open file.";
-        return;
-    }
+void RobotProjectionWidget::loadLinesFromJson(const QJsonArray &jsonArray) {
+    parseJson(jsonArray);
+    updateScaleFactor();
+    update(); // Trigger a repaint after loading new lines
+}
 
-    QByteArray jsonData = file.readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+void RobotProjectionWidget::parseJson(const QJsonArray &jsonArray) {
+    lines.clear(); // Clear any existing lines
 
-    if (doc.isArray()) {
-        QJsonArray jsonArray = doc.array();
-        for (const auto& innerArray : jsonArray) {
-            if (innerArray.isArray()) {
-                QVector<QJsonArray> points;
-                QJsonArray array = innerArray.toArray();
-                for (const auto& point : array) {
-                    if (point.isArray()) {
-                        points.append(point.toArray());
-                    }
-                }
-                pointsData.append(points);
-            }
+    for (const auto &lineArray : jsonArray) {
+        QVector<QPoint> linePoints;
+        for (const auto &pointArray : lineArray.toArray()) {
+            int x = pointArray.toArray().at(0).toInt();
+            int y = pointArray.toArray().at(1).toInt();
+            linePoints.append(QPoint(x, y));
         }
+        lines.append(linePoints);
     }
-
-    drawPointsOnPixmap(); // Draw points on the pixmap
-    update(); // Trigger a repaint
-}
-
-void RobotProjectionWidget::drawPointsOnPixmap() {
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    // Verify if pixmap is valid before drawing
-    if (pixmap.isNull()) {
-        qDebug() << "Pixmap is null!";
-        return;
-    }
-
-    // Draw points on the pixmap
-    for (const auto& pointList : pointsData) {
-        for (const auto& point : pointList) {
-            int x = point[0].toInt();
-            int y = point[1].toInt();
-
-            // Ensure the painter is active before drawing
-            if (!painter.isActive()) {
-                qDebug() << "Painter not active!";
-                return;
-            }
-
-            painter.drawPoint(x, y);
-            qDebug() << "X:" << x << "  Y:" << y;
-        }
-    }
-
-    update(); // Trigger a repaint after drawing all points
-}
-
-void RobotProjectionWidget::resizeEvent(QResizeEvent *event){
-    if (width() > pixmap.width() || height() > pixmap.height()) {
-        int newWidth = qMax(width() + 128, pixmap.width());
-        int newHeight = qMax(height() + 128, pixmap.height());
-        resizeImage(&pixmap, QSize(newWidth, newHeight));
-        update();
-    }
-
-    QWidget::resizeEvent(event);
-}
-
-void RobotProjectionWidget::resizeImage(QPixmap *image, const QSize &newSize) {
-    if (image->size() == newSize)
-        return;
-
-    QPixmap newImage(newSize);
-    newImage.fill(Qt::white);
-    QPainter painter(&newImage);
-    painter.drawPixmap(QPoint(0, 0), *image);
-    *image = newImage;
 }
 
 void RobotProjectionWidget::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
+
     QPainter painter(this);
-    painter.drawPixmap(0, 0, pixmap); // Draw the pixmap onto the widget
+    painter.fillRect(rect(), QColor("#D9D9D9"));
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.scale(scaleFactor, scaleFactor);
+    painter.setPen(QColor(Qt::black));
+
+    // Apply drawing offset
+    painter.translate(drawingOffset);
+
+    for (const auto &linePoints : lines) {
+        if (linePoints.size() > 1) {
+            painter.drawPolyline(linePoints.data(), linePoints.size());
+        }
+    }
+}
+
+void RobotProjectionWidget::wheelEvent(QWheelEvent *event) {
+    QPoint angleDelta = event->angleDelta();
+
+    if (!angleDelta.isNull()) {
+        int numDegrees = angleDelta.y() / 8;
+        qreal numSteps = numDegrees / 15.0;
+
+        if (numSteps > 0) {
+            scaleFactor *= (1.0 + scaleIncrement);
+        } else {
+            if (scaleFactor > minScaleFactor) {
+                scaleFactor /= (1.0 + scaleIncrement);
+            }
+        }
+
+        update();
+        event->accept();
+    }
+
+    QWidget::wheelEvent(event);
+}
+
+void RobotProjectionWidget::updateScaleFactor() {
+    qreal widthScale = static_cast<qreal>(width()) / static_cast<qreal>(this->width());
+    qreal heightScale = static_cast<qreal>(height()) / static_cast<qreal>(this->height());
+
+    scaleFactor = qMin(widthScale, heightScale);
+}
+
+void RobotProjectionWidget::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        lastPanPos = event->pos();
+        isPanning = true;
+        event->accept();
+    }
+}
+
+void RobotProjectionWidget::mouseMoveEvent(QMouseEvent *event) {
+    if (isPanning) {
+        QPoint delta = event->pos() - lastPanPos;
+        lastPanPos = event->pos();
+
+        // Invert the delta for X and Y components
+        QPoint invertedDelta = QPoint(-delta.x(), -delta.y());
+
+        // Update the drawing offset using the inverted delta
+        drawingOffset += invertedDelta;
+
+        update(); // Trigger a repaint after changing the drawing offset
+
+        event->accept();
+    }
+}
+
+
+void RobotProjectionWidget::mouseReleaseEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        isPanning = false;
+        event->accept();
+    }
 }

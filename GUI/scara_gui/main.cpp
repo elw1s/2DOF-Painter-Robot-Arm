@@ -8,7 +8,6 @@
 #include "DrawingApp.h"
 #include "ImageUploader.h"
 #include "ImagePathsConfig.h"
-//#include "RobotProjectionWidget.h"
 #include "RobotMainMenu.h"
 
 void setButtonStyle(QToolButton& button, bool isSelected,const QIcon& icon) {
@@ -172,9 +171,11 @@ int main(int argc, char *argv[]) {
     rightLayout->addWidget(&stackedWidget);
     rightColumn.setStyleSheet("background-color: #1C1C1C;"); // Set right column background color
 
+
     mainLayout->addWidget(leftWidget);
     mainLayout->addWidget(&rightColumn);
     mainLayout->setSpacing(0); // Remove spacing between columns
+
 
     mainWidget.resize(1024, 768);
     mainWidget.show();

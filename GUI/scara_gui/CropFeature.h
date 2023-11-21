@@ -27,6 +27,8 @@ public:
     void setImage(const QPixmap& pixmap);
     bool isCropEnabled() const;
     void setCropEnabled(bool enabled);
+    QPixmap getCroppedImage() const;
+
 signals:
     void previousPositionChanged(const QPointF previousPosition);
     void clippedImage(const QPixmap& pixmap);  // A signal that transmits the cut out area to the application window to install it in the label

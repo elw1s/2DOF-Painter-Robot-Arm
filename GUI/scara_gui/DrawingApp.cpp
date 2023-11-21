@@ -78,6 +78,7 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
 
     setLayout(mainLayout);
 }
+
 void DrawingApp::saveImage() {
         QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", "JPEG Image (*.jpg)");
 

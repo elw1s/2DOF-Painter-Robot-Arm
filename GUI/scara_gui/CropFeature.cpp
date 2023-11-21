@@ -109,3 +109,13 @@ void CropFeature::setCropEnabled(bool enabled)
 {
     m_cropEnabled = enabled;
 }
+
+QPixmap CropFeature::getCroppedImage() const {
+    if (m_selection && m_currentImageItem) {
+        QRect selectionRect = m_selection->boundingRect().toRect();
+        return m_currentImageItem->pixmap().copy(selectionRect);
+    } else {
+        QMessageBox::warning(nullptr, "Warning", "No image loaded or selection made!");
+        return QPixmap(); // Return an empty pixmap if no selection or image is loaded
+    }
+}

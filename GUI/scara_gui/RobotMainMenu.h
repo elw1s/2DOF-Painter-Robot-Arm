@@ -7,6 +7,11 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "RobotProjectionWidget.h"
+#include <QApplication>
+#include <QFile>
+#include <QJsonDocument>
+#include <QDebug>
+#include <QScrollArea>
 
 class RobotMainMenu : public QWidget {
     Q_OBJECT

@@ -5,6 +5,8 @@ const std::string ACCEPT_CROP_ICON = ":/resources/";
 //Upload Image
 const std::string CROP_ICON = ":/resources/crop.png";
 const std::string DRAG_DROP_ICON = ":/resources/dragdrop.png";
+const std::string ROTATE_ICON = ":/resources/rotate.png";
+const std::string SELECT_FILE_ICON = ":/resources/selectFile.png";
 
 //Draw Image
 const std::string PEN_ICON = ":/resources/pen.png";

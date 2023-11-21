@@ -22,10 +22,15 @@ private slots:
     void onClippedImage(const QPixmap& pixmap);
     void onCropButtonClicked();
     void onImageDropped();
+    void saveImage();
+    QPushButton* createStyledButton(const QIcon &icon, const QSize &size, const QString &textColor,
+                                    const QString &borderColor, QWidget *parent);
 private:
-    QPushButton* m_cropButton;
+    QPushButton* cropButton;
+    QPushButton* rotateButton;
+    QPushButton *saveButton;
     QGridLayout* m_gridLayout;
-    QPushButton* m_pushButton;
+    QPushButton* addFileButton;
     QGraphicsView* m_graphicsView;
     QLabel* m_clippedLabel;
     CropFeature* m_clipScene;

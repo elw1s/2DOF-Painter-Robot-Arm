@@ -16,5 +16,7 @@
         <file>resources/playSudoku_selected.png</file>
         <file>resources/draw_image_selected.png</file>
         <file>resources/dragdrop.png</file>
+        <file>resources/selectFile.png</file>
+        <file>resources/rotate.png</file>
     </qresource>
 </RCC>
