@@ -14,16 +14,20 @@ void RobotProjectionWidget::loadLinesFromJson(const QJsonArray &jsonArray) {
 }
 
 void RobotProjectionWidget::parseJson(const QJsonArray &jsonArray) {
-    lines.clear(); // Clear any existing lines
-
+    //lines.clear(); // Clear any existing lines
+    QVector<QPoint> temp;
     for (const auto &lineArray : jsonArray) {
-        QVector<QPoint> linePoints;
-        for (const auto &pointArray : lineArray.toArray()) {
-            int x = pointArray.toArray().at(0).toInt();
-            int y = pointArray.toArray().at(1).toInt();
-            linePoints.append(QPoint(x, y));
-        }
-        lines.append(linePoints);
+        //QVector<QPoint> linePoints;
+       // for (const auto &pointArray : lineArray.toArray()) {
+           // int x = pointArray.toArray().at(0).toInt();
+           // int y = pointArray.toArray().at(1).toInt();
+            int x = lineArray.toArray().at(0).toInt();
+            int y = lineArray.toArray().at(1).toInt();
+            temp.append(QPoint(x,y));
+            //linePoints.append(QPoint(x, y));
+        //}
+        //lines.append(linePoints);
+            lines.append(temp);
     }
 }
 
@@ -45,6 +49,10 @@ void RobotProjectionWidget::paintEvent(QPaintEvent *event) {
             painter.drawPolyline(linePoints.data(), linePoints.size());
         }
     }
+
+    //if(lines.size() > 1){
+    //        painter.drawPolyline(lines.back().data(), lines.back().size());
+    //}
 }
 
 void RobotProjectionWidget::wheelEvent(QWheelEvent *event) {

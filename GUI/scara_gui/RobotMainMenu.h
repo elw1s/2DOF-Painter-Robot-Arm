@@ -6,12 +6,14 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include "RobotProjectionWidget.h"
 #include <QApplication>
 #include <QFile>
 #include <QJsonDocument>
 #include <QDebug>
 #include <QScrollArea>
+
+#include "RobotProjectionWidget.h"
+#include "ServerListenerThread.h"
 
 class RobotMainMenu : public QWidget {
     Q_OBJECT
@@ -22,12 +24,14 @@ public:
 private:
     QLabel *label;
     RobotProjectionWidget *projectionWidget;
+    ServerListenerThread* serverListenerThread;
     QPushButton *button1;
     QPushButton *button2;
     QPushButton *bottomButton;
     QVBoxLayout *mainLayout;
     QHBoxLayout *leftLayout;
     QVBoxLayout *rightLayout;
+    void initializeServerListener();
 };
 
 #endif // ROBOTMAINMENU_H

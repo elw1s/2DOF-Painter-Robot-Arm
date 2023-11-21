@@ -27,10 +27,10 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     projectionWidget->setStyleSheet("background-color: #D9D9D9; border: 5px solid red;");
 
     /**/
-    QFile file("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json"); // Replace with your JSON file path
+    //QFile file("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json"); // Replace with your JSON file path
 
     //projectionWidget->setPointsData("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    /*if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Failed to open file.";
         //return -1;
     }
@@ -45,7 +45,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     }
 
     QJsonArray jsonArray = jsonDoc.array();
-    projectionWidget->loadLinesFromJson(jsonArray);
+    projectionWidget->loadLinesFromJson(jsonArray);*/
     //projectionWidget->show();
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidgetResizable(true);
@@ -72,4 +72,12 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(rightLayout);
+    initializeServerListener();
+}
+
+void RobotMainMenu::initializeServerListener() {
+    serverListenerThread = new ServerListenerThread(this);
+    connect(serverListenerThread, &ServerListenerThread::linesReceived,
+            projectionWidget, &RobotProjectionWidget::loadLinesFromJson);
+    serverListenerThread->start();
 }

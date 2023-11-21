@@ -28,6 +28,7 @@ private:
     qreal scaleFactor;
     qreal scaleIncrement;
     QVector<QVector<QPoint>> lines;
+    //QVector<QPoint> lines;
     QPoint lastPanPos;
     bool isPanning;
     qreal minScaleFactor;
