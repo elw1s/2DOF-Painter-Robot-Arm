@@ -15,7 +15,7 @@ signals:
     void loadingProgress(const int calculatedValue);
     void totalLineNumber(const int num);
     void servoAngles(const int angle1, const int angle2, const int angle3);
-    void sensorValues(const int sensorVal);
+    void sensorValues(const double sensorVal);
 public:
     void run() override;
     ServerListenerThread(const QString& ipAddress, int port, QObject *parent = nullptr);

@@ -28,7 +28,7 @@ public:
     RobotMainMenu(QWidget *parent = nullptr);
     QString getIP();
     int getPort();
-    void updateSensorGraph(int sensorValue);
+    void updateSensorGraph(double sensorValue);
 private:
     QLabel *label;
     RobotProjectionWidget *projectionWidget;

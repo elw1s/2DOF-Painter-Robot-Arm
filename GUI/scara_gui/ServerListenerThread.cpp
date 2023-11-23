@@ -66,7 +66,7 @@ void ServerListenerThread::run() {
                         qDebug() << "Sensor data command";
                         int sensorData = receivedData.toInt();
                         qDebug() << "Sensor Data:" << sensorData;
-                        emit sensorValues(receivedData.toInt());
+                        emit sensorValues(receivedData.toDouble());
                         break;
                     }
                     case '3': {

@@ -66,8 +66,27 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sensorPlot->yAxis->setLabel("Sensor Value");
     sensorPlot->xAxis->setRange(0, 100); // Modify the range as needed
     sensorPlot->yAxis->setRange(-100, 100); // Modify the range as needed
+    sensorPlot->setBackground(QBrush(QColor("#1C1C1C")));
+    sensorPlot->xAxis->setTickLabelColor(Qt::white);
+    sensorPlot->yAxis->setTickLabelColor(Qt::white);
+    sensorPlot->xAxis->setLabelColor(Qt::white);
+    sensorPlot->yAxis->setLabelColor(Qt::white);
+    QPen graphPen;
+    graphPen.setColor(Qt::red); // Set the line color to red
+    sensorPlot->graph(0)->setPen(graphPen);
+    QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+    dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
+    dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
+    sensorPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
     rightTopLayout->addWidget(sensorPlot);
 
+    // Increase width and height of sensorPlot (QCustomPlot)
+    sensorPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
+    sensorPlot->setMaximumSize(300,280);
+    // Modify size policies to control how the widgets expand in the layout
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    projectionWidget->setSizePolicy(sizePolicy);
+    sensorPlot->setSizePolicy(sizePolicy);
 
 
     QVBoxLayout *rightMiddleLayout = new QVBoxLayout;
@@ -87,15 +106,16 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     initializeServerListener();
 }
 
-void RobotMainMenu::updateSensorGraph(int sensorValue) {
+void RobotMainMenu::updateSensorGraph(double sensorValue) {
     // Add the new data point to the vectors
-    QTime currentTime = QTime::currentTime();
-    timeData.append(currentTime.second());
+    QDateTime currentDateTime = QDateTime::currentDateTime(); // Get current date and time
+    timeData.append(currentDateTime.toMSecsSinceEpoch() / 1000.0); // Convert QDateTime to seconds since epoch
     sensorData.append(sensorValue);
 
     // Update the graph with the new data
     sensorPlot->graph(0)->setData(timeData, sensorData);
-    sensorPlot->xAxis->rescale(); // Rescale the X-axis to fit the new data range
+    sensorPlot->xAxis->setRange(timeData.first(), timeData.last()); // Set range based on timeData
+    sensorPlot->xAxis->setLabel("Time (" + currentDateTime.toString("hh:mm:ss") + ")"); // Set label with current time
     sensorPlot->replot(); // Redraw the plot
 }
 
@@ -113,6 +133,8 @@ void RobotMainMenu::initializeServerListener() {
                 projectionWidget, &RobotProjectionWidget::loadLinesFromJson);
         connect(serverListenerThread, &ServerListenerThread::totalLineNumber, this, &RobotMainMenu::setTotalLineNumber);
         connect(serverListenerThread, &ServerListenerThread::loadingProgress, this, &RobotMainMenu::showLoadingBar);
+        connect(serverListenerThread, &ServerListenerThread::sensorValues,
+                this, &RobotMainMenu::updateSensorGraph);
         serverListenerThread->start();
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";

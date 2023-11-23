@@ -190,11 +190,13 @@ int main(int argc, char *argv[]) {
             int test = 0;
 
             while(true){
-                //randomCommand = rand() % 5;
-                randomCommand = 1;
+                randomCommand = rand() % 5;
                 if(test == 0){
                     randomCommand = 0;
                     test++;
+                }
+                else if(randomCommand == 0){
+                    continue;
                 }
                 switch (randomCommand) {
                     case 0:
