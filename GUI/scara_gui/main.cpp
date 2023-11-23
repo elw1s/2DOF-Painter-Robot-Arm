@@ -9,6 +9,7 @@
 #include "ImageUploader.h"
 #include "ImagePathsConfig.h"
 #include "RobotMainMenu.h"
+#include "Settings.h"
 
 void setButtonStyle(QToolButton& button, bool isSelected,const QIcon& icon) {
     QPalette palette = button.palette();
@@ -90,6 +91,13 @@ int main(int argc, char *argv[]) {
     playSudokuButton.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB))); // Set initial style for the unselected button
 
+    QToolButton settingsButton;
+    settingsButton.setIcon(QIcon(QString::fromStdString(SETTINGS))); // Replace with your icon path
+    settingsButton.setText("Settings");
+    settingsButton.setIconSize(QSize(30, 30));
+    settingsButton.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    setButtonStyle(settingsButton, false, QIcon(QString::fromStdString(SETTINGS))); // Set initial style for the unselected button
+
     QObject::connect(&drawingAppButton, &QToolButton::clicked, [&]() {
         stackedWidget.setCurrentIndex(1);
         setButtonStyle(drawingAppButton, true, QIcon(QString::fromStdString(DRAW_IMAGE_TAB_SELECTED)));
@@ -138,6 +146,14 @@ int main(int argc, char *argv[]) {
         setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
     });
 
+    QObject::connect(&settingsButton, &QToolButton::clicked, [&]() {
+        // Show the pop-up window here
+        Settings settingsWindow(robotMainMenu.getIP(), robotMainMenu.getPort());
+        QObject::connect(&settingsWindow, &Settings::settingsUpdated, &robotMainMenu, &RobotMainMenu::setServerInfo);
+        QObject::connect(&settingsWindow, &Settings::disconnectSignal, &robotMainMenu, &RobotMainMenu::disconnectFromServer);
+        settingsWindow.exec();
+    });
+
     // Create a QWidget to hold the layout
     QWidget mainWidget;
     mainWidget.setStyleSheet("background-color: #1C1C1C;"); // Set main window background color
@@ -150,6 +166,8 @@ int main(int argc, char *argv[]) {
     robotProjectionButton.setMinimumSize(largerButtonSize);
     playXOXButton.setMinimumSize(largerButtonSize);
     playSudokuButton.setMinimumSize(largerButtonSize);
+    settingsButton.setMinimumSize(largerButtonSize);
+
 
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget(&robotProjectionButton, 0, Qt::AlignCenter);
@@ -157,6 +175,8 @@ int main(int argc, char *argv[]) {
     leftLayout->addWidget(&imageUploaderButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(&playXOXButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(&playSudokuButton, 0, Qt::AlignCenter);
+    leftLayout->addWidget(&settingsButton, 0, Qt::AlignCenter);
+
     leftLayout->setSpacing(5); // Adjust the spacing between buttons
     leftLayout->setContentsMargins(0, 100, 0, 100); // Set top and bottom margins to 20
     leftLayout->addStretch(1);

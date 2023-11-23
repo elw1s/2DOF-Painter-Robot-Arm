@@ -18,5 +18,8 @@
         <file>resources/dragdrop.png</file>
         <file>resources/selectFile.png</file>
         <file>resources/rotate.png</file>
+        <file>resources/settings_selected.png</file>
+        <file>resources/settings.png</file>
+        <file>resources/loading.gif</file>
     </qresource>
 </RCC>

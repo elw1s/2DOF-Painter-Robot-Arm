@@ -20,10 +20,13 @@ const std::string ROBOT_PROJECTION_TAB = ":/resources/robot_projection.png";
 const std::string PLAY_XOX_TAB = ":/resources/playXOX.png";
 const std::string DRAW_IMAGE_TAB = ":/resources/draw_image.png";
 const std::string UPLOAD_IMAGE_TAB = ":/resources/upload_image.png";
-
+const std::string SETTINGS = ":/resources/settings.png";
 //Selected TAB buttons
 const std::string PLAY_XOX_TAB_SELECTED = ":/resources/playXOX_selected.png";
 const std::string ROBOT_PROJECTION_TAB_SELECTED = ":/resources/robot_projection_selected.png";
 const std::string PLAY_SUDOKU_TAB_SELECTED = ":/resources/playSudoku_selected.png";
 const std::string DRAW_IMAGE_TAB_SELECTED = ":/resources/draw_image_selected.png";
 const std::string UPLOAD_IMAGE_TAB_SELECTED = ":/resources/upload_image_selected.png";
+const std::string SETTINGS_SELECTED = ":/resources/settings_selected.png";
+//Robot Main Menu
+const std::string LOADING_GIF = ":/resources/loading.gif";

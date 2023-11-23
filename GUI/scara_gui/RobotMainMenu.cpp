@@ -1,10 +1,11 @@
 #include "RobotMainMenu.h"
 
 RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
+    //timeData = new QVector();
+    //sensorData = new QVector();
+
     label = new QLabel("Preview of drawing");
     projectionWidget = new RobotProjectionWidget(this);
-    button1 = new QPushButton("Button 1");
-    button2 = new QPushButton("Button 2");
     bottomButton = new QPushButton("View 3D Virtualization");
     bottomButton->setObjectName("bottomButton");
     bottomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -26,40 +27,48 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     projectionWidget->setStyleSheet("background-color: #D9D9D9; border: 5px solid red;");
 
-    /**/
-    //QFile file("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json"); // Replace with your JSON file path
-
-    //projectionWidget->setPointsData("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json");
-    /*if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Failed to open file.";
-        //return -1;
-    }
-
-    QByteArray jsonData = file.readAll();
-    file.close();
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-    if (!jsonDoc.isArray()) {
-        qDebug() << "Invalid JSON format.";
-        //return -1;
-    }
-
-    QJsonArray jsonArray = jsonDoc.array();
-    projectionWidget->loadLinesFromJson(jsonArray);*/
-    //projectionWidget->show();
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(projectionWidget);
-    /**/
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
+    loadingLabelLayout = new QHBoxLayout;
+    textLabel = new QLabel();
+    textLabel->setText("Device is not connected!");
+    loadingLabel = new QLabel(this);
+    loadingMovie = new QMovie(QString::fromStdString(LOADING_GIF)); // Provide the path to your loading GIF
+    loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
+    loadingLabel->setMovie(loadingMovie);
+    loadingLabel->setVisible(false);
+
+    loadingProgressBar = new QProgressBar(this);
+    loadingProgressBar->setTextVisible(true);
+    loadingProgressBar->setMinimum(0);
+    loadingProgressBar->setMaximum(100);
+    loadingProgressBar->setVisible(false); // Initially hidden
+
+    loadingLabelLayout->addWidget(loadingLabel);
+    loadingLabelLayout->addWidget(textLabel);
+    loadingLabelLayout->setAlignment(Qt::AlignLeft);
+
+    // Add loading elements below the projection widget
     QVBoxLayout *leftLayout = new QVBoxLayout;
     leftLayout->addWidget(label,10,Qt::AlignCenter);
-    //leftLayout->addWidget(projectionWidget,90);
     leftLayout->addWidget(scrollArea,90);
+    //leftLayout->addWidget(loadingLabel); // Add the loading circle widget
+    leftLayout->addLayout(loadingLabelLayout);
+    leftLayout->addWidget(loadingProgressBar); // Add the progress bar widget
+
     QVBoxLayout *rightTopLayout = new QVBoxLayout;
-    rightTopLayout->addWidget(button1);
-    rightTopLayout->addWidget(button2);
+    sensorPlot  = new QCustomPlot();
+    sensorPlot->addGraph();
+    sensorPlot->xAxis->setLabel("Time");
+    sensorPlot->yAxis->setLabel("Sensor Value");
+    sensorPlot->xAxis->setRange(0, 100); // Modify the range as needed
+    sensorPlot->yAxis->setRange(-100, 100); // Modify the range as needed
+    rightTopLayout->addWidget(sensorPlot);
+
+
 
     QVBoxLayout *rightMiddleLayout = new QVBoxLayout;
     // Add 2D plot widgets here
@@ -72,12 +81,90 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(rightLayout);
+
+    ipAddress = QString();
+    port = 0;
+    initializeServerListener();
+}
+
+void RobotMainMenu::updateSensorGraph(int sensorValue) {
+    // Add the new data point to the vectors
+    QTime currentTime = QTime::currentTime();
+    timeData.append(currentTime.second());
+    sensorData.append(sensorValue);
+
+    // Update the graph with the new data
+    sensorPlot->graph(0)->setData(timeData, sensorData);
+    sensorPlot->xAxis->rescale(); // Rescale the X-axis to fit the new data range
+    sensorPlot->replot(); // Redraw the plot
+}
+
+void RobotMainMenu::setServerInfo(const QString& ip, int port) {
+    ipAddress = ip;
+    this->port = port;
     initializeServerListener();
 }
 
 void RobotMainMenu::initializeServerListener() {
-    serverListenerThread = new ServerListenerThread(this);
-    connect(serverListenerThread, &ServerListenerThread::linesReceived,
-            projectionWidget, &RobotProjectionWidget::loadLinesFromJson);
-    serverListenerThread->start();
+    // Check if ipAddress and port are set before initializing the listener
+    if (!ipAddress.isEmpty() && port != 0) {
+        serverListenerThread = new ServerListenerThread(ipAddress, port, this);
+        connect(serverListenerThread, &ServerListenerThread::linesReceived,
+                projectionWidget, &RobotProjectionWidget::loadLinesFromJson);
+        connect(serverListenerThread, &ServerListenerThread::totalLineNumber, this, &RobotMainMenu::setTotalLineNumber);
+        connect(serverListenerThread, &ServerListenerThread::loadingProgress, this, &RobotMainMenu::showLoadingBar);
+        serverListenerThread->start();
+    } else {
+        qDebug() << "IP address or port is not set. Cannot initialize server listener.";
+    }
 }
+
+void RobotMainMenu::setTotalLineNumber(int totalLineNumber){
+    this->totalLine = totalLineNumber;
+}
+
+void RobotMainMenu::showLoadingBar(int value) {
+
+    if(value == -1){
+        loadingProgressBar->setVisible(false);
+        textLabel->setText(QString("Trying to connect the device... IP: %1 Port: %2")
+                                  .arg(ipAddress)
+                                  .arg(port));
+
+        loadingLabel->setVisible(true); // Hide the loading movie
+        textLabel->setVisible(true);
+        loadingMovie->start(); // Start the loading circle animation
+    }
+    else{
+        loadingMovie->stop(); // Stop the loading circle animation
+        loadingLabel->setVisible(false); // Hide the loading movie
+        textLabel->setVisible(false);
+        if(this->totalLine > 0){
+            loadingProgressBar->setValue((value * 100) / this->totalLine); // Set the loading bar value
+        }
+        //loadingProgressBar->setValue((value / this->totalLine)); // Set the loading bar value
+        //loadingProgressBar->setValue(value);
+        loadingProgressBar->setVisible(true); // Show the loading bar
+    }
+}
+
+void RobotMainMenu::disconnectFromServer(){
+    if (serverListenerThread) {
+        serverListenerThread->requestInterruption();
+        serverListenerThread->quit();
+        serverListenerThread->wait();
+        loadingProgressBar->setVisible(false);
+        textLabel->setText("Device is not connected!");
+        loadingLabel->setVisible(false);
+        textLabel->setVisible(true);
+    }
+}
+
+QString RobotMainMenu::getIP(){
+    return ipAddress;
+}
+
+int RobotMainMenu::getPort(){
+    return port;
+}
+

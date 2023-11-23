@@ -14,7 +14,6 @@ class RobotProjectionWidget : public QWidget {
 
 public:
     explicit RobotProjectionWidget(QWidget *parent = nullptr);
-
     void loadLinesFromJson(const QJsonArray &jsonArray);
 
 protected:

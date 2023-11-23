@@ -19,11 +19,14 @@ extern const std::string UPLOAD_IMAGE_TAB;
 extern const std::string ROBOT_PROJECTION_TAB;
 extern const std::string PLAY_XOX_TAB;
 extern const std::string PLAY_SUDOKU_TAB;
+extern const std::string SETTINGS;
 //Selected Tab Buttons
 extern const std::string ROBOT_PROJECTION_TAB_SELECTED;
 extern const std::string UPLOAD_IMAGE_TAB_SELECTED;
 extern const std::string DRAW_IMAGE_TAB_SELECTED;
 extern const std::string PLAY_XOX_TAB_SELECTED;
 extern const std::string PLAY_SUDOKU_TAB_SELECTED;
-
+extern const std::string SETTINGS_SELECTED;
+//Robot Main Menu
+extern const std::string LOADING_GIF;
 #endif // IMAGEPATHSCONFIG_H

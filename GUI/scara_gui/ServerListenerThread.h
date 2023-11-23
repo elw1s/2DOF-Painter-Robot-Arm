@@ -12,10 +12,21 @@ class ServerListenerThread : public QThread {
 
 signals:
     void linesReceived(const QJsonArray& lines);
-
+    void loadingProgress(const int calculatedValue);
+    void totalLineNumber(const int num);
+    void servoAngles(const int angle1, const int angle2, const int angle3);
+    void sensorValues(const int sensorVal);
 public:
     void run() override;
-    explicit ServerListenerThread(QObject *parent = nullptr);
+    ServerListenerThread(const QString& ipAddress, int port, QObject *parent = nullptr);
+    void socketDisconnected();
+private:
+    QString mIpAddress;
+    int mPort;
+    QTcpSocket* tcpSocket;
+
+public slots:
+    void updateServerAddress(const QString& ipAddress, int port);
 };
 
 #endif // SERVERLISTENERTHREAD_H
