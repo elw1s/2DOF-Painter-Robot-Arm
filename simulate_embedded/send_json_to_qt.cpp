@@ -34,6 +34,7 @@ int line_number_command(int clientSocket, int serverSocket) {
 }
 
 int drawn_line_command(int clientSocket, int serverSocket){
+    if(lines.empty()) return -1;
     std::string line = lines.at(0);
     line = '1' + line;
     send_message_to_client(clientSocket, line.c_str(), line.size());

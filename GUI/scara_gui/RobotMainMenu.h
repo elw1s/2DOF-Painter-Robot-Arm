@@ -29,6 +29,7 @@ public:
     QString getIP();
     int getPort();
     void updateSensorGraph(double sensorValue);
+    void updateServoAngleGraph(int firstAngle, int secondAngle, int thirdAngle);
 private:
     QLabel *label;
     RobotProjectionWidget *projectionWidget;
@@ -48,8 +49,15 @@ private:
     QHBoxLayout *loadingLabelLayout;
     QLabel *textLabel;
     QCustomPlot *sensorPlot;
-    QVector<double> timeData;
+    QCustomPlot *waveformPlot;
+    QVector<double> timeDataSensor;
     QVector<double> sensorData;
+    QVector<double> timeDataServo; // Vector for X-axis (time)
+    QVector<double> firstAngleData; // Vector for first servo angle data (green)
+    QVector<double> secondAngleData; // Vector for second servo angle data (red)
+    QVector<double> thirdAngleData; // Vector for third servo angle data (blue)
+
+
 
 public slots:
     void setServerInfo(const QString& ip, int port);

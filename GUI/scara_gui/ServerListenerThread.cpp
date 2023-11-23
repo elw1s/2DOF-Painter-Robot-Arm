@@ -77,9 +77,7 @@ void ServerListenerThread::run() {
                         qDebug() << "First Servo Angle:" << firstPart.toStdString();
                         qDebug() << "Second Servo Angle:" << secondPart.toStdString();
                         qDebug() << "Third Servo Angle:" << thirdPart.toStdString();
-
                         emit servoAngles(firstPart.toInt(), secondPart.toInt(),thirdPart.toInt());
-
                         break;
                     }
                     case '4':

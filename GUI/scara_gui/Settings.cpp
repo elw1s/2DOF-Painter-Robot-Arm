@@ -20,6 +20,16 @@ Settings::Settings(const QString& ipAddress, int port, QWidget *parent)
     disconnectButton = new QPushButton("Disconnect", this);
     connectButton->setObjectName("connectButton"); // Set object name to apply specific styles
 
+    if(port == 0){
+        lineEditIP->setText("127.0.0.1");
+        lineEditPort->setText("12345");
+    }
+    else{
+        lineEditIP->setText(mIpAddress);
+        lineEditPort->setText(QString::number(mPort));
+    }
+
+
     connectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connectButton->setFixedWidth(250);
     connectButton->setFixedHeight(50); // Set the fixed height

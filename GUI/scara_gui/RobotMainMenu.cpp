@@ -62,15 +62,14 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     QVBoxLayout *rightTopLayout = new QVBoxLayout;
     sensorPlot  = new QCustomPlot();
     sensorPlot->addGraph();
-    sensorPlot->xAxis->setLabel("Time");
     sensorPlot->yAxis->setLabel("Sensor Value");
-    sensorPlot->xAxis->setRange(0, 100); // Modify the range as needed
     sensorPlot->yAxis->setRange(-100, 100); // Modify the range as needed
     sensorPlot->setBackground(QBrush(QColor("#1C1C1C")));
     sensorPlot->xAxis->setTickLabelColor(Qt::white);
     sensorPlot->yAxis->setTickLabelColor(Qt::white);
     sensorPlot->xAxis->setLabelColor(Qt::white);
     sensorPlot->yAxis->setLabelColor(Qt::white);
+    sensorPlot->xAxis->setLabel("Time"); // Set label with current time
     QPen graphPen;
     graphPen.setColor(Qt::red); // Set the line color to red
     sensorPlot->graph(0)->setPen(graphPen);
@@ -82,7 +81,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Increase width and height of sensorPlot (QCustomPlot)
     sensorPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    sensorPlot->setMaximumSize(300,280);
+    sensorPlot->setMaximumSize(400,300);
     // Modify size policies to control how the widgets expand in the layout
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     projectionWidget->setSizePolicy(sizePolicy);
@@ -90,7 +89,47 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
 
     QVBoxLayout *rightMiddleLayout = new QVBoxLayout;
-    // Add 2D plot widgets here
+    waveformPlot = new QCustomPlot(this);
+    waveformPlot->setBackground(QBrush(QColor("#1C1C1C")));
+    waveformPlot->xAxis->setTickLabelColor(Qt::white);
+    waveformPlot->yAxis->setTickLabelColor(Qt::white);
+    waveformPlot->xAxis->setLabelColor(Qt::white);
+    waveformPlot->yAxis->setLabelColor(Qt::white);
+    waveformPlot->yAxis->setRange(-180, 180); // Modify the range as needed
+    waveformPlot->xAxis->setLabel("Time"); // Set label with current time
+    waveformPlot->yAxis->setLabel("Sensor Angles");
+    waveformPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
+    waveformPlot->setMaximumSize(400,300);
+    waveformPlot->setSizePolicy(sizePolicy);
+
+    // Add graphs for each line
+    waveformPlot->addGraph();
+    waveformPlot->graph(0)->setPen(QPen(Qt::green)); // Green line
+
+    waveformPlot->addGraph();
+    waveformPlot->graph(1)->setPen(QPen(Qt::red)); // Red line
+
+    waveformPlot->addGraph();
+    waveformPlot->graph(2)->setPen(QPen(Qt::blue)); // Blue line
+
+    // Set up the layout for the waveform plot and its label
+    QVBoxLayout *waveformLayout = new QVBoxLayout;
+    waveformLayout->addWidget(new QLabel("Servo Angle Plot")); // Label for the graph
+    waveformLayout->addWidget(waveformPlot); // Add the waveform plot to the layout
+
+    // Add label for color and value key
+    QLabel *redLabel = new QLabel("First Angle");
+    QLabel *blueLabel = new QLabel("Second Angle");
+    QLabel *greenLabel = new QLabel("Third Angle");
+    redLabel->setStyleSheet("color: red;"); // Style the label as needed
+    blueLabel->setStyleSheet("color: blue;"); // Style the label as needed
+    greenLabel->setStyleSheet("color: green;"); // Style the label as needed
+    // Add the label to the layout
+    waveformLayout->addWidget(redLabel);
+    waveformLayout->addWidget(blueLabel);
+    waveformLayout->addWidget(greenLabel);
+    rightMiddleLayout->addLayout(waveformLayout);
+
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->addLayout(rightTopLayout);
@@ -109,15 +148,43 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 void RobotMainMenu::updateSensorGraph(double sensorValue) {
     // Add the new data point to the vectors
     QDateTime currentDateTime = QDateTime::currentDateTime(); // Get current date and time
-    timeData.append(currentDateTime.toMSecsSinceEpoch() / 1000.0); // Convert QDateTime to seconds since epoch
+    timeDataSensor.append(currentDateTime.toMSecsSinceEpoch() / 1000.0); // Convert QDateTime to seconds since epoch
     sensorData.append(sensorValue);
 
+    /*if(timeData.size() >  4){
+        timeData.removeFirst();
+    }
+
+    if(sensorData.size() >  4){
+        sensorData.removeFirst();
+    }*/
+
     // Update the graph with the new data
-    sensorPlot->graph(0)->setData(timeData, sensorData);
-    sensorPlot->xAxis->setRange(timeData.first(), timeData.last()); // Set range based on timeData
-    sensorPlot->xAxis->setLabel("Time (" + currentDateTime.toString("hh:mm:ss") + ")"); // Set label with current time
+    sensorPlot->graph(0)->setData(timeDataSensor, sensorData);
+    sensorPlot->xAxis->setRange(timeDataSensor.first(), timeDataSensor.last()); // Set range based on timeDate
     sensorPlot->replot(); // Redraw the plot
 }
+
+void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int thirdAngle){
+
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    timeDataServo.append(currentDateTime.toMSecsSinceEpoch() / 1000.0);
+
+    firstAngleData.append(firstAngle);
+    secondAngleData.append(secondAngle);
+    thirdAngleData.append(thirdAngle);
+    qDebug() << "first: "<< firstAngle;
+    qDebug() << "second: "<< secondAngle;
+    qDebug() << "third: "<< thirdAngle;
+    // Update each graph with its respective data
+    waveformPlot->graph(0)->setData(timeDataServo, firstAngleData); // Green line
+    waveformPlot->graph(1)->setData(timeDataServo, secondAngleData); // Red line
+    waveformPlot->graph(2)->setData(timeDataServo, thirdAngleData); // Blue line
+
+    waveformPlot->xAxis->setRange(timeDataServo.first(), timeDataServo.last());
+
+    waveformPlot->replot();}
+
 
 void RobotMainMenu::setServerInfo(const QString& ip, int port) {
     ipAddress = ip;
@@ -135,6 +202,8 @@ void RobotMainMenu::initializeServerListener() {
         connect(serverListenerThread, &ServerListenerThread::loadingProgress, this, &RobotMainMenu::showLoadingBar);
         connect(serverListenerThread, &ServerListenerThread::sensorValues,
                 this, &RobotMainMenu::updateSensorGraph);
+        connect(serverListenerThread, &ServerListenerThread::servoAngles,
+                this, &RobotMainMenu::updateServoAngleGraph);
         serverListenerThread->start();
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";
