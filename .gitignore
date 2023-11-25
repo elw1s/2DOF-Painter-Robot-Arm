@@ -4,6 +4,10 @@
 *.user
 *.pro.user
 *.pro.user.*
+*.o
+*.obj
 
 # Ignore build directory
 build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/
+.vscode/
+simulate_embedded/.vscode/
