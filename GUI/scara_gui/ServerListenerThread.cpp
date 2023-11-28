@@ -6,6 +6,35 @@ ServerListenerThread::ServerListenerThread(const QString& ipAddress, int port, Q
     emit loadingProgress(-1);
 }
 
+int16_t convertTwosComplement(const std::string &binaryString) {
+    // Ensure the string length is 16 (16-bit representation)
+    if (binaryString.length() != 16) {
+        // Handle error or return default value as needed
+        return 0; // Default value (you can change this)
+    }
+
+    // Check if the most significant bit is 1 (indicating a negative number)
+    bool isNegative = (binaryString[0] == '1');
+
+    // Convert the binary string to a 16-bit integer
+    int16_t value = 0;
+
+    for (size_t i = 0; i < 16; ++i) {
+        value <<= 1; // Shift the value left by 1
+
+        // Add the current bit to the value
+        if (binaryString[i] == '1') {
+            value |= 1;
+        }
+    }
+
+    // If it's a negative number, perform two's complement
+    if (isNegative) {
+        value = -(~value + 1); // Two's complement calculation
+    }
+
+    return value;
+}
 
 void ServerListenerThread::run() {
     qDebug() << "Run works";
@@ -22,10 +51,20 @@ void ServerListenerThread::run() {
         }
 
         qDebug() << "Connected to the server.";
+        QByteArray messageToSend;
+        messageToSend.append('0');
+        messageToSend.append(QString::fromStdString("Hello from QT! :)").toUtf8());
+
+        if (!messageToSend.isEmpty() && tcpSocket->state() == QAbstractSocket::ConnectedState) {
+            tcpSocket->write(messageToSend); // Sending the message to the server
+            qDebug()  << messageToSend << " is sent! (FIRST)";
+            tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
+        }
         emit loadingProgress(0);
         int calculatedValue = 0;
         while (!isInterruptionRequested()) {
             QByteArray receivedData;
+
             if (tcpSocket->waitForReadyRead()) {
                 receivedData = tcpSocket->readAll();
                 qDebug() <<"Received:" << receivedData;
@@ -64,9 +103,9 @@ void ServerListenerThread::run() {
                     }
                     case '2': {
                         qDebug() << "Sensor data command";
-                        int sensorData = receivedData.toInt();
+                        int sensorData = convertTwosComplement(receivedData.toStdString());
                         qDebug() << "Sensor Data:" << sensorData;
-                        emit sensorValues(receivedData.toDouble());
+                        emit sensorValues(convertTwosComplement(receivedData.toStdString()));
                         break;
                     }
                     case '3': {
@@ -77,7 +116,7 @@ void ServerListenerThread::run() {
                         qDebug() << "First Servo Angle:" << firstPart.toStdString();
                         qDebug() << "Second Servo Angle:" << secondPart.toStdString();
                         qDebug() << "Third Servo Angle:" << thirdPart.toStdString();
-                        emit servoAngles(firstPart.toInt(), secondPart.toInt(),thirdPart.toInt());
+                        emit servoAngles(convertTwosComplement(firstPart.toStdString()), convertTwosComplement(secondPart.toStdString()),convertTwosComplement(thirdPart.toStdString()));
                         break;
                     }
                     case '4':
@@ -89,6 +128,12 @@ void ServerListenerThread::run() {
                     }
                 }
             }
+            if (!messageToSend.isEmpty()) {
+                tcpSocket->write(messageToSend); // Sending the message to the server
+                qDebug()  << messageToSend << " is sent!";
+                tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
+            }
+            QThread::sleep(1);
         }
 
         tcpSocket->disconnectFromHost();

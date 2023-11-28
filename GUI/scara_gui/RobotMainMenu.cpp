@@ -63,7 +63,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sensorPlot  = new QCustomPlot();
     sensorPlot->addGraph();
     sensorPlot->yAxis->setLabel("Sensor Value");
-    sensorPlot->yAxis->setRange(-100, 100); // Modify the range as needed
+    sensorPlot->yAxis->setRange(-120, 120); // Modify the range as needed
     sensorPlot->setBackground(QBrush(QColor("#1C1C1C")));
     sensorPlot->xAxis->setTickLabelColor(Qt::white);
     sensorPlot->yAxis->setTickLabelColor(Qt::white);
@@ -72,21 +72,41 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sensorPlot->xAxis->setLabel("Time"); // Set label with current time
     QPen graphPen;
     graphPen.setColor(Qt::red); // Set the line color to red
-    sensorPlot->graph(0)->setPen(graphPen);
+    graphPen.setWidth(2);
+    sensorPlot->graph(0)->setPen(graphPen); // Adjust the width (2 indicates the thickness)
     QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
     dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
-    dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
+    dateTimeTicker->setTickCount(3); // Show only four tickss
+    dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssMeetTickCount);
     sensorPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
+
+    QLabel *currentTimeLabel = new QLabel();
+    currentTimeLabel->setStyleSheet("color: white; font-size: 12px;"); // Style for time display
+    rightTopLayout->addWidget(currentTimeLabel, 0 ,Qt::AlignHCenter); // Add the label to the layout
+
+    // Create a QTimer to update the time label every second
+    QTimer *timeUpdateTimer = new QTimer(this);
+    connect(timeUpdateTimer, &QTimer::timeout, [=]() {
+        QDateTime currentTime = QDateTime::currentDateTime();
+        QString formattedTime = currentTime.toString("hh:mm:ss");
+        currentTimeLabel->setText(formattedTime);
+    });
+    timeUpdateTimer->start(1000); // Start the timer with a 1-second interval
     rightTopLayout->addWidget(sensorPlot);
 
     // Increase width and height of sensorPlot (QCustomPlot)
     sensorPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    sensorPlot->setMaximumSize(400,300);
+    sensorPlot->setMaximumSize(400,3000);
     // Modify size policies to control how the widgets expand in the layout
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     projectionWidget->setSizePolicy(sizePolicy);
     sensorPlot->setSizePolicy(sizePolicy);
 
+    sensorPlot->xAxis->setTickLabels(false);
+    sensorPlot->xAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on x-axis
+    sensorPlot->xAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on x-axis
+    sensorPlot->yAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on y-axis
+    sensorPlot->yAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on y-axis
 
     QVBoxLayout *rightMiddleLayout = new QVBoxLayout;
     waveformPlot = new QCustomPlot(this);
@@ -95,26 +115,34 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformPlot->yAxis->setTickLabelColor(Qt::white);
     waveformPlot->xAxis->setLabelColor(Qt::white);
     waveformPlot->yAxis->setLabelColor(Qt::white);
-    waveformPlot->yAxis->setRange(-180, 180); // Modify the range as needed
+    waveformPlot->yAxis->setRange(-210, 210); // Modify the range as needed
     waveformPlot->xAxis->setLabel("Time"); // Set label with current time
     waveformPlot->yAxis->setLabel("Sensor Angles");
     waveformPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
     waveformPlot->setMaximumSize(400,300);
     waveformPlot->setSizePolicy(sizePolicy);
+    waveformPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
+
+
+    waveformPlot->xAxis->setTickLabels(false);
 
     // Add graphs for each line
     waveformPlot->addGraph();
-    waveformPlot->graph(0)->setPen(QPen(Qt::green)); // Green line
+    waveformPlot->graph(0)->setPen(QPen(Qt::green, 2)); // Green line
 
     waveformPlot->addGraph();
-    waveformPlot->graph(1)->setPen(QPen(Qt::red)); // Red line
+    waveformPlot->graph(1)->setPen(QPen(Qt::red, 2)); // Red line
 
     waveformPlot->addGraph();
-    waveformPlot->graph(2)->setPen(QPen(Qt::blue)); // Blue line
+    waveformPlot->graph(2)->setPen(QPen(Qt::blue, 2)); // Blue line
+
+    waveformPlot->xAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on x-axis
+    waveformPlot->xAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on x-axis
+    waveformPlot->yAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on y-axis
+    waveformPlot->yAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on y-axis
 
     // Set up the layout for the waveform plot and its label
     QVBoxLayout *waveformLayout = new QVBoxLayout;
-    waveformLayout->addWidget(new QLabel("Servo Angle Plot")); // Label for the graph
     waveformLayout->addWidget(waveformPlot); // Add the waveform plot to the layout
 
     // Add label for color and value key
@@ -140,24 +168,59 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(rightLayout);
 
+    updateTimerServo = new QTimer(this);
+    connect(updateTimerServo, &QTimer::timeout, this, &RobotMainMenu::onUpdateTimerServo);
+    updateTimerServo->start(1000); // 1000ms = 1 second interval for updates
+    updateTimerSensor = new QTimer(this);
+    connect(updateTimerSensor, &QTimer::timeout, this, &RobotMainMenu::onUpdateTimerSensor);
+    updateTimerSensor->start(1000); // 1000ms = 1 second interval for updates
+
+
     ipAddress = QString();
     port = 0;
     initializeServerListener();
+    }
+
+void RobotMainMenu::onUpdateTimerServo() {
+    if (serverListenerThread && serverListenerThread->isRunning()){
+        if(this->firstAngleData.size() != 0 && this->secondAngleData.size() != 0 && this->thirdAngleData.size() != 0){
+            updateServoAngleGraph(this->firstAngleData.back(), this->secondAngleData.back(), this->thirdAngleData.back());
+            updateTimerServo->start(1000);
+        }
+    }
+}
+
+void RobotMainMenu::onUpdateTimerSensor() {
+    if (serverListenerThread && serverListenerThread->isRunning()){
+        if(this->sensorData.size() != 0){
+            updateSensorGraph(this->sensorData.back());
+            updateTimerSensor->start(1000);
+        }
+    }
 }
 
 void RobotMainMenu::updateSensorGraph(double sensorValue) {
-    // Add the new data point to the vectors
+    qDebug()  << "inside uupdateSensorGraph";
+    sensorPlot->xAxis->setTickLabels(true);
+    //Add the new data point to the vectors
     QDateTime currentDateTime = QDateTime::currentDateTime(); // Get current date and time
     timeDataSensor.append(currentDateTime.toMSecsSinceEpoch() / 1000.0); // Convert QDateTime to seconds since epoch
     sensorData.append(sensorValue);
 
-    /*if(timeData.size() >  4){
-        timeData.removeFirst();
+    if(timeDataSensor.size() ==  4){
+        timeDataSensor.removeFirst();
     }
 
-    if(sensorData.size() >  4){
+    if(sensorData.size() ==  4){
         sensorData.removeFirst();
-    }*/
+    }
+
+    QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+    dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
+    dateTimeTicker->setTickCount(3); // Show only four ticks
+    dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssMeetTickCount);
+    sensorPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
+
 
     // Update the graph with the new data
     sensorPlot->graph(0)->setData(timeDataSensor, sensorData);
@@ -166,24 +229,54 @@ void RobotMainMenu::updateSensorGraph(double sensorValue) {
 }
 
 void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int thirdAngle){
-
+    waveformPlot->xAxis->setTickLabels(true);
     QDateTime currentDateTime = QDateTime::currentDateTime();
     timeDataServo.append(currentDateTime.toMSecsSinceEpoch() / 1000.0);
-
+    qDebug()  << "inside updateServoAnglegraph";
+    if(timeDataServo.size() == 4)
+    {
+        timeDataServo.removeFirst();
+    }
     firstAngleData.append(firstAngle);
     secondAngleData.append(secondAngle);
     thirdAngleData.append(thirdAngle);
+
+    if(firstAngleData.size() == 4)
+    {
+        firstAngleData.removeFirst();
+    }
+    if(secondAngleData.size() == 4)
+    {
+        secondAngleData.removeFirst();
+    }
+    if(thirdAngleData.size() == 4)
+    {
+        thirdAngleData.removeFirst();
+    }
+
     qDebug() << "first: "<< firstAngle;
     qDebug() << "second: "<< secondAngle;
     qDebug() << "third: "<< thirdAngle;
     // Update each graph with its respective data
-    waveformPlot->graph(0)->setData(timeDataServo, firstAngleData); // Green line
-    waveformPlot->graph(1)->setData(timeDataServo, secondAngleData); // Red line
-    waveformPlot->graph(2)->setData(timeDataServo, thirdAngleData); // Blue line
+    //if(updateTimer->remainingTime() <= 0){
+        waveformPlot->graph(0)->setData(timeDataServo, firstAngleData); // Green line
+        waveformPlot->graph(1)->setData(timeDataServo, secondAngleData); // Red line
+        waveformPlot->graph(2)->setData(timeDataServo, thirdAngleData); // Blue line
 
-    waveformPlot->xAxis->setRange(timeDataServo.first(), timeDataServo.last());
+        QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+        dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
+        dateTimeTicker->setTickCount(3); // Show only four ticks
+        dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssMeetTickCount);
+        waveformPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
 
-    waveformPlot->replot();}
+        // Set range based on the stored timeDataServo
+        if (!timeDataServo.isEmpty()) {
+        waveformPlot->xAxis->setRange(timeDataServo.first(), timeDataServo.last());
+        }
+
+        waveformPlot->replot();
+    //}
+}
 
 
 void RobotMainMenu::setServerInfo(const QString& ip, int port) {

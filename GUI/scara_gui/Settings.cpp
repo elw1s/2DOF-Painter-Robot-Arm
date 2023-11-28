@@ -193,6 +193,6 @@ void Settings::onDisconnectButtonClicked(){
                                  "QPushButton#connectButton:hover {"
                                  "    background-color: #57D5FF;" // Change color on hover if desired
                                  "}");
-
+    //mPort == 0; ise yaramadi
     emit disconnectSignal();
 }
