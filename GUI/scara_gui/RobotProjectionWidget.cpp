@@ -7,14 +7,28 @@ RobotProjectionWidget::RobotProjectionWidget(QWidget *parent)
     setMouseTracking(true); // Enable mouse move events even without clicking
 }
 
-void RobotProjectionWidget::loadLinesFromJson(const QJsonArray &jsonArray) {
-    parseJson(jsonArray);
+void RobotProjectionWidget::setAllLines(const QJsonArray &jsonArray) {
+    qDebug() << "inside setAllLines appended";
+    for (const QJsonValue &arrayValue : jsonArray) {
+        if (arrayValue.isArray()) {
+            QJsonArray innerArray = arrayValue.toArray();
+            qDebug() << innerArray;
+            parseJson(innerArray, false);
+        }
+    }
     updateScaleFactor();
-    update(); // Trigger a repaint after loading new lines
+    update(); // Trigger a repaint after loading new drawnLines
 }
 
-void RobotProjectionWidget::parseJson(const QJsonArray &jsonArray) {
-    //lines.clear(); // Clear any existing lines
+
+void RobotProjectionWidget::loadLinesFromJson(const QJsonArray &jsonArray) {
+    parseJson(jsonArray, true);
+    updateScaleFactor();
+    update(); // Trigger a repaint after loading new drawnLines
+}
+
+void RobotProjectionWidget::parseJson(const QJsonArray &jsonArray, bool isDrawn) {
+    //drawnLines.clear(); // Clear any existing drawnLines
     QVector<QPoint> temp;
     for (const auto &lineArray : jsonArray) {
         //QVector<QPoint> linePoints;
@@ -26,8 +40,13 @@ void RobotProjectionWidget::parseJson(const QJsonArray &jsonArray) {
             temp.append(QPoint(x,y));
             //linePoints.append(QPoint(x, y));
         //}
-        //lines.append(linePoints);
-            lines.append(temp);
+        //drawnLines.append(linePoints);
+            if(isDrawn){
+                drawnLines.append(temp);
+            }
+            else{
+                allLines.append(temp);
+            }
     }
 }
 
@@ -39,19 +58,27 @@ void RobotProjectionWidget::paintEvent(QPaintEvent *event) {
     painter.setRenderHint(QPainter::Antialiasing);
 
     painter.scale(scaleFactor, scaleFactor);
-    painter.setPen(QColor(Qt::black));
+
 
     // Apply drawing offset
     painter.translate(drawingOffset);
 
-    for (const auto &linePoints : lines) {
+    painter.setPen(QColor(Qt::red));
+    for (const auto &linePoints : allLines) {
+            if (linePoints.size() > 1) {
+                painter.drawPolyline(linePoints.data(), linePoints.size());
+            }
+    }
+
+    painter.setPen(QColor(Qt::black));
+    for (const auto &linePoints : drawnLines) {
         if (linePoints.size() > 1) {
             painter.drawPolyline(linePoints.data(), linePoints.size());
         }
     }
 
-    //if(lines.size() > 1){
-    //        painter.drawPolyline(lines.back().data(), lines.back().size());
+    //if(drawnLines.size() > 1){
+    //        painter.drawPolyline(drawnLines.back().data(), drawnLines.back().size());
     //}
 }
 

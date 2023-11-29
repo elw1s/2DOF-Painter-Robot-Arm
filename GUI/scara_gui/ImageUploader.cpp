@@ -37,7 +37,7 @@ ImageUploader::ImageUploader(QWidget* parent)
     saveButton = new QPushButton("Draw", this);
     saveButton->setObjectName("saveButton"); // Set object name to apply specific styles
     saveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    saveButton->setFixedWidth(250);
+    saveButton->setFixedWidth(200);
     saveButton->setFixedHeight(50); // Set the fixed height
     saveButton->setStyleSheet("QPushButton#saveButton {"
                               "    background-color: #33C2FF;"
@@ -45,7 +45,7 @@ ImageUploader::ImageUploader(QWidget* parent)
                               "    font-family: Abel;"
                               "    font-size: 12px;"
                               "    border: 1px solid #767676;"
-                              "    margin-right: 75px;"
+                              "    margin-right: 0px;"
                               "    margin-bottom: 5px;"
                               "}"
                               "QPushButton#saveButton:hover {"

@@ -7,9 +7,10 @@
 #include <string.h>
 #include "server_code1.h"
 #include "server_code2.h"
+#include <queue>
 
-char globalDataSend[1024] = ""; // Global variable for data
-char globalDataRecv[1024] = ""; // Global variable for data
+std::queue<std::string> messagesWaitingToBeSend;
+char globalDataRecv[4096] = ""; // Global variable for data
 pthread_mutex_t dataMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t canSendMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t dataCond = PTHREAD_COND_INITIALIZER;
@@ -17,60 +18,42 @@ pthread_cond_t canSendCond = PTHREAD_COND_INITIALIZER;
 
 bool canSend = false;
 
-void* dataSenderThread(void* clientSocket) {
+void* communicationThread(void* clientSocket){
     int socketDescriptor = *((int*)clientSocket);
 
-    while (1) {
-        pthread_mutex_lock(&dataMutex);
 
-        while (!canSend) {
-            // Wait for receiver's signal to send data
-            pthread_cond_wait(&canSendCond, &dataMutex);
-        }
-
-        // Send the modified data
-        send(socketDescriptor, globalDataSend, strlen(globalDataSend), 0);
-        printf("-------------- THE DATA IS SENT ---------------\n");
-
-        // Notify the receiver that data is sent
-        pthread_mutex_lock(&canSendMutex);
-        canSend = false;
-        pthread_cond_signal(&canSendCond); // Signal receiver to continue receiving
-        pthread_mutex_unlock(&canSendMutex);
-
-        pthread_mutex_unlock(&dataMutex);
-    }
-}
-
-void* dataReceiverThread(void* clientSocket){
-    int socketDescriptor = *((int*)clientSocket);
-    //printf("Inside dataReceiverThread!\n");
     while(1){
-        //printf("dataReceiver: Locking Mutex...\n");
-        //printf("dataReceiver: Locked Mutex...\n");
-        pthread_mutex_lock(&canSendMutex);
-        while (canSend) {
-            pthread_cond_wait(&canSendCond, &canSendMutex); // Wait for client signal to send
-        }
-
-        // Receive data from the client
-        char receivedData[1024]; // Assuming max data size is 1024 bytes
-        int bytesRead = recv(socketDescriptor, receivedData, sizeof(receivedData), 0);
+        
+        printf("mutexLock before recv()\n");
+        pthread_mutex_lock(&dataMutex);
+        printf("mutexLock happened\n");
+        int bytesRead = recv(socketDescriptor, globalDataRecv, sizeof(globalDataRecv), 0);
         printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
-        printf("Data (%s) received from client!\n", receivedData);
+        printf("Data (%s) received from client!\n", globalDataRecv);
         if (bytesRead <= 0) {
             // Handle disconnection or error
             //break;
             printf("Nothing comes...\n");
         }
-        receivedData[bytesRead] = '\0';
+        globalDataRecv[bytesRead] = '\0';
+        pthread_mutex_unlock(&dataMutex);
 
-        // Store received data into globalDataSend
-        strcpy(globalDataRecv, receivedData);
+        pthread_mutex_lock(&dataMutex);
+        printf("data mutex locked\n");
+        while(messagesWaitingToBeSend.size() == 0){
+            printf("there is no message to sent\n");
+            pthread_cond_wait(&dataCond, &dataMutex);
+            printf("after pthread_cond_wait %ld\n", messagesWaitingToBeSend.size());
+        }
+        printf("before send %ld\n", messagesWaitingToBeSend.size());
+        send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
+        printf("-------------- THE DATA IS SENT ---------------\n");
+        printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
+        messagesWaitingToBeSend.pop();
+        printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
+        pthread_mutex_unlock(&dataMutex);
+        printf("Data mutex unlocked\n");
 
-        canSend = true;
-        pthread_cond_signal(&canSendCond); // Signal client to send
-        pthread_mutex_unlock(&canSendMutex);
     }
 }
 
@@ -78,24 +61,21 @@ void* dataReceiverThread(void* clientSocket){
 void* server1Thread(void* arg) {
     printf("Thread for server1\n");
     while(true){
-        server1(globalDataSend, &dataCond, &dataMutex); 
+        server1(messagesWaitingToBeSend, &dataCond, &dataMutex); 
     }
-    // Modify globalDataSend in server1
-    // Signal the change in data
-    //pthread_cond_signal(&dataCond);
     return NULL;
 }
 
 // Function for thread handling server2
 void* server2Thread(void* arg) {
     printf("Thread for server2\n");
-    readLines("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json");
-    sendLineNumber(globalDataSend, &dataCond, &dataMutex);
+    readLines("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+    int lineNum = getLineNumber();
+    printf("Line number: %d\n",lineNum);
+    sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
     while(true){
-     server2(globalDataSend, &dataCond, &dataMutex);   
+     server2(messagesWaitingToBeSend, &dataCond, &dataMutex);   
     }
-    // Signal the change in data
-    //pthread_cond_signal(&dataCond);
     return NULL;
 }
 
@@ -143,21 +123,14 @@ int main() {
         printf("New connection accepted\n");
 
 
-        // Create the thread for sending data
-        pthread_t receiverThread;
-        if (pthread_create(&receiverThread, NULL, dataReceiverThread, (void*)&clientSocket) != 0) {
+        // Create the thread for sending and receiving data
+        pthread_t communication_thread;
+        if (pthread_create(&communication_thread, NULL, communicationThread, (void*)&clientSocket) != 0) {
             perror("Receiver thread creation failed");
             close(clientSocket);
             exit(EXIT_FAILURE);
         }
 
-        // Create the thread for sending data
-        pthread_t senderThread;
-        if (pthread_create(&senderThread, NULL, dataSenderThread, (void*)&clientSocket) != 0) {
-            perror("Sender thread creation failed");
-            close(clientSocket);
-            exit(EXIT_FAILURE);
-        }
 
         // Create threads for server1 and server2
         pthread_t thread1, thread2;

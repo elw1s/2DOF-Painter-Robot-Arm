@@ -54,7 +54,7 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
 
     // Customize Save Image button
     saveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    saveButton->setFixedWidth(250);
+    saveButton->setFixedWidth(200);
     saveButton->setFixedHeight(50); // Set the fixed height
     saveButton->setStyleSheet("QPushButton#saveButton {"
                               "    background-color: #33C2FF;"
@@ -62,7 +62,7 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
                               "    font-family: Abel;"
                               "    font-size: 12px;"
                               "    border: 1px solid #767676;"
-                              "    margin-right: 75px;"
+                              "    margin-right: 0px;"
                               "    margin-bottom: 5px;"
                               "}"
                               "QPushButton#saveButton:hover {"

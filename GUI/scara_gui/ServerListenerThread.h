@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QFile>
 #include "RobotProjectionWidget.h" // Include the header for RobotProjectionWidget
 
 class ServerListenerThread : public QThread {
@@ -12,6 +13,7 @@ class ServerListenerThread : public QThread {
 
 signals:
     void linesReceived(const QJsonArray& lines);
+    void allLinesReceived(const QJsonArray& lines);
     void loadingProgress(const int calculatedValue);
     void totalLineNumber(const int num);
     void servoAngles(const int angle1, const int angle2, const int angle3);

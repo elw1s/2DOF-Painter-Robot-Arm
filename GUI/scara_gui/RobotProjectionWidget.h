@@ -15,7 +15,7 @@ class RobotProjectionWidget : public QWidget {
 public:
     explicit RobotProjectionWidget(QWidget *parent = nullptr);
     void loadLinesFromJson(const QJsonArray &jsonArray);
-
+    void setAllLines(const QJsonArray &jsonArray);
 protected:
     void paintEvent(QPaintEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
@@ -26,14 +26,15 @@ protected:
 private:
     qreal scaleFactor;
     qreal scaleIncrement;
-    QVector<QVector<QPoint>> lines;
+    QVector<QVector<QPoint>> drawnLines;
+    QVector<QVector<QPoint>> allLines;
     //QVector<QPoint> lines;
     QPoint lastPanPos;
     bool isPanning;
     qreal minScaleFactor;
     QPoint drawingOffset;
 
-    void parseJson(const QJsonArray &jsonArray);
+    void parseJson(const QJsonArray &jsonArray, bool isDrawn);
     void updateScaleFactor();
 };
 

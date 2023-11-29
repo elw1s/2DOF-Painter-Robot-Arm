@@ -54,18 +54,20 @@ void ServerListenerThread::run() {
         QByteArray messageToSend;
         messageToSend.append('0');
         messageToSend.append(QString::fromStdString("Hello from QT! :)").toUtf8());
-
+        qDebug() << "Message created...";
         if (!messageToSend.isEmpty() && tcpSocket->state() == QAbstractSocket::ConnectedState) {
             tcpSocket->write(messageToSend); // Sending the message to the server
             qDebug()  << messageToSend << " is sent! (FIRST)";
-            tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
+            qDebug() << "Message sending...";
+            //tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
+            qDebug() << "Message sent...";
         }
         emit loadingProgress(0);
         int calculatedValue = 0;
+        QByteArray jsonFile;
         while (!isInterruptionRequested()) {
             QByteArray receivedData;
-
-            if (tcpSocket->waitForReadyRead()) {
+            if (tcpSocket->waitForReadyRead(5000)) {
                 receivedData = tcpSocket->readAll();
                 qDebug() <<"Received:" << receivedData;
 
@@ -74,11 +76,45 @@ void ServerListenerThread::run() {
                     receivedData = receivedData.remove(0, 1); // Removes the first element
 
                     switch(command){
-                    case '0':
+                    case '0': {
                         qDebug() << "Number of lines command";
                         qDebug() << receivedData.toInt() << "";
+
+                        qDebug() << ".......................................";
+                        qDebug() << jsonFile;
+                        qDebug() << ".......................................";
+
+                        QString dataString = QString::fromUtf8(jsonFile);
+
+                        // Write the string data to a file
+                        QFile outputFile("/home/arda/Desktop/CSE396/simulate_embedded/test.json");
+                        if (outputFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                            QTextStream outputStream(&outputFile);
+                            outputStream << dataString;
+                            outputFile.close();
+                            qDebug() << "Data written to file successfully";
+                        } else {
+                            qDebug() << "Unable to open file for writing";
+                        }
+
+                        QJsonParseError parseError;
+                        QJsonDocument doc = QJsonDocument::fromJson(jsonFile, &parseError);
+                        if (parseError.error != QJsonParseError::NoError) {
+                            qDebug() << "Error parsing JSON file:" << parseError.errorString();
+                            continue;
+                        }
+
+                        if (!doc.isArray()) {
+                            qDebug() << "JSON document is not an array";
+                            continue;
+                        }
+
+                        QJsonArray linesArray = doc.array();
+
+                        emit allLinesReceived(linesArray);
                         emit totalLineNumber(receivedData.toInt());
                         break;
+                    }
                     case '1': {
                         qDebug() << "Drawn line command";
                         QJsonParseError parseError;
@@ -122,18 +158,27 @@ void ServerListenerThread::run() {
                     case '4':
                         qDebug() << "Idle command";
                         break;
+                    case '9':
+                        qDebug() << "json File ekleniyor..." << jsonFile.size();
+                        qDebug() << "Eklenecek byte sayisi: " << receivedData.size();
+                        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+                        qDebug() << receivedData;
+                        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+                        jsonFile.append(receivedData);
+                        qDebug() << "json File eklendiii..." << jsonFile.size();
+                        break;
                     default:
-                        qDebug() << "Unknown command";
+                        qDebug() << "No message received";
                         break;
                     }
                 }
             }
-            if (!messageToSend.isEmpty()) {
+            if (!messageToSend.isEmpty() && !receivedData.isEmpty()) {
                 tcpSocket->write(messageToSend); // Sending the message to the server
                 qDebug()  << messageToSend << " is sent!";
-                tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
+                //tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
             }
-            QThread::sleep(1);
+            //QThread::sleep(1);
         }
 
         tcpSocket->disconnectFromHost();

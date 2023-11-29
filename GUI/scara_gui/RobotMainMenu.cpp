@@ -9,7 +9,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     bottomButton = new QPushButton("View 3D Virtualization");
     bottomButton->setObjectName("bottomButton");
     bottomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    bottomButton->setFixedWidth(250);
+    bottomButton->setFixedWidth(200);
     bottomButton->setFixedHeight(50); // Set the fixed height
     bottomButton->setStyleSheet("QPushButton#bottomButton {"
                               "    background-color: #33C2FF;"
@@ -17,7 +17,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
                               "    font-family: Abel;"
                               "    font-size: 12px;"
                               "    border: 1px solid #767676;"
-                              "    margin-right: 75px;"
+                              "    margin-right: 0px;"
                               "    margin-bottom: 5px;"
                               "}"
                               "QPushButton#bottomButton:hover {"
@@ -117,7 +117,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformPlot->yAxis->setLabelColor(Qt::white);
     waveformPlot->yAxis->setRange(-210, 210); // Modify the range as needed
     waveformPlot->xAxis->setLabel("Time"); // Set label with current time
-    waveformPlot->yAxis->setLabel("Sensor Angles");
+    waveformPlot->yAxis->setLabel("Servo Angles");
     waveformPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
     waveformPlot->setMaximumSize(400,300);
     waveformPlot->setSizePolicy(sizePolicy);
@@ -146,6 +146,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformLayout->addWidget(waveformPlot); // Add the waveform plot to the layout
 
     // Add label for color and value key
+    QHBoxLayout *legendLabelLayout = new QHBoxLayout;
     QLabel *redLabel = new QLabel("First Angle");
     QLabel *blueLabel = new QLabel("Second Angle");
     QLabel *greenLabel = new QLabel("Third Angle");
@@ -153,9 +154,13 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     blueLabel->setStyleSheet("color: blue;"); // Style the label as needed
     greenLabel->setStyleSheet("color: green;"); // Style the label as needed
     // Add the label to the layout
-    waveformLayout->addWidget(redLabel);
-    waveformLayout->addWidget(blueLabel);
-    waveformLayout->addWidget(greenLabel);
+    //waveformLayout->addWidget(redLabel);
+    //waveformLayout->addWidget(blueLabel);
+    //waveformLayout->addWidget(greenLabel);
+    legendLabelLayout->addWidget(redLabel);
+    legendLabelLayout->addWidget(blueLabel);
+    legendLabelLayout->addWidget(greenLabel);
+    waveformLayout->addLayout(legendLabelLayout);
     rightMiddleLayout->addLayout(waveformLayout);
 
 
@@ -291,6 +296,8 @@ void RobotMainMenu::initializeServerListener() {
         serverListenerThread = new ServerListenerThread(ipAddress, port, this);
         connect(serverListenerThread, &ServerListenerThread::linesReceived,
                 projectionWidget, &RobotProjectionWidget::loadLinesFromJson);
+        connect(serverListenerThread, &ServerListenerThread::allLinesReceived,
+                projectionWidget, &RobotProjectionWidget::setAllLines);
         connect(serverListenerThread, &ServerListenerThread::totalLineNumber, this, &RobotMainMenu::setTotalLineNumber);
         connect(serverListenerThread, &ServerListenerThread::loadingProgress, this, &RobotMainMenu::showLoadingBar);
         connect(serverListenerThread, &ServerListenerThread::sensorValues,

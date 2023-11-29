@@ -17,9 +17,8 @@ int generateRandomNumber1() {
 }
 
 
-void server1(char* message, pthread_cond_t* condition, pthread_mutex_t* mutex) {
+void server1(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex) {
     int total = 0;
-    std::cout << "Server 1 function started for client\n";
 
     int dataToSend = generateRandomNumber1(); // Generating a random integer (-90 to 90)
     std::bitset<16> value(dataToSend);
@@ -27,18 +26,15 @@ void server1(char* message, pthread_cond_t* condition, pthread_mutex_t* mutex) {
 
     std::string encodedData = '2' + value.to_string(); // Creating the encoded string
 
-    printf("SERVER1: Locking mutex...\n");
-    pthread_mutex_lock(mutex); // Lock the mutex before modifying shared data
-    printf("SERVER1: Locked mutex...\n");
-    strcpy(message, encodedData.c_str());
-    pthread_cond_signal(condition); // Signal the condition variable
-    printf("SERVER1: Sent signal...\n");
-    pthread_mutex_unlock(mutex); // Unlock the mutex
-    printf("SERVER1: Unlocked mutex...\n");
+   pthread_mutex_lock(mutex); // Lock the mutex before modifying shared data
+   //strcpy(message, encodedData.c_str());
+   messageQueue.push(encodedData);
+   pthread_cond_signal(condition); // Signal the condition variable
+   pthread_mutex_unlock(mutex); // Unlock the mutex
 
     total += 1;
-    std::cout << "Send: " << encodedData << " num:" << total << std::endl;
+    //std::cout << "Send: " << encodedData << " num:" << total << std::endl;
 
     // Introduce some delay to simulate work
-    usleep(2000000); // Sleep for 2 seconds (2 million microseconds)
+    usleep(500000); 
 }
