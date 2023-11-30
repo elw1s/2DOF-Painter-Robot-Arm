@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFile>
+#include <QBuffer>
+
 #include "RobotProjectionWidget.h" // Include the header for RobotProjectionWidget
 
 class ServerListenerThread : public QThread {
@@ -25,6 +27,7 @@ public:
 private:
     QString mIpAddress;
     int mPort;
+    bool draw;
     QTcpSocket* tcpSocket;
 
 public slots:

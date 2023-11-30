@@ -128,13 +128,13 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Add graphs for each line
     waveformPlot->addGraph();
-    waveformPlot->graph(0)->setPen(QPen(Qt::green, 2)); // Green line
+    waveformPlot->graph(0)->setPen(QPen(QColor("#ed4046"), 2)); // Red line
 
     waveformPlot->addGraph();
-    waveformPlot->graph(1)->setPen(QPen(Qt::red, 2)); // Red line
+    waveformPlot->graph(1)->setPen(QPen(QColor("#327ba8"), 2)); // Blue line with color #327ba8
 
     waveformPlot->addGraph();
-    waveformPlot->graph(2)->setPen(QPen(Qt::blue, 2)); // Blue line
+    waveformPlot->graph(2)->setPen(QPen(QColor("#1bb310"), 2)); // Green line
 
     waveformPlot->xAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on x-axis
     waveformPlot->xAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on x-axis
@@ -147,19 +147,20 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Add label for color and value key
     QHBoxLayout *legendLabelLayout = new QHBoxLayout;
-    QLabel *redLabel = new QLabel("First Angle");
-    QLabel *blueLabel = new QLabel("Second Angle");
-    QLabel *greenLabel = new QLabel("Third Angle");
-    redLabel->setStyleSheet("color: red;"); // Style the label as needed
-    blueLabel->setStyleSheet("color: blue;"); // Style the label as needed
-    greenLabel->setStyleSheet("color: green;"); // Style the label as needed
-    // Add the label to the layout
-    //waveformLayout->addWidget(redLabel);
-    //waveformLayout->addWidget(blueLabel);
-    //waveformLayout->addWidget(greenLabel);
+    redLabel = new QLabel();
+    redLabel->setText("Shoulder Motor: 0");
+    blueLabel = new QLabel();
+    blueLabel->setText("Elbow Motor: 0");
+    greenLabel = new QLabel();
+    greenLabel->setText("Lifting Motor: 0");
+
+    redLabel->setStyleSheet("color: #ed4046;"); // Style the label as needed
+    blueLabel->setStyleSheet("color: #327ba8;"); // Style the label as needed
+    greenLabel->setStyleSheet("color: #1bb310;"); // Style the label as needed
     legendLabelLayout->addWidget(redLabel);
     legendLabelLayout->addWidget(blueLabel);
     legendLabelLayout->addWidget(greenLabel);
+    legendLabelLayout->setAlignment(Qt::AlignCenter); // Center align the labels within the layout
     waveformLayout->addLayout(legendLabelLayout);
     rightMiddleLayout->addLayout(waveformLayout);
 
@@ -175,11 +176,8 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     updateTimerServo = new QTimer(this);
     connect(updateTimerServo, &QTimer::timeout, this, &RobotMainMenu::onUpdateTimerServo);
-    updateTimerServo->start(1000); // 1000ms = 1 second interval for updates
     updateTimerSensor = new QTimer(this);
     connect(updateTimerSensor, &QTimer::timeout, this, &RobotMainMenu::onUpdateTimerSensor);
-    updateTimerSensor->start(1000); // 1000ms = 1 second interval for updates
-
 
     ipAddress = QString();
     port = 0;
@@ -259,9 +257,15 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
         thirdAngleData.removeFirst();
     }
 
-    qDebug() << "first: "<< firstAngle;
-    qDebug() << "second: "<< secondAngle;
-    qDebug() << "third: "<< thirdAngle;
+    QString redLabelText = QString("Shoulder Motor: %1").arg(firstAngle);
+    QString blueLabelText = QString("Elbow Motor: %1").arg(secondAngle);
+    QString greenLabelText = QString("Lifting Motor: %1").arg(thirdAngle);
+
+    redLabel->setText(redLabelText);
+    blueLabel->setText(blueLabelText);
+    greenLabel->setText(greenLabelText);
+
+
     // Update each graph with its respective data
     //if(updateTimer->remainingTime() <= 0){
         waveformPlot->graph(0)->setData(timeDataServo, firstAngleData); // Green line
@@ -305,6 +309,9 @@ void RobotMainMenu::initializeServerListener() {
         connect(serverListenerThread, &ServerListenerThread::servoAngles,
                 this, &RobotMainMenu::updateServoAngleGraph);
         serverListenerThread->start();
+        updateTimerSensor->start(1000); // 1000ms = 1 second interval for updates
+        updateTimerServo->start(1000); // 1000ms = 1 second interval for updates
+
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";
     }

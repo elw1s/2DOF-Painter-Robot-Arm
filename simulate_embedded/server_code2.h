@@ -10,5 +10,4 @@ int sendLineNumber(std::queue<std::string>& messageQueue, pthread_cond_t* condit
 int getLineNumber();
 void sendServoAngle(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
 void sendDrawnLine(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
-void sendAllLines(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
 #endif

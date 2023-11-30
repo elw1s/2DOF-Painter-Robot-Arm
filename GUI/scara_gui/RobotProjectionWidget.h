@@ -33,6 +33,7 @@ private:
     bool isPanning;
     qreal minScaleFactor;
     QPoint drawingOffset;
+    qreal numSteps;
 
     void parseJson(const QJsonArray &jsonArray, bool isDrawn);
     void updateScaleFactor();

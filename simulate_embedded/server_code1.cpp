@@ -24,7 +24,7 @@ void server1(std::queue<std::string>& messageQueue, pthread_cond_t* condition, p
     std::bitset<16> value(dataToSend);
 
 
-    std::string encodedData = '2' + value.to_string(); // Creating the encoded string
+    std::string encodedData = '6' + value.to_string(); // Creating the encoded string
 
    pthread_mutex_lock(mutex); // Lock the mutex before modifying shared data
    //strcpy(message, encodedData.c_str());

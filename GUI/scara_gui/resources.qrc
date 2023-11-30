@@ -21,5 +21,7 @@
         <file>resources/settings_selected.png</file>
         <file>resources/settings.png</file>
         <file>resources/loading.gif</file>
+        <file>resources/examples_selected.png</file>
+        <file>resources/examples.png</file>
     </qresource>
 </RCC>

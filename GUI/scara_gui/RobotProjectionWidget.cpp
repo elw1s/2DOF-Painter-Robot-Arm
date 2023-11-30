@@ -87,7 +87,7 @@ void RobotProjectionWidget::wheelEvent(QWheelEvent *event) {
 
     if (!angleDelta.isNull()) {
         int numDegrees = angleDelta.y() / 8;
-        qreal numSteps = numDegrees / 15.0;
+        numSteps = numDegrees / 15.0;
 
         if (numSteps > 0) {
             scaleFactor *= (1.0 + scaleIncrement);

@@ -80,12 +80,12 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
 }
 
 void DrawingApp::saveImage() {
-        QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", "JPEG Image (*.jpg)");
+    QString folderPath = "./tmp";
+    QString filePath = folderPath + "/image.jpg";
 
-        if (!fileName.isEmpty()) {
-            drawingArea->getPixmap().toImage().save(fileName, "JPG");
-        }
+    drawingArea->getPixmap().toImage().save(filePath, "JPG");
 }
+
 
 void DrawingApp::setPenStroke(int stroke) {
         // Assuming DrawingArea has a function to set the pen stroke

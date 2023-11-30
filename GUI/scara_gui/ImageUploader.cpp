@@ -70,35 +70,6 @@ ImageUploader::ImageUploader(QWidget* parent)
 
     connect(m_clipScene, &CropFeature::clippedImage, this, &ImageUploader::onClippedImage);
     connect(m_dragdropScene, &DragDropScene::imageDropped, this, &ImageUploader::onImageDropped);
-
-    /*m_gridLayout = new QGridLayout(this);
-    m_graphicsView = new QGraphicsView(this);
-    m_gridLayout->addWidget(m_graphicsView, 0, 0, 1, 2);  // Span the QGraphicsView over 2 columns
-    m_pushButton = new QPushButton("Add file", this);
-    m_clippedLabel = new QLabel(this);
-    //m_gridLayout->addWidget(m_clippedLabel, 0, 2);
-    m_pushButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    m_gridLayout->addWidget(m_pushButton, 1, 0);
-    m_cropButton = new QPushButton(this);
-    m_cropButton->setIcon(QIcon(QString::fromStdString(CROP_ICON)));  // Set the path to your icon
-    m_cropButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    m_gridLayout->addWidget(m_cropButton, 1, 1);
-    m_graphicsView->setBackgroundBrush(QColor("#D9D9D9"));  // Set the background color
-    m_gridLayout->setContentsMargins(25, 75, 75, 20); // Set the margins
-    m_clipScene = new CropFeature(this);
-    m_dragdropScene = new DragDropScene(this);
-
-    //m_graphicsView->setScene(m_clipScene);
-    //m_gridLayout->addWidget(m_dragdrop);
-    m_graphicsView->setScene(m_dragdropScene);
-
-    // Connections
-    connect(m_pushButton, &QPushButton::clicked, this, &ImageUploader::onAddFile);
-    connect(m_clipScene, &CropFeature::clippedImage, this, &ImageUploader::onClippedImage);
-    connect(m_cropButton, &QPushButton::clicked, this, &ImageUploader::onCropButtonClicked);
-    connect(m_dragdropScene, &DragDropScene::imageDropped, this, &ImageUploader::onImageDropped);
-    */
-    //resize(640, 480);
 }
 
 void ImageUploader::onAddFile()
@@ -179,14 +150,15 @@ QPushButton* ImageUploader::createStyledButton(const QIcon &icon, const QSize &s
 }
 
 void ImageUploader::saveImage() {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", "JPEG Image (*.jpg)");
 
-    if (!fileName.isEmpty()) {
-        QPixmap croppedPixmap = m_clipScene->getCroppedImage();
-        if (!croppedPixmap.isNull()) {
-            croppedPixmap.toImage().save(fileName, "JPG");
-        } else {
-            QMessageBox::warning(this, "Warning", "No cropped image available to save!");
-        }
+    QPixmap croppedPixmap = m_clipScene->getCroppedImage();
+    if (!croppedPixmap.isNull()) {
+        QString folderPath = "./tmp"; // Relative path to the 'xz' folder from the application's location
+        QString filePath = folderPath + "/image.jpg"; // Path to the 'xz' folder with the desired file name
+
+        croppedPixmap.toImage().save(filePath, "JPG");
+    } else {
+        QMessageBox::warning(this, "Warning", "No cropped image available to save!");
     }
+
 }

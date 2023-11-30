@@ -4,6 +4,7 @@ ServerListenerThread::ServerListenerThread(const QString& ipAddress, int port, Q
     : QThread(parent), mIpAddress(ipAddress), mPort(port) {
     // ... constructor implementation ...
     emit loadingProgress(-1);
+    draw = true;
 }
 
 int16_t convertTwosComplement(const std::string &binaryString) {
@@ -53,7 +54,7 @@ void ServerListenerThread::run() {
         qDebug() << "Connected to the server.";
         QByteArray messageToSend;
         messageToSend.append('0');
-        messageToSend.append(QString::fromStdString("Hello from QT! :)").toUtf8());
+        messageToSend.append(QString::fromStdString("Connection established").toUtf8());
         qDebug() << "Message created...";
         if (!messageToSend.isEmpty() && tcpSocket->state() == QAbstractSocket::ConnectedState) {
             tcpSocket->write(messageToSend); // Sending the message to the server
@@ -65,6 +66,9 @@ void ServerListenerThread::run() {
         emit loadingProgress(0);
         int calculatedValue = 0;
         QByteArray jsonFile;
+        QByteArray imageByteArray;
+        int chunkSize = 4096 - 1; // 4KB - 1
+        int bytesWritten = 0;
         while (!isInterruptionRequested()) {
             QByteArray receivedData;
             if (tcpSocket->waitForReadyRead(5000)) {
@@ -74,11 +78,83 @@ void ServerListenerThread::run() {
                 if (!receivedData.isEmpty()) {
                     char command = receivedData[0];
                     receivedData = receivedData.remove(0, 1); // Removes the first element
-
+                    messageToSend.clear();
                     switch(command){
-                    case '0': {
+                    case '0': //Connection established
+                    {
+                        //Eğer yeni bir dosya kaydedildiyse burayı tetikle. Dosyayı çek ve gönder
+
+                        if(draw)
+                        {
+                            QFile file("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/image.jpg");
+                            if (!file.open(QIODevice::ReadOnly)) {
+                                qDebug() << "Failed to open the image file.";
+                                // Handle error or return an empty byte array
+                                //return QByteArray();
+                                continue;
+                            }
+
+                            imageByteArray = file.readAll();
+                            file.close();
+
+                            if(bytesWritten < imageByteArray.size()){
+                                int remainingBytes = imageByteArray.size() - bytesWritten;
+                                int bytesToWrite = qMin(chunkSize, remainingBytes);
+                                messageToSend.append(imageByteArray.mid(bytesWritten, bytesToWrite));
+                                bytesWritten += bytesToWrite;
+                            }
+
+                            if (bytesWritten >= imageByteArray.size()){
+                                messageToSend.push_front('2');
+                                bytesWritten = 0;
+                                imageByteArray.clear();
+                            }
+                            else{
+                                messageToSend.push_front('1');
+                            }
+
+                            draw  = false;
+
+                        }
+                        else{
+                            messageToSend = QByteArray::fromStdString("0Connection Established");
+                        }
+
+                        break;
+                    }
+                    case '1': //Image received command received
+                    {
+                        //Image için byte oku. Eğer byte kalmadıysa buradan  2 komutunu gönder (2 ile birlikte son byteları gönder). Eğer byte kaldıysa 1 komutunu gönder
+                        // 2 ile gönderirken bütün değişkenleri temizle.
+                        if(bytesWritten < imageByteArray.size()){
+                            int remainingBytes = imageByteArray.size() - bytesWritten;
+                            int bytesToWrite = qMin(chunkSize, remainingBytes);
+                            messageToSend.append(imageByteArray.mid(bytesWritten, bytesToWrite));
+                            bytesWritten += bytesToWrite;
+                        }
+
+                        if (bytesWritten >= imageByteArray.size()){
+                            messageToSend.push_front('2');
+                            bytesWritten = 0;
+                            imageByteArray.clear();
+                        }
+                        else{
+                            messageToSend.push_front('1');
+                        }
+
+                        break;
+                    }
+                    case '2': //Preview of drawing received
+                    {
+                        jsonFile.append(receivedData);
+                        messageToSend = QByteArray::fromStdString("6Connection Established");
+                        break;
+                    }
+                    case '3': //Total line num received
+                    {
+                        messageToSend = QByteArray::fromStdString("6Connection Established");
                         qDebug() << "Number of lines command";
-                        qDebug() << receivedData.toInt() << "";
+                        qDebug()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         << receivedData.toInt() << "";
 
                         qDebug() << ".......................................";
                         qDebug() << jsonFile;
@@ -115,7 +191,9 @@ void ServerListenerThread::run() {
                         emit totalLineNumber(receivedData.toInt());
                         break;
                     }
-                    case '1': {
+                    case '4': //Drawn line received
+                    {
+                        messageToSend = QByteArray::fromStdString("6Connection Established");
                         qDebug() << "Drawn line command";
                         QJsonParseError parseError;
                         QJsonDocument doc = QJsonDocument::fromJson(receivedData, &parseError);
@@ -137,14 +215,9 @@ void ServerListenerThread::run() {
                         calculatedValue ++;
                         break;
                     }
-                    case '2': {
-                        qDebug() << "Sensor data command";
-                        int sensorData = convertTwosComplement(receivedData.toStdString());
-                        qDebug() << "Sensor Data:" << sensorData;
-                        emit sensorValues(convertTwosComplement(receivedData.toStdString()));
-                        break;
-                    }
-                    case '3': {
+                    case '5': //Servo angles received
+                    {
+                        messageToSend = QByteArray::fromStdString("6Connection Established");
                         qDebug() << "Servo Angles command";
                         QByteArray firstPart = receivedData.mid(0, 16); // Extract first 16 bytes
                         QByteArray secondPart = receivedData.mid(16, 16); // Extract next 16 bytes
@@ -155,28 +228,28 @@ void ServerListenerThread::run() {
                         emit servoAngles(convertTwosComplement(firstPart.toStdString()), convertTwosComplement(secondPart.toStdString()),convertTwosComplement(thirdPart.toStdString()));
                         break;
                     }
-                    case '4':
-                        qDebug() << "Idle command";
+                    case '6': //Sensor data received
+                    {
+                        messageToSend = QByteArray::fromStdString("6Connection Established");
+                        qDebug() << "Sensor data command";
+                        int sensorData = convertTwosComplement(receivedData.toStdString());
+                        qDebug() << "Sensor Data:" << sensorData;
+                        emit sensorValues(convertTwosComplement(receivedData.toStdString()));
                         break;
-                    case '9':
-                        qDebug() << "json File ekleniyor..." << jsonFile.size();
-                        qDebug() << "Eklenecek byte sayisi: " << receivedData.size();
-                        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-                        qDebug() << receivedData;
-                        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-                        jsonFile.append(receivedData);
-                        qDebug() << "json File eklendiii..." << jsonFile.size();
-                        break;
+                    }
+
                     default:
                         qDebug() << "No message received";
                         break;
                     }
                 }
             }
+            //Burada ekstradan bir messageToSend tutabilirsin. Onun içerisinde göndermek istediğin mesajlar olur (örnek olarak açı ayarı. Bu olduğunda o komut gitmeli. 0 durumunda bu komut ile alakalı degerleri
+            // karsı tarafa gönderebilirsin. Karşı taraftan da işi bitince sana sıfır komutu gelir. "Stop Drawing" komutu ile karşı tarafta resim çizen threadleri sleep yapabilirsin.
+            //Cancel drawing komutu için ise karşı tarafta çalışan server2() threadini cancella.
             if (!messageToSend.isEmpty() && !receivedData.isEmpty()) {
                 tcpSocket->write(messageToSend); // Sending the message to the server
                 qDebug()  << messageToSend << " is sent!";
-                //tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
             }
             //QThread::sleep(1);
         }

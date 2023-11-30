@@ -48,12 +48,11 @@ int readLines(std::string filePath, std::queue<std::string>& messageQueue, pthre
 
         size_t chunkSize;
         int offset = 0;
-        char* message = new char[4096];
         while (offset < size) {
             chunkSize = std::min<size_t>(4096, static_cast<size_t>(size - offset));
 
             char* messageBuffer = new char[chunkSize + 2]; // +1 for '9' character, +1 for null-termination
-            messageBuffer[0] = '9'; // Set the first character to '9'
+            messageBuffer[0] = '2'; // Set the first character to '9'
 
             // Copy the data into the message buffer
             strncpy(messageBuffer + 1, jsonData + offset, chunkSize);
@@ -74,7 +73,7 @@ int readLines(std::string filePath, std::queue<std::string>& messageQueue, pthre
                 std::cerr << "JSON parse error\n";
                 delete[] jsonData;
                 return -1;
-            }
+        }
 
         // Check if it's an array of arrays (2D array)
         for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
@@ -85,26 +84,29 @@ int readLines(std::string filePath, std::queue<std::string>& messageQueue, pthre
                 lines.push_back(buffer.GetString());
             }
         }
-
+        
+        std::cout << "Number of lines: "<< numberOfLines << std::endl;
         numberOfLines = lines.size();
         temp = lines;
+        return numberOfLines;
 }
 
 int sendLineNumber(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex){
-    std::string dataToSend = '0' + std::to_string(numberOfLines);
+    std::string dataToSend = '3' + std::to_string(numberOfLines);
     pthread_mutex_lock(mutex);
     //strcpy(message, dataToSend.c_str());
     messageQueue.push(dataToSend);
     pthread_cond_signal(condition);
     pthread_mutex_unlock(mutex);
     usleep(500000);
+    return numberOfLines;
 }
 
 void sendDrawnLine(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex){
     pthread_mutex_lock(mutex);
     if(!lines.empty()){
             std::string line = lines.at(0);
-            line = '1' + line;
+            line = '4' + line;
             //strcpy(message, line.c_str());
             messageQueue.push(line);
             lines.erase(lines.begin());    
@@ -125,7 +127,7 @@ void sendServoAngle(std::queue<std::string>& messageQueue, pthread_cond_t* condi
     std::bitset<16> angle2(angles[1]);
     std::bitset<16> angle3(angles[2]);
 
-    std::string dataToSend = '3' + angle1.to_string() + angle2.to_string() + angle3.to_string(); // DECODER + 3 angles
+    std::string dataToSend = '5' + angle1.to_string() + angle2.to_string() + angle3.to_string(); // DECODER + 3 angles
     pthread_mutex_lock(mutex);
     //strcpy(message, dataToSend.c_str());
     messageQueue.push(dataToSend);
@@ -134,22 +136,9 @@ void sendServoAngle(std::queue<std::string>& messageQueue, pthread_cond_t* condi
     usleep(500000); // 0.5 seconds
 }
 
-void sendAllLines(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex){
-    pthread_mutex_lock(mutex);
-    if(!temp.empty()){
-            std::string line = temp.at(0);
-            line = 'a' + line;
-            //strcpy(message, line.c_str());
-            messageQueue.push(line);
-            temp.erase(temp.begin());    
-        }
-    pthread_cond_signal(condition); // Signal the condition variable
-    pthread_mutex_unlock(mutex);
-    usleep(100000); // 0.1 seconds
-}
 
 int getLineNumber(){
-    return lines.size();
+    return numberOfLines;
 }
  
 

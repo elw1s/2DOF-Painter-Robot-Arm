@@ -52,6 +52,9 @@ private:
     QLabel *textLabel;
     QCustomPlot *sensorPlot;
     QCustomPlot *waveformPlot;
+    QLabel *redLabel;
+    QLabel *greenLabel;
+    QLabel *blueLabel;
     QVector<double> timeDataSensor;
     QVector<double> sensorData;
     QVector<double> timeDataServo; // Vector for X-axis (time)

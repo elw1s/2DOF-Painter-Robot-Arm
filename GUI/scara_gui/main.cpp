@@ -10,6 +10,7 @@
 #include "ImagePathsConfig.h"
 #include "RobotMainMenu.h"
 #include "Settings.h"
+#include "ExamplesApp.h"
 
 void setButtonStyle(QToolButton& button, bool isSelected,const QIcon& icon) {
     QPalette palette = button.palette();
@@ -20,6 +21,7 @@ void setButtonStyle(QToolButton& button, bool isSelected,const QIcon& icon) {
                              "    border: 1px solid #33C2FF;"
                              "    color: #DEDEDE;"
                              "    font-family: Abel;"
+                             "    font-size: 11;"
                              "}"
                              "QToolButton::menu-indicator {"
                              "    image: none;"
@@ -31,6 +33,7 @@ void setButtonStyle(QToolButton& button, bool isSelected,const QIcon& icon) {
                              "    border: 1px solid #767676;"
                              "    color: #DEDEDE;"
                              "    font-family: Abel;"
+                             "    font-size: 11;"
                              "}"
                              "QToolButton::menu-indicator {"
                              "    image: none;"
@@ -44,6 +47,7 @@ int main(int argc, char *argv[]) {
     // Create instances of DrawingApp and ImageUploader
     DrawingApp drawingApp;
     ImageUploader imageUploader;
+    ExamplesApp examplesApp;
     //RobotProjectionWidget robotProjectionWidget;
     RobotMainMenu  robotMainMenu;
 
@@ -51,6 +55,7 @@ int main(int argc, char *argv[]) {
     // Create a QStackedWidget for the content on the right
     QStackedWidget stackedWidget;
     stackedWidget.addWidget(&robotMainMenu);
+    stackedWidget.addWidget(&examplesApp);
     stackedWidget.addWidget(&drawingApp);
     stackedWidget.addWidget(&imageUploader);
 
@@ -98,22 +103,31 @@ int main(int argc, char *argv[]) {
     settingsButton.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     setButtonStyle(settingsButton, false, QIcon(QString::fromStdString(SETTINGS))); // Set initial style for the unselected button
 
+    QToolButton examplesButton;
+    examplesButton.setIcon(QIcon(QString::fromStdString(EXAMPLES)));
+    examplesButton.setText("Examples");
+    examplesButton.setIconSize(QSize(30, 30)); // Adjust the icon size
+    examplesButton.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    setButtonStyle(examplesButton, false,QIcon(QString::fromStdString(EXAMPLES))); // Set initial style for the unselected button
+
     QObject::connect(&drawingAppButton, &QToolButton::clicked, [&]() {
-        stackedWidget.setCurrentIndex(1);
+        stackedWidget.setCurrentIndex(2);
         setButtonStyle(drawingAppButton, true, QIcon(QString::fromStdString(DRAW_IMAGE_TAB_SELECTED)));
         setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
         setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
         setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
         setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
     });
 
     QObject::connect(&imageUploaderButton, &QToolButton::clicked, [&]() {
-        stackedWidget.setCurrentIndex(2);
+        stackedWidget.setCurrentIndex(3);
         setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, true,  QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB_SELECTED)));
         setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
         setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
         setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
     });
 
     QObject::connect(&robotProjectionButton, &QToolButton::clicked, [&]() {
@@ -124,6 +138,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
     });
 
     QObject::connect(&playXOXButton, &QToolButton::clicked, [&]() {
@@ -134,6 +149,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
     });
 
     QObject::connect(&playSudokuButton, &QToolButton::clicked, [&]() {
@@ -144,6 +160,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(playSudokuButton, true,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB_SELECTED)));
         setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
     });
 
     QObject::connect(&settingsButton, &QToolButton::clicked, [&]() {
@@ -154,23 +171,34 @@ int main(int argc, char *argv[]) {
         settingsWindow.exec();
     });
 
+    QObject::connect(&examplesButton, &QToolButton::clicked, [&]() {
+        stackedWidget.setCurrentIndex(1);
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, true, QIcon(QString::fromStdString(EXAMPLES_SELECTED)));
+    });
+
     // Create a QWidget to hold the layout
     QWidget mainWidget;
     mainWidget.setStyleSheet("background-color: #1C1C1C;"); // Set main window background color
     QHBoxLayout* mainLayout = new QHBoxLayout(&mainWidget);
 
     // Left column with drawingAppButton and imageUploaderButton
-    QSize largerButtonSize = drawingAppButton.sizeHint().expandedTo(imageUploaderButton.sizeHint());
+    QSize largerButtonSize = imageUploaderButton.sizeHint().expandedTo(imageUploaderButton.sizeHint());
     drawingAppButton.setMinimumSize(largerButtonSize);
     imageUploaderButton.setMinimumSize(largerButtonSize);
     robotProjectionButton.setMinimumSize(largerButtonSize);
     playXOXButton.setMinimumSize(largerButtonSize);
     playSudokuButton.setMinimumSize(largerButtonSize);
     settingsButton.setMinimumSize(largerButtonSize);
-
+    examplesButton.setMinimumSize(largerButtonSize);
 
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget(&robotProjectionButton, 0, Qt::AlignCenter);
+    leftLayout->addWidget(&examplesButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(&drawingAppButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(&imageUploaderButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(&playXOXButton, 0, Qt::AlignCenter);

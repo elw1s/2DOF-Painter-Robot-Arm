@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/server.dir/mainserver.cpp.o CMakeFiles/server.dir/server_code1.cpp.o CMakeFiles/server.dir/server_code2.cpp.o -o server   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lopencv_imgcodecs -lopencv_core -lopencv_imgproc -lPillowResize 

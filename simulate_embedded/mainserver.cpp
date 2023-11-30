@@ -8,15 +8,65 @@
 #include "server_code1.h"
 #include "server_code2.h"
 #include <queue>
+#include "BrachioGraph.cpp"
+
+#define MAX_DATA_SIZE 4096 // Maximum size for received image data
+#define MAX_IMAGE_SIZE 10000000 // 10 MB
+
 
 std::queue<std::string> messagesWaitingToBeSend;
-char globalDataRecv[4096] = ""; // Global variable for data
+uint8_t globalDataRecv[MAX_DATA_SIZE]; // Global variable for data
 pthread_mutex_t dataMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t canSendMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t dataCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t canSendCond = PTHREAD_COND_INITIALIZER;
 
+pthread_cond_t server1Cond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t server2Cond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t case2Mutex = PTHREAD_MUTEX_INITIALIZER;
+bool case2Encountered = false;
+
 bool canSend = false;
+
+void connection_established(){
+    pthread_mutex_lock(&dataMutex);
+    messagesWaitingToBeSend.push("0Connection Established.");
+    pthread_mutex_unlock(&dataMutex);
+}
+
+void image_received(){
+    pthread_mutex_lock(&dataMutex);
+    messagesWaitingToBeSend.push("1Image Received");
+    pthread_mutex_unlock(&dataMutex);
+}
+
+unsigned char imageBuffer[MAX_IMAGE_SIZE]; // Byte array to hold image data
+size_t imageBufferIndex = 0; // Index to keep track of the image buffer position
+
+// Function to handle case 1 (Image values)
+void add_image_data_to_array(size_t dataSize) {
+    // Append the received image data to the image buffer
+    if (imageBufferIndex + dataSize < MAX_IMAGE_SIZE) {
+        pthread_mutex_lock(&dataMutex);
+        memcpy(imageBuffer + imageBufferIndex, globalDataRecv + 1, dataSize - 1); // Skip the first character and exclude null terminator
+        pthread_mutex_unlock(&dataMutex);
+        imageBufferIndex += dataSize - 1; // Update the image buffer index
+        printf("Received image byte data appended to buffer. %ld byte\n",dataSize);
+    } else {
+        printf("Image buffer full. Cannot append more data.\n");
+    }
+}
+
+void write_image_to_file() {
+    FILE* imageFile = fopen("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/sent.jpg", "wb");
+    if (imageFile != NULL) {
+        fwrite(imageBuffer, sizeof(unsigned char), imageBufferIndex, imageFile);
+        fclose(imageFile);
+        printf("Image data written to file successfully.\n");
+    } else {
+        printf("Error opening file to write image data.\n");
+    }
+}
 
 void* communicationThread(void* clientSocket){
     int socketDescriptor = *((int*)clientSocket);
@@ -24,42 +74,89 @@ void* communicationThread(void* clientSocket){
 
     while(1){
         
-        printf("mutexLock before recv()\n");
         pthread_mutex_lock(&dataMutex);
-        printf("mutexLock happened\n");
         int bytesRead = recv(socketDescriptor, globalDataRecv, sizeof(globalDataRecv), 0);
-        printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
-        printf("Data (%s) received from client!\n", globalDataRecv);
         if (bytesRead <= 0) {
             // Handle disconnection or error
             //break;
             printf("Nothing comes...\n");
         }
-        globalDataRecv[bytesRead] = '\0';
-        pthread_mutex_unlock(&dataMutex);
+        else{
+            //globalDataRecv[bytesRead] = '\0';
+            printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
+            //printf("Data (%s) received from client!\n", globalDataRecv);
+            
+            for (int i = 0; i < MAX_DATA_SIZE; ++i) {
+                if (globalDataRecv[i] == '\0') {
+                    break; // Stop printing when the null terminator is encountered
+                }
+                printf("%c",static_cast<char>(globalDataRecv[i]));
+            }
+            printf("\n");
+            //Burada globalDataRecv() degerine göre işlem yap.
+            
+            pthread_mutex_unlock(&dataMutex);
+
+            switch (static_cast<char>(globalDataRecv[0]))
+            {
+            case '0': // Connection established
+                connection_established();
+                break;
+            case '1': // Image values
+                add_image_data_to_array(bytesRead);
+                image_received();
+                break;
+            case '2': // End of image
+                //Server1 threadi çalışabilir.
+                //Server2 direkt bağlantı sağlanınca çalışabilir.
+                add_image_data_to_array(bytesRead);
+                write_image_to_file();
+                pthread_mutex_lock(&case2Mutex);
+                case2Encountered = true;
+                //pthread_cond_signal(&server1Cond);
+                pthread_cond_signal(&server2Cond);
+                pthread_mutex_unlock(&case2Mutex);
+                break;
+            case '3': // Set servo angles
+                printf("SET SERVO ANGLES\n");
+                break;
+            case '4': // Stop drawing
+                printf("STOP DRAWING\n");
+                break;
+            case '5': // Cancel drawing
+                printf("CANCEL DRAWING\n");
+                break;
+            default:
+                break;
+            }
+        }    
 
         pthread_mutex_lock(&dataMutex);
-        printf("data mutex locked\n");
         while(messagesWaitingToBeSend.size() == 0){
-            printf("there is no message to sent\n");
             pthread_cond_wait(&dataCond, &dataMutex);
-            printf("after pthread_cond_wait %ld\n", messagesWaitingToBeSend.size());
         }
-        printf("before send %ld\n", messagesWaitingToBeSend.size());
+
         send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
         printf("-------------- THE DATA IS SENT ---------------\n");
         printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
         messagesWaitingToBeSend.pop();
         printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);
-        printf("Data mutex unlocked\n");
 
     }
 }
 
-// Function for thread handling server1
+// SERVER1 THREADI, '2' KOMUTU GELMEDEN ÇALIŞMAYACAKTIR!!!
+
 void* server1Thread(void* arg) {
     printf("Thread for server1\n");
+    
+    //pthread_mutex_lock(&case2Mutex);
+    //while (!case2Encountered) {
+    //    pthread_cond_wait(&server1Cond, &case2Mutex);
+    //}
+    //pthread_mutex_unlock(&case2Mutex);
+
     while(true){
         server1(messagesWaitingToBeSend, &dataCond, &dataMutex); 
     }
@@ -69,7 +166,17 @@ void* server1Thread(void* arg) {
 // Function for thread handling server2
 void* server2Thread(void* arg) {
     printf("Thread for server2\n");
-    readLines("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+
+    pthread_mutex_lock(&case2Mutex);
+    while (!case2Encountered) {
+        pthread_cond_wait(&server2Cond, &case2Mutex);
+    }
+    pthread_mutex_unlock(&case2Mutex);
+
+    //Apply BrachioGraph 
+
+    BrachioGraph::imageToJson("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/sent.jpg", 1024, 2, 1 , 16, 1);
+    readLines("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/africa.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
     int lineNum = getLineNumber();
     printf("Line number: %d\n",lineNum);
     sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
