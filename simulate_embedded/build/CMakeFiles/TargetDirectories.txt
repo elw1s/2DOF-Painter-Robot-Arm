@@ -1,3 +1,0 @@
-/home/ardakilic/Desktop/CSE396/simulate_embedded/build/CMakeFiles/server.dir
-/home/ardakilic/Desktop/CSE396/simulate_embedded/build/CMakeFiles/edit_cache.dir
-/home/ardakilic/Desktop/CSE396/simulate_embedded/build/CMakeFiles/rebuild_cache.dir
