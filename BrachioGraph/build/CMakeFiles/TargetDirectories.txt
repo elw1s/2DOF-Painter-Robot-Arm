@@ -1,3 +1,0 @@
-/home/ardakilic/Desktop/CSE396/BrachioGraph/build/CMakeFiles/BrachioGraph.dir
-/home/ardakilic/Desktop/CSE396/BrachioGraph/build/CMakeFiles/edit_cache.dir
-/home/ardakilic/Desktop/CSE396/BrachioGraph/build/CMakeFiles/rebuild_cache.dir
