@@ -16,7 +16,6 @@ class ImageUploader : public QWidget
 
 public:
     ImageUploader(QWidget* parent = nullptr);
-
 private slots:
     void onAddFile();
     void onClippedImage(const QPixmap& pixmap);
@@ -35,4 +34,6 @@ private:
     QLabel* m_clippedLabel;
     CropFeature* m_clipScene;
     DragDropScene* m_dragdropScene;
+signals:
+    void drawButtonClicked();
 };

@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/mainserver.cpp.o: \
- /home/arda/Desktop/CSE396/simulate_embedded/mainserver.cpp \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/mainserver.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -93,7 +93,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
  /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/string.h \
  /usr/include/strings.h \
- /home/arda/Desktop/CSE396/simulate_embedded/server_code1.h \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/server_code1.h \
  /usr/include/c++/11/queue /usr/include/c++/11/deque \
  /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/c++/11/bits/functexcept.h \
@@ -162,8 +162,8 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/basic_string.tcc \
- /home/arda/Desktop/CSE396/simulate_embedded/server_code2.h \
- /home/arda/Desktop/CSE396/simulate_embedded/BrachioGraph.cpp \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/server_code2.h \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/BrachioGraph.cpp \
  /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
  /usr/include/c++/11/ios /usr/include/c++/11/exception \
  /usr/include/c++/11/bits/exception_ptr.h \
@@ -481,7 +481,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc \
- /home/arda/Desktop/CSE396/simulate_embedded/utils.cpp \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/utils.cpp \
  /usr/include/xtensor/xarray.hpp /usr/include/xtensor/xbuffer_adaptor.hpp \
  /usr/include/xtensor/xcontainer.hpp /usr/include/xtensor/xmath.hpp \
  /usr/include/xtensor/xaccumulator.hpp /usr/include/xtensor/xeval.hpp \

@@ -92,8 +92,8 @@ void DrawingApp::resetDrawing() {
 void DrawingApp::saveImage() {
     QString folderPath = "./tmp";
     QString filePath = folderPath + "/image.jpg";
-
     drawingArea->getPixmap().toImage().save(filePath, "JPG");
+    emit drawButtonClicked();
 }
 
 

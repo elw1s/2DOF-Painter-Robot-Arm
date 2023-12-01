@@ -1,5 +1,5 @@
 CMakeFiles/BrachioGraph.dir/BrachioGraph.cpp.o: \
- /home/arda/Desktop/CSE396/BrachioGraph/BrachioGraph.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraph/BrachioGraph.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -450,7 +450,7 @@ CMakeFiles/BrachioGraph.dir/BrachioGraph.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc \
- /home/arda/Desktop/CSE396/BrachioGraph/utils.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraph/utils.cpp \
  /usr/include/xtensor/xarray.hpp /usr/include/xtensor/xbuffer_adaptor.hpp \
  /usr/include/xtensor/xcontainer.hpp /usr/include/xtensor/xmath.hpp \
  /usr/include/xtensor/xaccumulator.hpp /usr/include/xtensor/xeval.hpp \

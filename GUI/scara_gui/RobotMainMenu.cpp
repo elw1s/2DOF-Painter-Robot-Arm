@@ -169,7 +169,9 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     rightLayout->addLayout(rightTopLayout);
     rightLayout->addLayout(rightMiddleLayout);
     rightLayout->addStretch(); // Add a stretch before the bottom button
-    rightLayout->addWidget(bottomButton);
+    //rightLayout->addWidget(bottomButton);
+    RoboticArmWidget *armWidget = new RoboticArmWidget(this); // Assuming this is the parent widget
+    rightLayout->addWidget(armWidget);
 
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(rightLayout);
@@ -287,7 +289,6 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
     //}
 }
 
-
 void RobotMainMenu::setServerInfo(const QString& ip, int port) {
     ipAddress = ip;
     this->port = port;
@@ -309,11 +310,24 @@ void RobotMainMenu::initializeServerListener() {
         connect(serverListenerThread, &ServerListenerThread::servoAngles,
                 this, &RobotMainMenu::updateServoAngleGraph);
         serverListenerThread->start();
-        updateTimerSensor->start(1000); // 1000ms = 1 second interval for updates
-        updateTimerServo->start(1000); // 1000ms = 1 second interval for updates
+        updateTimerSensor->start(1000);
+        updateTimerServo->start(1000);
 
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";
+    }
+}
+
+//Eğer server bağlı değilse draw butonuna tıklanılmasın
+void RobotMainMenu::drawButtonClicked(){
+    if(serverListenerThread && serverListenerThread->isConnected()){
+        serverListenerThread->draw(true);
+    }
+}
+
+void RobotMainMenu::moveButtonClicked(){
+    if(serverListenerThread && serverListenerThread->isConnected()){
+        serverListenerThread->move(true,0,0,0); //Burada açılar değiştirilecek.
     }
 }
 

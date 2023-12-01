@@ -20,6 +20,7 @@
 #include "ServerListenerThread.h"
 #include "ImagePathsConfig.h"
 #include "qcustomplot.h"
+#include "RoboticArmWidget.h"
 
 class RobotMainMenu : public QWidget {
     Q_OBJECT
@@ -32,6 +33,8 @@ public:
     void updateServoAngleGraph(int firstAngle, int secondAngle, int thirdAngle);
     void onUpdateTimerServo();
     void onUpdateTimerSensor();
+    void drawButtonClicked();
+    void moveButtonClicked();
 private:
     QLabel *label;
     RobotProjectionWidget *projectionWidget;

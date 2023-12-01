@@ -35,6 +35,9 @@ private:
     QPushButton *penButton;
     QPushButton *eraserButton;
     QPushButton *resetButton;
+
+signals:
+    void drawButtonClicked();
 };
 
 

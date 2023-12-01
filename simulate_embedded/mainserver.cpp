@@ -21,11 +21,12 @@ pthread_mutex_t canSendMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t dataCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t canSendCond = PTHREAD_COND_INITIALIZER;
 
-pthread_cond_t server1Cond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t clientDisconnectedCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t server2Cond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t case2Mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t clientDisconnectedMutex = PTHREAD_MUTEX_INITIALIZER;
 bool case2Encountered = false;
-
+bool clientDisconnected = false; // Flag to track client disconnection
 bool canSend = false;
 
 void connection_established(){
@@ -58,7 +59,7 @@ void add_image_data_to_array(size_t dataSize) {
 }
 
 void write_image_to_file() {
-    FILE* imageFile = fopen("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/sent.jpg", "wb");
+    FILE* imageFile = fopen("../tmp/sent.jpg", "wb");
     if (imageFile != NULL) {
         fwrite(imageBuffer, sizeof(unsigned char), imageBufferIndex, imageFile);
         fclose(imageFile);
@@ -77,9 +78,11 @@ void* communicationThread(void* clientSocket){
         pthread_mutex_lock(&dataMutex);
         int bytesRead = recv(socketDescriptor, globalDataRecv, sizeof(globalDataRecv), 0);
         if (bytesRead <= 0) {
-            // Handle disconnection or error
-            //break;
-            printf("Nothing comes...\n");
+	    // Handle disconnection or error
+            printf("Client disconnected or error occurred.\n");
+            close(socketDescriptor); // Close the socket
+            pthread_mutex_unlock(&dataMutex);
+            return NULL; // Exit the thread
         }
         else{
             //globalDataRecv[bytesRead] = '\0';
@@ -175,8 +178,8 @@ void* server2Thread(void* arg) {
 
     //Apply BrachioGraph 
 
-    BrachioGraph::imageToJson("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/sent.jpg", 1024, 2, 1 , 16, 1);
-    readLines("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/africa.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+    BrachioGraph::imageToJson("../tmp/sent.jpg", 1024, 2, 1 , 16, 1);
+    readLines("../tmp/africa.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
     int lineNum = getLineNumber();
     printf("Line number: %d\n",lineNum);
     sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
@@ -228,7 +231,8 @@ int main() {
         }
 
         printf("New connection accepted\n");
-
+	
+	clientDisconnected = true;
 
         // Create the thread for sending and receiving data
         pthread_t communication_thread;

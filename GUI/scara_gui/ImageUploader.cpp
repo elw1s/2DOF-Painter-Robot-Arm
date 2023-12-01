@@ -83,7 +83,9 @@ void ImageUploader::onAddFile()
         m_clipScene->setImage(pixmap);
         QGraphicsScene *currentScene = m_graphicsView->scene();
         m_graphicsView->setScene(m_clipScene);
-        delete currentScene;
+        if(currentScene != nullptr){
+            //delete currentScene;
+        }
     }
     addFileButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
     cropButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
@@ -114,7 +116,9 @@ void ImageUploader::onImageDropped() {
         qDebug() << "Image is set in m_clipScene";
         m_graphicsView->setScene(m_clipScene); // Set m_graphicsView to display m_clipScene
         qDebug() << "scene is changed!";
-        delete currentScene; // Delete the old scene
+        if(currentScene != nullptr){
+            //delete currentScene; // Delete the old scene
+        }
         qDebug() << "the other scene is removed!";
     }
 }
@@ -153,12 +157,12 @@ void ImageUploader::saveImage() {
 
     QPixmap croppedPixmap = m_clipScene->getCroppedImage();
     if (!croppedPixmap.isNull()) {
-        QString folderPath = "./tmp"; // Relative path to the 'xz' folder from the application's location
+        QString folderPath = "../tmp"; // Relative path to the 'xz' folder from the application's location
         QString filePath = folderPath + "/image.jpg"; // Path to the 'xz' folder with the desired file name
 
         croppedPixmap.toImage().save(filePath, "JPG");
     } else {
         QMessageBox::warning(this, "Warning", "No cropped image available to save!");
     }
-
+    emit drawButtonClicked();
 }

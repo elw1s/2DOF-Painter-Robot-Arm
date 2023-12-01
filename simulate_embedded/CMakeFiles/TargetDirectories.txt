@@ -1,3 +1,0 @@
-/home/arda/Desktop/CSE396/simulate_embedded/CMakeFiles/server.dir
-/home/arda/Desktop/CSE396/simulate_embedded/CMakeFiles/edit_cache.dir
-/home/arda/Desktop/CSE396/simulate_embedded/CMakeFiles/rebuild_cache.dir

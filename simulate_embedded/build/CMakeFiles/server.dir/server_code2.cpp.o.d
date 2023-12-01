@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/server_code2.cpp.o: \
- /home/arda/Desktop/CSE396/simulate_embedded/server_code2.cpp \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/server_code2.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -175,7 +175,7 @@ CMakeFiles/server.dir/server_code2.cpp.o: \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc /usr/include/c++/11/bitset \
- /home/arda/Desktop/CSE396/simulate_embedded/server_code2.h \
+ /home/ardakilic/Desktop/CSE396/simulate_embedded/server_code2.h \
  /usr/include/c++/11/queue /usr/include/c++/11/deque \
  /usr/include/c++/11/bits/stl_deque.h /usr/include/c++/11/bits/deque.tcc \
  /usr/include/c++/11/bits/stl_heap.h /usr/include/c++/11/bits/stl_queue.h \

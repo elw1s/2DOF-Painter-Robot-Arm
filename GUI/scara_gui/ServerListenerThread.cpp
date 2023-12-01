@@ -4,7 +4,9 @@ ServerListenerThread::ServerListenerThread(const QString& ipAddress, int port, Q
     : QThread(parent), mIpAddress(ipAddress), mPort(port) {
     // ... constructor implementation ...
     emit loadingProgress(-1);
-    draw = true;
+    drawSelected = false;
+    connected = false;
+    moveSelected = false;
 }
 
 int16_t convertTwosComplement(const std::string &binaryString) {
@@ -52,6 +54,7 @@ void ServerListenerThread::run() {
         }
 
         qDebug() << "Connected to the server.";
+        connected = true;
         QByteArray messageToSend;
         messageToSend.append('0');
         messageToSend.append(QString::fromStdString("Connection established").toUtf8());
@@ -84,10 +87,10 @@ void ServerListenerThread::run() {
                     {
                         //Eğer yeni bir dosya kaydedildiyse burayı tetikle. Dosyayı çek ve gönder
 
-                        if(draw)
+                        if(drawSelected)
                         {
                             // DOSYA PATH DEGİSTİR!!!
-                            QFile file("../tmp/image.jpg");
+                            QFile file("/home/ardakilic/Desktop/CSE396/GUI/scara_gui/tmp/image.jpg");
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
                                 // Handle error or return an empty byte array
@@ -109,13 +112,17 @@ void ServerListenerThread::run() {
                                 messageToSend.push_front('2');
                                 bytesWritten = 0;
                                 imageByteArray.clear();
+                                drawSelected  = false;
                             }
                             else{
                                 messageToSend.push_front('1');
                             }
 
-                            draw  = false;
-
+                        }
+                        else if(moveSelected){
+                            // Burada move komutu gönderilecek açılara göre
+                            messageToSend = QByteArray::fromStdString("0Connection Established");
+                            moveSelected = false;
                         }
                         else{
                             messageToSend = QByteArray::fromStdString("0Connection Established");
@@ -138,6 +145,7 @@ void ServerListenerThread::run() {
                             messageToSend.push_front('2');
                             bytesWritten = 0;
                             imageByteArray.clear();
+                            drawSelected  = false;
                         }
                         else{
                             messageToSend.push_front('1');
@@ -164,7 +172,7 @@ void ServerListenerThread::run() {
                         QString dataString = QString::fromUtf8(jsonFile);
 
                         // Write the string data to a file
-                        QFile outputFile("/home/arda/Desktop/CSE396/simulate_embedded/test.json");
+                        QFile outputFile("/home/ardakilic/Desktop/CSE396/simulate_embedded/test.json");
                         if (outputFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                             QTextStream outputStream(&outputFile);
                             outputStream << dataString;
@@ -256,12 +264,30 @@ void ServerListenerThread::run() {
         }
 
         tcpSocket->disconnectFromHost();
-        tcpSocket->waitForDisconnected();
+        if(tcpSocket->waitForDisconnected()){
+            connected = false;
+        }
         tcpSocket->close();
         delete tcpSocket;
     }
 }
 
+bool ServerListenerThread::isConnected(){
+    return connected;
+}
+
+void ServerListenerThread::move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle, int liftingAngle){
+    qDebug() << "Move button clicked!";
+    moveSelected = isMoveButtonClicked;
+    shoulderServoAngle = shoulderAngle;
+    elbowServoAngle = elbowAngle;
+    liftingServoAngle = liftingAngle;
+}
+
+void ServerListenerThread::draw(bool isDrawButtonClicked){
+    qDebug() << "Draw button clicked!";
+    drawSelected = isDrawButtonClicked;
+}
 
 void ServerListenerThread::socketDisconnected() {
     QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());

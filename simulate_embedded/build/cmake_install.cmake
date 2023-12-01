@@ -1,4 +1,4 @@
-# Install script for directory: /home/arda/Desktop/CSE396/simulate_embedded
+# Install script for directory: /home/ardakilic/Desktop/CSE396/simulate_embedded
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/arda/Desktop/CSE396/simulate_embedded/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ardakilic/Desktop/CSE396/simulate_embedded/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
