@@ -18,15 +18,21 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
 
     QSize iconSize(35, 35);
 
-    QIcon penIcon(QString::fromStdString(PEN_ICON)); // Replace ":/icons/white_pen_icon.png" with your actual icon path
+    QIcon penIcon(QString::fromStdString(PEN_ICON));
     penButton = createStyledButton(penIcon, iconSize, "#FFFFFF", "#767676", this);
     connect(penButton, &QPushButton::clicked, this, &DrawingApp::setEraserFalse);
     topLayout->addWidget(penButton);
 
-    QIcon eraserIcon(QString::fromStdString(ERASER_ICON)); // Replace ":/icons/eraser_icon.png" with your actual eraser icon path
+    QIcon eraserIcon(QString::fromStdString(ERASER_ICON));
     eraserButton = createStyledButton(eraserIcon, iconSize, "#FFFFFF", "#767676", this);
     connect(eraserButton, &QPushButton::clicked, this, &DrawingApp::setEraserTrue);
     topLayout->addWidget(eraserButton);
+
+    QIcon resetIcon(QString::fromStdString(RESET_ICON));
+    resetButton = createStyledButton(resetIcon, iconSize, "#FFFFFF", "#767676", this);
+    connect(resetButton, &QPushButton::clicked, this, &DrawingApp::resetDrawing);
+    topLayout->addWidget(resetButton);
+
 
     penStrokeDropdown = new QComboBox(this);
     penStrokeDropdown->addItem(QIcon(QString::fromStdString(STROKE_ICON)), "", QVariant::fromValue(iconSize));
@@ -77,6 +83,10 @@ DrawingApp::DrawingApp(QWidget *parent) : QWidget(parent) {
     mainLayout->setAlignment(Qt::AlignRight | Qt::AlignTop); // Align the layout to the top-right
 
     setLayout(mainLayout);
+}
+
+void DrawingApp::resetDrawing() {
+    drawingArea->clearDrawing(); // Assuming you have a function to clear the drawing in DrawingArea
 }
 
 void DrawingApp::saveImage() {

@@ -12,6 +12,7 @@ extern const std::string SELECT_FILE_ICON;
 extern const std::string PEN_ICON;
 extern const std::string ERASER_ICON;
 extern const std::string STROKE_ICON;
+extern const std::string RESET_ICON;
 //Unselected Tab Buttons
 extern const std::string ACCEPT_CROP_ICON;
 extern const std::string DRAW_IMAGE_TAB;

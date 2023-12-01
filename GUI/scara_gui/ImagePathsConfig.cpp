@@ -12,7 +12,7 @@ const std::string SELECT_FILE_ICON = ":/resources/selectFile.png";
 const std::string PEN_ICON = ":/resources/pen.png";
 const std::string ERASER_ICON = ":/resources/eraser.png";
 const std::string STROKE_ICON = ":/resources/stroke.png";
-
+const std::string RESET_ICON = ":/resources/reset.png";
 
 //Unselected TAB buttons
 const std::string PLAY_SUDOKU_TAB = ":/resources/playSudoku.png";

@@ -91,3 +91,8 @@
     void DrawingArea::eraserMode(bool mode){
         eraser = mode;
     }
+
+    void DrawingArea::clearDrawing() {
+        pixmap.fill(Qt::white); // Clear the pixmap with white color (or desired background)
+        update(); // Update the drawing area
+    }

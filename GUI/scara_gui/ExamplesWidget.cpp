@@ -7,26 +7,19 @@ ExamplesWidget::ExamplesWidget(QWidget *parent) : QWidget(parent) {
     // Example image file paths (you can replace these with your image paths)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QStringList imageFilePaths = {
-        "/home/arda/Desktop/BrachioGraphPython/images/cat.jpeg",
-        "/home/arda/Desktop/BrachioGraphPython/images/africa.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/cat.jpeg",
-        "/home/arda/Desktop/BrachioGraphPython/images/cat.jpeg",
-        "/home/arda/Desktop/BrachioGraphPython/images/cat.jpeg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
-        "/home/arda/Desktop/BrachioGraphPython/images/prague.jpg",
+        ":/resources/examples/bird_example.svg",
+        ":/resources/examples/cat_example.svg",
+        ":/resources/examples/helloworld_example.svg",
+        ":/resources/examples/bird_example.svg",
+        ":/resources/examples/cat_example.svg",
+        ":/resources/examples/helloworld_example.svg",
+        ":/resources/examples/bird_example.svg",
+        ":/resources/examples/cat_example.svg",
+        ":/resources/examples/helloworld_example.svg",
+        ":/resources/examples/bird_example.svg",
+        ":/resources/examples/cat_example.svg",
+        ":/resources/examples/helloworld_example.svg",
+
         // Add more image paths as needed
     };
 

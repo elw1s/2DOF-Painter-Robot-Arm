@@ -86,7 +86,8 @@ void ServerListenerThread::run() {
 
                         if(draw)
                         {
-                            QFile file("/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/image.jpg");
+                            // DOSYA PATH DEGİSTİR!!!
+                            QFile file("../tmp/image.jpg");
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
                                 // Handle error or return an empty byte array

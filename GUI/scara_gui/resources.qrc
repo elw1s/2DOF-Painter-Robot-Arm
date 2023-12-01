@@ -23,5 +23,9 @@
         <file>resources/loading.gif</file>
         <file>resources/examples_selected.png</file>
         <file>resources/examples.png</file>
+        <file>resources/examples/bird_example.svg</file>
+        <file>resources/examples/cat_example.svg</file>
+        <file>resources/examples/helloworld_example.svg</file>
+        <file>resources/reset.png</file>
     </qresource>
 </RCC>

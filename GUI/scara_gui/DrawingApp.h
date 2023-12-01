@@ -25,6 +25,7 @@ private slots:
     void setPenStroke(int stroke);
     void setEraserTrue();
     void setEraserFalse();
+    void resetDrawing();
     QPushButton* createStyledButton(const QIcon &icon, const QSize &size, const QString &textColor,
                                     const QString &borderColor, QWidget *parent);
 private:
@@ -33,6 +34,7 @@ private:
     QComboBox *penStrokeDropdown;
     QPushButton *penButton;
     QPushButton *eraserButton;
+    QPushButton *resetButton;
 };
 
 

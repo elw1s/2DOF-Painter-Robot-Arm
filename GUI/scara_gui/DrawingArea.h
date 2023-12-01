@@ -15,6 +15,7 @@ public:
     void setPenStroke(int stroke);
     void eraserMode(bool mode);
     const QPixmap &getPixmap() const;
+    void clearDrawing();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
