@@ -20,6 +20,8 @@ Then install
 
 Run
 ```bash
+  mkdir build & cd build
+  cmake ..
   make
   ./brachioGraph
 ```
