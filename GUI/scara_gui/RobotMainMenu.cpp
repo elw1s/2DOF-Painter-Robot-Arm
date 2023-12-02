@@ -96,7 +96,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Increase width and height of sensorPlot (QCustomPlot)
     sensorPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    sensorPlot->setMaximumSize(400,3000);
+    sensorPlot->setMaximumSize(400,600);
     // Modify size policies to control how the widgets expand in the layout
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     projectionWidget->setSizePolicy(sizePolicy);
@@ -119,7 +119,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformPlot->xAxis->setLabel("Time"); // Set label with current time
     waveformPlot->yAxis->setLabel("Servo Angles");
     waveformPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    waveformPlot->setMaximumSize(400,300);
+    waveformPlot->setMaximumSize(400,600);
     waveformPlot->setSizePolicy(sizePolicy);
     waveformPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
 
@@ -170,8 +170,113 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     rightLayout->addLayout(rightMiddleLayout);
     rightLayout->addStretch(); // Add a stretch before the bottom button
     //rightLayout->addWidget(bottomButton);
-    RoboticArmWidget *armWidget = new RoboticArmWidget(this); // Assuming this is the parent widget
-    rightLayout->addWidget(armWidget);
+
+    QVBoxLayout *sliderLayout = new QVBoxLayout;
+
+    // Slider 1 (Red)
+    QSlider *sliderRed = new QSlider(Qt::Horizontal);
+    sliderRed->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #ed4046; background: #ed4046; height: 10px; border-radius: 5px; }"
+                             "QSlider::handle:horizontal { background-color: #ed4046; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
+                             "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }");
+    sliderRed->setRange(0, 90); // Modify the range as needed
+    sliderRed->setSliderPosition(50); // Set initial slider position
+    sliderRed->setMinimumSize(150, 60);  // Set minimum size for sliderRed
+    sliderRed->setMaximumSize(380, 100);  // Set maximum size for sliderRed
+    QLabel *labelRed = new QLabel("Shoulder Motor: 50");
+    sliderLayout->addWidget(labelRed);
+    sliderLayout->addWidget(sliderRed);
+
+    // Slider 2 (Blue)
+    QSlider *sliderBlue = new QSlider(Qt::Horizontal);
+    sliderBlue->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #327ba8; background: #327ba8; height: 10px; border-radius: 5px; }"
+                              "QSlider::handle:horizontal { background-color: #327ba8; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
+                              "QSlider::handle:horizontal:hover { background-color: #0000ff; border: 1px solid #ffffff; }");
+    sliderBlue->setRange(-90, 90); // Modify the range as needed
+    sliderBlue->setSliderPosition(30); // Set initial slider position
+    sliderBlue->setMinimumSize(150, 60);  // Set minimum size for sliderRed
+    sliderBlue->setMaximumSize(380, 100);  // Set maximum size for sliderRed
+    QLabel *labelBlue = new QLabel("Elbow Motor: 30");
+    sliderLayout->addWidget(labelBlue);
+    sliderLayout->addWidget(sliderBlue);
+
+    // Slider 3 (Green)
+    QSlider *sliderGreen = new QSlider(Qt::Horizontal);
+    sliderGreen->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #1bb310; background: #1bb310; height: 10px; border-radius: 5px; }"
+                               "QSlider::handle:horizontal { background-color: #1bb310; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
+                               "QSlider::handle:horizontal:hover { background-color: #00ff00; border: 1px solid #ffffff; }");
+    sliderGreen->setRange(0, 100); // Modify the range as needed
+    sliderGreen->setSliderPosition(70); // Set initial slider position
+    sliderGreen->setMinimumSize(150, 60);  // Set minimum size for sliderRed
+    sliderGreen->setMaximumSize(380, 100);  // Set maximum size for sliderRed
+    QLabel *labelGreen = new QLabel("Lifting Motor: 70");
+    sliderLayout->addWidget(labelGreen);
+    sliderLayout->addWidget(sliderGreen);
+
+    connect(sliderRed, &QSlider::valueChanged, this, [=](int value) {
+        labelRed->setText(QString("Red Slider Value: %1").arg(value));
+        // Do something with the red slider value (value)
+    });
+
+    connect(sliderBlue, &QSlider::valueChanged, this, [=](int value) {
+        labelBlue->setText(QString("Blue Slider Value: %1").arg(value));
+        // Do something with the blue slider value (value)
+    });
+
+    connect(sliderGreen, &QSlider::valueChanged, this, [=](int value) {
+        labelGreen->setText(QString("Green Slider Value: %1").arg(value));
+        // Do something with the green slider value (value)
+    });
+    sliderLayout->setSpacing(0); // Adjust the spacing between widgets in the layout
+    sliderLayout->setContentsMargins(0, 0, 0, 0); // Adjust margins if needed
+    rightLayout->addLayout(sliderLayout);
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    setButton = new QPushButton("Set Angles", this);
+    setButton->setObjectName("setButton"); // Set object name to apply specific styles
+    connect(setButton, &QPushButton::clicked, this, &RobotMainMenu::setButtonClicked);
+    setButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    setButton->setFixedWidth(100);
+    setButton->setFixedHeight(50); // Set the fixed height
+    setButton->setStyleSheet("QPushButton#setButton {"
+                              "    background-color: #33C2FF;"
+                              "    color: #424242;"
+                              "    font-family: Abel;"
+                              "    font-size: 12px;"
+                              "    border: 1px solid #767676;"
+                              "    margin-right: 0px;"
+                              "    margin-bottom: 5px;"
+                              "}"
+                              "QPushButton#setButton:hover {"
+                              "    background-color: #57D5FF;" // Change color on hover if desired
+                              "}");
+
+    defaultButton = new QPushButton("Set Default Values", this);
+    defaultButton->setObjectName("defaultButton"); // Set object name to apply specific styles
+    connect(defaultButton, &QPushButton::clicked, this, &RobotMainMenu::defaultButtonClicked);
+    defaultButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    defaultButton->setFixedWidth(150);
+    defaultButton->setFixedHeight(50); // Set the fixed height
+    defaultButton->setStyleSheet("QPushButton#defaultButton {"
+                             "    background-color: #33C2FF;"
+                             "    color: #424242;"
+                             "    font-family: Abel;"
+                             "    font-size: 12px;"
+                             "    border: 1px solid #767676;"
+                             "    margin-right: 0px;"
+                             "    margin-bottom: 5px;"
+                             "}"
+                             "QPushButton#defaultButton:hover {"
+                             "    background-color: #57D5FF;" // Change color on hover if desired
+                             "}");
+
+    buttonLayout->addWidget(defaultButton);
+    buttonLayout->addWidget(setButton);
+
+
+    rightLayout->setSpacing(0);
+    rightLayout->setContentsMargins(0, 0, 0, 0); // Adjust margins if needed
+    rightLayout->addLayout(buttonLayout);
+
 
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(rightLayout);
@@ -184,6 +289,15 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     ipAddress = QString();
     port = 0;
     initializeServerListener();
+    }
+
+
+    void RobotMainMenu::setButtonClicked(){
+
+    }
+
+    void RobotMainMenu::defaultButtonClicked(){
+
     }
 
 void RobotMainMenu::onUpdateTimerServo() {

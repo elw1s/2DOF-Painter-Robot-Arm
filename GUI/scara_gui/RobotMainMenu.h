@@ -20,7 +20,6 @@
 #include "ServerListenerThread.h"
 #include "ImagePathsConfig.h"
 #include "qcustomplot.h"
-#include "RoboticArmWidget.h"
 
 class RobotMainMenu : public QWidget {
     Q_OBJECT
@@ -66,12 +65,16 @@ private:
     QVector<double> thirdAngleData; // Vector for third servo angle data (blue)
     QTimer *updateTimerServo;
     QTimer *updateTimerSensor;
+    QPushButton* setButton;
+    QPushButton* defaultButton;
 public slots:
     void setServerInfo(const QString& ip, int port);
     void disconnectFromServer();
     void initializeServerListener();
     void showLoadingBar(int value); // Show the loading bar with a specific value
     void setTotalLineNumber(int totalLineNumber);
+    void defaultButtonClicked();
+    void setButtonClicked();
 };
 
 #endif // ROBOTMAINMENU_H
