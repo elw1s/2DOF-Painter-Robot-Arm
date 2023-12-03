@@ -4,7 +4,10 @@
 
 
 ## Installation
-
+  
+```bash
+  sudo apt-get -y install rapidjson-dev
+```
 
 Run
 ```bash
