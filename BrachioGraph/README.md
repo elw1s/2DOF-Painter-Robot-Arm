@@ -18,6 +18,33 @@ Then install
   sudo apt-get install libopencv-dev
 ```
 
+Download required projects
+```bash
+  cd BrachioGraph
+  git clone --recurse https://github.com/zurutech/pillow-resize.git
+  cd pillow-resize
+  git submodule update --init --recursive
+  mkdir build && cd build
+  // Go to BrachioGraph/pillow-resize/libs
+  rmdir CLI11
+  rmdir magic_enum
+  git clone https://github.com/CLIUtils/CLI11.git
+  cd CLI11
+  mkdir build & cd build
+  cmake ..
+  make
+  // Go to BrachioGraph/pillow-resize/libs
+  git clone https://github.com/Neargye/magic_enum.git
+  cd magic_enum
+  mkdir build & cd build
+  cmake ..
+  make
+  // Go to BrachioGraph/pillow-resize/build
+  cmake ..
+  make
+```
+
+
 Run
 ```bash
   mkdir build & cd build
