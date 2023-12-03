@@ -9,6 +9,7 @@
 
 # Ignore build directory
 build-scara_gui-Desktop_Qt_6_6_0_GCC_64bit-Debug/
+build-scara_gui-Desktop_Qt_6_6_1_GCC_64bit-Debug/
 .vscode/
 simulate_embedded/.vscode/
 BrachioGraph/.vscode/

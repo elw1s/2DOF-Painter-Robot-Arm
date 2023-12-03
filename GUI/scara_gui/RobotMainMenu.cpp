@@ -5,6 +5,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     //sensorData = new QVector();
 
     label = new QLabel("Preview of drawing");
+    label->setStyleSheet("color: white;");
     projectionWidget = new RobotProjectionWidget(this);
     bottomButton = new QPushButton("View 3D Virtualization");
     bottomButton->setObjectName("bottomButton");
@@ -35,7 +36,9 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     loadingLabelLayout = new QHBoxLayout;
     textLabel = new QLabel();
     textLabel->setText("Device is not connected!");
+    textLabel->setStyleSheet("color: white;");
     loadingLabel = new QLabel(this);
+    loadingLabel->setStyleSheet("color: white;");
     loadingMovie = new QMovie(QString::fromStdString(LOADING_GIF)); // Provide the path to your loading GIF
     loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
     loadingLabel->setMovie(loadingMovie);
@@ -96,7 +99,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Increase width and height of sensorPlot (QCustomPlot)
     sensorPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    sensorPlot->setMaximumSize(400,600);
+    sensorPlot->setMaximumSize(450,400);
     // Modify size policies to control how the widgets expand in the layout
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     projectionWidget->setSizePolicy(sizePolicy);
@@ -119,7 +122,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformPlot->xAxis->setLabel("Time"); // Set label with current time
     waveformPlot->yAxis->setLabel("Servo Angles");
     waveformPlot->setMinimumSize(150, 130); // Set the minimum size for the QCustomPlot
-    waveformPlot->setMaximumSize(400,600);
+    waveformPlot->setMaximumSize(450,400);
     waveformPlot->setSizePolicy(sizePolicy);
     waveformPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
 
@@ -147,6 +150,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Add label for color and value key
     QHBoxLayout *legendLabelLayout = new QHBoxLayout;
+    legendLabelLayout->setSpacing(20); // Adjust the spacing between items
     redLabel = new QLabel();
     redLabel->setText("Shoulder Motor: 0");
     blueLabel = new QLabel();
@@ -164,70 +168,95 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformLayout->addLayout(legendLabelLayout);
     rightMiddleLayout->addLayout(waveformLayout);
 
+    //rightMiddleLayout->setContentsMargins(0, 0, 0, 0); // Adjust margins if needed
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->addLayout(rightTopLayout);
     rightLayout->addLayout(rightMiddleLayout);
-    rightLayout->addStretch(); // Add a stretch before the bottom button
-    //rightLayout->addWidget(bottomButton);
 
     QVBoxLayout *sliderLayout = new QVBoxLayout;
 
     // Slider 1 (Red)
     QSlider *sliderRed = new QSlider(Qt::Horizontal);
-    sliderRed->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #ed4046; background: #ed4046; height: 10px; border-radius: 5px; }"
-                             "QSlider::handle:horizontal { background-color: #ed4046; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
-                             "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }");
+    sliderRed->setStyleSheet(
+        "QSlider::groove:horizontal { border: 1px solid #ed4046; background: #ed4046; height: 4px; border-radius: 2px; }"
+        "QSlider::handle:horizontal { background-color: #ed4046; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
+        "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
+        );
     sliderRed->setRange(0, 90); // Modify the range as needed
+    sliderRed->setSingleStep(1); // Set the step size for sliderRed
+    sliderRed->setPageStep(10); // Set the page step size for sliderRed
     sliderRed->setSliderPosition(50); // Set initial slider position
     sliderRed->setMinimumSize(150, 60);  // Set minimum size for sliderRed
-    sliderRed->setMaximumSize(380, 100);  // Set maximum size for sliderRed
-    QLabel *labelRed = new QLabel("Shoulder Motor: 50");
-    sliderLayout->addWidget(labelRed);
+    sliderRed->setMaximumSize(400, 150);  // Set maximum size for sliderRed
+    sliderRed->setTickInterval(10);
+    sliderRed->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
+    QLabel *labelRed = new QLabel("50");
+    labelRed->setStyleSheet("color: #ed4046;");
+
     sliderLayout->addWidget(sliderRed);
+    sliderLayout->addWidget(labelRed, 0, Qt::AlignTop | Qt::AlignHCenter);
 
     // Slider 2 (Blue)
     QSlider *sliderBlue = new QSlider(Qt::Horizontal);
-    sliderBlue->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #327ba8; background: #327ba8; height: 10px; border-radius: 5px; }"
-                              "QSlider::handle:horizontal { background-color: #327ba8; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
-                              "QSlider::handle:horizontal:hover { background-color: #0000ff; border: 1px solid #ffffff; }");
+    sliderBlue->setStyleSheet(
+        "QSlider::groove:horizontal { border: 1px solid #327ba8; background: #327ba8; height: 4px; border-radius: 2px; }"
+        "QSlider::handle:horizontal { background-color: #327ba8; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
+        "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
+        );
     sliderBlue->setRange(-90, 90); // Modify the range as needed
+    sliderBlue->setSingleStep(1); // Set the step size for sliderRed
+    sliderBlue->setPageStep(10); // Set the page step size for sliderRed
     sliderBlue->setSliderPosition(30); // Set initial slider position
     sliderBlue->setMinimumSize(150, 60);  // Set minimum size for sliderRed
-    sliderBlue->setMaximumSize(380, 100);  // Set maximum size for sliderRed
-    QLabel *labelBlue = new QLabel("Elbow Motor: 30");
-    sliderLayout->addWidget(labelBlue);
+    sliderBlue->setMaximumSize(400, 150);  // Set maximum size for sliderRed
+    sliderBlue->setTickInterval(10);
+    sliderBlue->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
+    QLabel *labelBlue = new QLabel("30");
+    labelBlue->setStyleSheet("color: #327ba8;");
+
     sliderLayout->addWidget(sliderBlue);
+    sliderLayout->addWidget(labelBlue, 0, Qt::AlignTop | Qt::AlignHCenter);
+
 
     // Slider 3 (Green)
     QSlider *sliderGreen = new QSlider(Qt::Horizontal);
-    sliderGreen->setStyleSheet("QSlider::groove:horizontal { border: 1px solid #1bb310; background: #1bb310; height: 10px; border-radius: 5px; }"
-                               "QSlider::handle:horizontal { background-color: #1bb310; border: 1px solid #ffffff; width: 20px; margin: -10px; border-radius: 10px; }"
-                               "QSlider::handle:horizontal:hover { background-color: #00ff00; border: 1px solid #ffffff; }");
+    sliderGreen->setStyleSheet(
+        "QSlider::groove:horizontal { border: 1px solid #1bb310; background: #1bb310; height: 4px; border-radius: 2px; }"
+        "QSlider::handle:horizontal { background-color: #1bb310; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
+        "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
+        );
     sliderGreen->setRange(0, 100); // Modify the range as needed
+    sliderGreen->setSingleStep(1); // Set the step size for sliderRed
+    sliderGreen->setPageStep(10); // Set the page step size for sliderRed
     sliderGreen->setSliderPosition(70); // Set initial slider position
     sliderGreen->setMinimumSize(150, 60);  // Set minimum size for sliderRed
-    sliderGreen->setMaximumSize(380, 100);  // Set maximum size for sliderRed
-    QLabel *labelGreen = new QLabel("Lifting Motor: 70");
-    sliderLayout->addWidget(labelGreen);
+    sliderGreen->setMaximumSize(400, 150);  // Set maximum size for sliderRed
+    sliderGreen->setTickInterval(10);
+    sliderGreen->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
+    QLabel *labelGreen = new QLabel("70");
+    labelGreen->setStyleSheet("color: #1bb310;");
+
     sliderLayout->addWidget(sliderGreen);
+    sliderLayout->addWidget(labelGreen, 0, Qt::AlignTop | Qt::AlignHCenter);
+
 
     connect(sliderRed, &QSlider::valueChanged, this, [=](int value) {
-        labelRed->setText(QString("Red Slider Value: %1").arg(value));
+        labelRed->setText(QString("%1").arg(value));
         // Do something with the red slider value (value)
     });
 
     connect(sliderBlue, &QSlider::valueChanged, this, [=](int value) {
-        labelBlue->setText(QString("Blue Slider Value: %1").arg(value));
+        labelBlue->setText(QString("%1").arg(value));
         // Do something with the blue slider value (value)
     });
 
     connect(sliderGreen, &QSlider::valueChanged, this, [=](int value) {
-        labelGreen->setText(QString("Green Slider Value: %1").arg(value));
+        labelGreen->setText(QString("%1").arg(value));
         // Do something with the green slider value (value)
     });
     sliderLayout->setSpacing(0); // Adjust the spacing between widgets in the layout
-    sliderLayout->setContentsMargins(0, 0, 0, 0); // Adjust margins if needed
+    sliderLayout->setContentsMargins(0, 0, 0, 20); // Adjust margins if needed
     rightLayout->addLayout(sliderLayout);
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -239,7 +268,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     setButton->setFixedHeight(50); // Set the fixed height
     setButton->setStyleSheet("QPushButton#setButton {"
                               "    background-color: #33C2FF;"
-                              "    color: #424242;"
+                              "    color: white;"
                               "    font-family: Abel;"
                               "    font-size: 12px;"
                               "    border: 1px solid #767676;"
@@ -258,7 +287,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     defaultButton->setFixedHeight(50); // Set the fixed height
     defaultButton->setStyleSheet("QPushButton#defaultButton {"
                              "    background-color: #33C2FF;"
-                             "    color: #424242;"
+                             "    color: white;"
                              "    font-family: Abel;"
                              "    font-size: 12px;"
                              "    border: 1px solid #767676;"

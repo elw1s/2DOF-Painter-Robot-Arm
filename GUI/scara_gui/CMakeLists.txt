@@ -52,6 +52,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ExamplesWidget.cpp
         ExamplesApp.h
         ExamplesApp.cpp
+        XOXApp.cpp
+        XOXWidget.cpp
+        XOXWidget.h
+        XOXApp.h
+        SudokuWidget.h
+        SudokuWidget.cpp
+        NumberSelectionDialog.h
+        NumberSelectionDialog.cpp
+        SudokuApp.h
+        SudokuApp.cpp
 
 
     )

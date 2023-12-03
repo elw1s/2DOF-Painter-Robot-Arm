@@ -11,6 +11,8 @@
 #include "RobotMainMenu.h"
 #include "Settings.h"
 #include "ExamplesApp.h"
+#include "XOXApp.h"
+#include "SudokuApp.h"
 
 void setButtonStyle(QToolButton* button, bool isSelected,const QIcon& icon) {
     QPalette palette = button->palette();
@@ -50,6 +52,8 @@ int main(int argc, char *argv[]) {
     ExamplesApp examplesApp = new ExamplesApp();
     //RobotProjectionWidget robotProjectionWidget;
     RobotMainMenu  robotMainMenu = new RobotMainMenu();
+    XOXApp xoxApp = new XOXApp();
+    SudokuApp sudoku = new SudokuApp();
 
 
     // Create a QStackedWidget for the content on the right
@@ -58,7 +62,8 @@ int main(int argc, char *argv[]) {
     stackedWidget->addWidget(&examplesApp);
     stackedWidget->addWidget(&drawingApp);
     stackedWidget->addWidget(&imageUploader);
-
+    stackedWidget->addWidget(&xoxApp);
+    stackedWidget->addWidget(&sudoku);
 
     // Create buttons for DrawingApp and ImageUploader
     QToolButton *drawingAppButton = new QToolButton();
@@ -143,7 +148,7 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(playXOXButton, &QToolButton::clicked, [&]() {
         // Change the index and button styles accordingly
-        stackedWidget->setCurrentIndex(0); // Change index based on the actual position in stackedWidget
+        stackedWidget->setCurrentIndex(4); // Change index based on the actual position in stackedWidget
         setButtonStyle(robotProjectionButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
         setButtonStyle(playXOXButton, true,QIcon(QString::fromStdString(PLAY_XOX_TAB_SELECTED)));
         setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
@@ -154,7 +159,7 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(playSudokuButton, &QToolButton::clicked, [&]() {
         // Change the index and button styles accordingly
-        stackedWidget->setCurrentIndex(0); // Change index based on the actual position in stackedWidget
+        stackedWidget->setCurrentIndex(5); // Change index based on the actual position in stackedWidget
         setButtonStyle(robotProjectionButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
         setButtonStyle(playXOXButton, false,QIcon(QString::fromStdString(PLAY_XOX_TAB)));
         setButtonStyle(playSudokuButton, true,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB_SELECTED)));
