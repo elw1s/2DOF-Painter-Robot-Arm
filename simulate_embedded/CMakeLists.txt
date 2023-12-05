@@ -19,5 +19,5 @@ target_include_directories(server PUBLIC "${OPENCV_INCLUDE_DIR}" "${PILLOW_RESIZ
 target_link_directories(server PUBLIC "${OPENCV_LIB_DIR}")
 
 # link specific object files we need
-target_link_libraries(server PUBLIC opencv_imgcodecs opencv_core opencv_imgproc)
+target_link_libraries(server PUBLIC opencv_imgcodecs opencv_core opencv_imgproc PillowResize)
 

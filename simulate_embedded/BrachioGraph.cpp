@@ -26,8 +26,20 @@ void linesToFile(const std::vector<std::vector<std::pair<int, int>>>& lines, con
         jsonLines.push_back(jsonLine);
     }
 
-    std::ofstream fileToSave(filename);
-    fileToSave << std::setw(4) << jsonLines << std::endl;
+    std::ofstream fileToSave(filename, std::ios::out | std::ios::trunc);
+    
+    if (!fileToSave.is_open()) {
+        std::cerr << "Error opening file for writing: " << filename << std::endl;
+        return;
+    }
+
+    std::string jsonStr = jsonLines.dump();
+    std::cout << "****************************************************************" << jsonStr << "****************************************************************" << std::endl;
+    std::cout << "bef Number of jsonLines ==========> " << jsonLines.size() << std::endl;
+    fileToSave << std::setw(4) << jsonStr;
+    
+    std::cout << "aft Number of jsonLines ==========> " << jsonLines.size() << std::endl;
+    fileToSave.close();
 }
 
 // Direction vectors as std::pair<int, int>
@@ -190,7 +202,7 @@ cv::Mat resizeImage(const cv::Mat& image, int resolution, int divider = 1) {
     }
     cv::Size newSize(int(resolution / divider), int(resolution / divider * image.rows / image.cols));
     //cv::Mat resizedImage = utils::resize(image, newSize);
-    cv::Mat resizedImage = PillowResize::resize(image, newSize, 0);
+    cv::Mat resizedImage = PillowResize::resize(image, newSize, 3);
     if (resizedImage.rows > 0) {
      std::cout << "Values of the first row in resizeImage (after): ";
      for (int x = 0; x < resizedImage.cols; ++x) {
@@ -418,7 +430,6 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
     std::cout << "Generating contours..." << std::endl;
 
     cv::Vec3b pixel = image.at<cv::Vec3b>(0, 0);
-    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/imageBeforeFindEdgesCPP.jpg", image);
     image = find_edges(image);
 
     cv::Mat IM1 = image.clone();
@@ -427,26 +438,13 @@ std::vector<std::vector<std::pair<int, int>>> getcontours(cv::Mat image, int dra
     //cv::transpose(IM2, IM2);
     //cv::flip(IM2, IM2, 1);
     
-    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/imageAfterFindEdgesCPP.jpg", image);
-    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/IM1CPP.jpg", IM1);
-    cv::imwrite("/home/arda/Desktop/CSE396/BrachioGraph/images/IM2CPP.jpg", IM2);
-
     std::vector<std::vector<std::pair<int, int>>> dots1 = getdots(IM1);
     
     std::string svgDOTS1 = makesvg(dots1);
-    // Write SVG content to a file
-    std::string image_filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.jpeg";
-    std::ofstream dots1FILE(image_filename +"svgDOTS1CPP" + ".svg");
-    dots1FILE << svgDOTS1;
-    dots1FILE.close();
 
     std::vector<std::vector<std::pair<int, int>>> contours1 = connectdots(dots1);
 
     std::string svgContours1 = makesvg(contours1);
-    // Write SVG content to a file
-    std::ofstream contours1File(image_filename +"svgContours1CPP" + ".svg");
-    contours1File << svgContours1;
-    contours1File.close();
 
     std::vector<std::vector<std::pair<int, int>>> dots2 = getdots(IM2);
     std::vector<std::vector<std::pair<int, int>>> contours2 = connectdots(dots2);
@@ -619,8 +617,9 @@ void imageToJson(const std::string& imageFilename,int resolution = 1024,int draw
     lines = vectorise(imageFilename, resolution, drawContours, repeatContours, drawHatch, repeatHatch);
 
     //std::string filename = json_folder + imageFilename + ".json";
-    std::string filename = "/home/arda/Desktop/CSE396/GUI/scara_gui/tmp/sent.json";
+    std::string filename = "/home/arda/Desktop/CSE396/simulate_embedded/tmp/sent.json";
     //std::string filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json";
+    std::cout << "XXXXXXXXXXXX Number of lines:" << lines.size();
     linesToFile(lines, filename);
 }
 

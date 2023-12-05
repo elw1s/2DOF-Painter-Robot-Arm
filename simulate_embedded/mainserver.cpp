@@ -86,16 +86,16 @@ void* communicationThread(void* clientSocket){
         }
         else{
             //globalDataRecv[bytesRead] = '\0';
-            printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
+            //printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
             //printf("Data (%s) received from client!\n", globalDataRecv);
             
             for (int i = 0; i < MAX_DATA_SIZE; ++i) {
                 if (globalDataRecv[i] == '\0') {
                     break; // Stop printing when the null terminator is encountered
                 }
-                printf("%c",static_cast<char>(globalDataRecv[i]));
+                //printf("%c",static_cast<char>(globalDataRecv[i]));
             }
-            printf("\n");
+            //printf("\n");
             //Burada globalDataRecv() degerine göre işlem yap.
             
             pthread_mutex_unlock(&dataMutex);
@@ -140,12 +140,11 @@ void* communicationThread(void* clientSocket){
         }
 
         send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
-        printf("-------------- THE DATA IS SENT ---------------\n");
-        printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
+        //printf("-------------- THE DATA IS SENT ---------------\n");
+        //printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
         messagesWaitingToBeSend.pop();
-        printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
+        //printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);
-
     }
 }
 
@@ -179,7 +178,8 @@ void* server2Thread(void* arg) {
     //Apply BrachioGraph 
 
     BrachioGraph::imageToJson("../tmp/sent.jpg", 1024, 2, 1 , 16, 1);
-    readLines("../tmp/africa.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+    usleep(2000000);
+    readLines("/home/arda/Desktop/CSE396/simulate_embedded/tmp/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
     int lineNum = getLineNumber();
     printf("Line number: %d\n",lineNum);
     sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);

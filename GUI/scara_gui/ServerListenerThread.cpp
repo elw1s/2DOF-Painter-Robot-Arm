@@ -90,7 +90,7 @@ void ServerListenerThread::run() {
                         if(drawSelected)
                         {
                             // DOSYA PATH DEGİSTİR!!!
-                            QFile file("/home/ardakilic/Desktop/CSE396/GUI/scara_gui/tmp/image.jpg");
+                            QFile file("/home/arda/Desktop/CSE396/BrachioGraph/images/cat.jpeg");
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
                                 // Handle error or return an empty byte array
@@ -172,7 +172,7 @@ void ServerListenerThread::run() {
                         QString dataString = QString::fromUtf8(jsonFile);
 
                         // Write the string data to a file
-                        QFile outputFile("/home/ardakilic/Desktop/CSE396/simulate_embedded/test.json");
+                        QFile outputFile("/home/arda/Desktop/CSE396/simulate_embedded/tmp/received.json");
                         if (outputFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                             QTextStream outputStream(&outputFile);
                             outputStream << dataString;

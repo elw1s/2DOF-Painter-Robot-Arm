@@ -25,70 +25,82 @@ int generateRandomNumber2() {
 }
 
 int readLines(std::string filePath, std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex){
+    
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
-        if (!file.is_open()) {
-            std::cerr << "Unable to open file\n";
+    if (!file.is_open()) {
+        std::cerr << "Unable to open file\n";
+        return -1;
+    }
+
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::string jsonData;
+    char ch;
+    int bracketCounter = 0;
+    std::streamsize bytesRead = 0;
+
+    while (file.get(ch) && bracketCounter < 3) {
+        jsonData += ch;
+        bytesRead++;
+
+        if (ch == '[') {
+            bracketCounter--;
+        } else if (ch == ']') {
+            bracketCounter++;
+        }
+    }
+
+    file.close();
+
+        std::cout << "\n\n\n" << jsonData << "\n\n\n";
+
+    rapidjson::Document doc;
+    doc.Parse(jsonData.c_str());
+
+    size_t chunkSize;
+    int offset = 0;
+    while (offset < size) {
+        chunkSize = std::min<size_t>(4096, static_cast<size_t>(size - offset));
+
+        char* messageBuffer = new char[chunkSize + 2]; // +1 for '9' character, +1 for null-termination
+        messageBuffer[0] = '2'; // Set the first character to '9'
+
+        // Copy the data into the message buffer
+        strncpy(messageBuffer + 1, jsonData.c_str() + offset, chunkSize);
+        messageBuffer[chunkSize + 1] = '\0'; // Null-terminate the string
+
+        pthread_mutex_lock(mutex);
+        messageQueue.push(messageBuffer);
+        printf("%ldB put into messageQueue\n", chunkSize);
+
+        // Signal that a new message is available
+        pthread_cond_signal(condition);
+        printf("Signaled\n");
+        pthread_mutex_unlock(mutex);
+
+        offset += chunkSize;
+    }
+    if (doc.HasParseError()) {
+            std::cerr << "JSON parse error\n";
+            delete[] jsonData.c_str();
             return -1;
+    }
+
+    // Check if it's an array of arrays (2D array)
+    for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
+        if (doc[i].IsArray()) {
+            rapidjson::StringBuffer buffer;
+            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+            doc[i].Accept(writer);
+            lines.push_back(buffer.GetString());
         }
-
-        std::streamsize size = file.tellg();
-        file.seekg(0, std::ios::beg);
-
-        char* jsonData = new char[size];
-        if (!file.read(jsonData, size)) {
-            std::cerr << "Failed to read file\n";
-            file.close();
-            delete[] jsonData;
-            return -1;
-        }
-        file.close();
-
-        rapidjson::Document doc;
-        doc.Parse(jsonData);
-
-        size_t chunkSize;
-        int offset = 0;
-        while (offset < size) {
-            chunkSize = std::min<size_t>(4096, static_cast<size_t>(size - offset));
-
-            char* messageBuffer = new char[chunkSize + 2]; // +1 for '9' character, +1 for null-termination
-            messageBuffer[0] = '2'; // Set the first character to '9'
-
-            // Copy the data into the message buffer
-            strncpy(messageBuffer + 1, jsonData + offset, chunkSize);
-            messageBuffer[chunkSize + 1] = '\0'; // Null-terminate the string
-
-            pthread_mutex_lock(mutex);
-            messageQueue.push(messageBuffer);
-            printf("%ldB put into messageQueue\n", chunkSize);
-
-            // Signal that a new message is available
-            pthread_cond_signal(condition);
-            printf("Signaled\n");
-            pthread_mutex_unlock(mutex);
-
-            offset += chunkSize;
-        }
-        if (doc.HasParseError()) {
-                std::cerr << "JSON parse error\n";
-                delete[] jsonData;
-                return -1;
-        }
-
-        // Check if it's an array of arrays (2D array)
-        for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
-            if (doc[i].IsArray()) {
-                rapidjson::StringBuffer buffer;
-                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-                doc[i].Accept(writer);
-                lines.push_back(buffer.GetString());
-            }
-        }
-        
-        std::cout << "Number of lines: "<< numberOfLines << std::endl;
-        numberOfLines = lines.size();
-        temp = lines;
-        return numberOfLines;
+    }
+    
+    std::cout << "Number of lines: "<< numberOfLines << std::endl;
+    numberOfLines = lines.size();
+    temp = lines;
+    return numberOfLines;
 }
 
 int sendLineNumber(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex){
