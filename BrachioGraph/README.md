@@ -16,6 +16,11 @@ Then install
   sudo apt install nlohmann-json3-dev
   sudo apt install xtensor-dev
   sudo apt-get install libopencv-dev
+  wget https://github.com/joan2937/pigpio/archive/master.zip
+  unzip master.zip
+  cd pigpio-master
+  make
+  sudo make install
 ```
 
 Download required projects
