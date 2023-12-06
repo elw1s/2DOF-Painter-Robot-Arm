@@ -1,10 +1,23 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <xtensor/xarray.hpp>
-#include <xtensor/xio.hpp>
-#include <xtensor/xview.hpp>
+#include <vector>
+#include <numeric>
+//#include <xtensor/xarray.hpp>
+//#include <xtensor/xio.hpp>
+//#include <xtensor/xview.hpp>
 
 namespace utils{
+
+    template <typename T>
+    double mean(const std::vector<T>& v) {
+        if (v.empty()) {
+            throw std::invalid_argument("Cannot compute mean of an empty vector");
+        }
+
+        T sum = std::accumulate(v.begin(), v.end(), T{});
+        return static_cast<double>(sum) / v.size();
+    }
+
 
     cv::Rect getSafeBox(const cv::Size& size, int resample, const cv::Rect& box) {
         const double filter_support = cv::INTER_CUBIC - 0.5;

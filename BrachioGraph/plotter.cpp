@@ -7,15 +7,15 @@
 #include <thread>
 #include <stdexcept>
 #include <iomanip>
-#include <xtensor/xtensor.hpp>
-#include <xtensor/xarray.hpp>
 #include <map>
 #include <set>
 #include <cmath>
-//#include "utils.cpp"
+#include <functional>
+#include "utils.cpp"
 #include <pigpio.h>
 
 //namespace ct = cturtle;
+class Plotter;
 
 class Pen{
     private:
@@ -151,8 +151,10 @@ private:
     std::chrono::steady_clock::time_point last_moved;
     double angle_1;
     double angle_2;
-    double (*angles_to_pw_1)(double);
-    double (*angles_to_pw_2)(double);
+    //double (*angles_to_pw_1)(double);
+    //double (*angles_to_pw_2)(double);
+    std::function<double(double)> angles_to_pw_1;
+    std::function<double(double)> angles_to_pw_2;
     double previous_pw_1;
     double previous_pw_2;
     double active_hysteresis_correction_1;
@@ -169,10 +171,34 @@ private:
 
 public:
 
-    //Silebilirsin
-    static double static_angles_to_pw_1_wrapper(Plotter* plotter, double angle){
-        return plotter->naive_angles_to_pulse_widths_1(angle);
+    double get_angle_1(){
+        return this->angle_1;
     }
+
+    double get_angle_2(){
+        return this->angle_2;
+    }
+
+    std::set<double> get_angle_used_1(){
+        return this->angles_used_1;
+    }
+
+    std::set<double> get_angle_used_2(){
+        return this->angles_used_2;
+    }
+
+    std::set<double> get_pulse_widths_used_1(){
+        return this->pulse_widths_used_1;
+    }
+
+    std::set<double> get_pulse_widths_used_2(){
+        return this->pulse_widths_used_2;
+    }
+
+    //Silebilirsin
+    //static double static_angles_to_pw_1_wrapper(Plotter* plotter, double angle){
+    //    return plotter->naive_angles_to_pulse_widths_1(angle);
+    //}
 
     double naive_angles_to_pulse_widths_1(double angle){
         return (angle - this->servo_1_parked_angle) * this->servo_1_degree_ms + this->servo_1_parked_pw;
@@ -567,7 +593,8 @@ public:
                 servo_1_angle_pws.push_back(std::make_pair(angle, pw));
                 differences.push_back((acw - cw) / 2);
             }
-            this->hysteresis_correction_1 = xt::mean(differences);
+            //this->hysteresis_correction_1 = xt::mean(differences);
+            this->hysteresis_correction_1 = utils::mean(differences);
         }
 
         if(!servo_1_angle_pws.empty()){
@@ -584,14 +611,9 @@ public:
 
         }
         else{
-
-            //#include <functional>
-            //    std::function<double(double)> angles_to_pw_1;
-            //    std::function<double(double)> angles_to_pw_2;
-        //            angles_to_pw_1 = [this](double angle) { return naive_angles_to_pulse_widths_1(angle); };
-         //            angles_to_pw_2 = [this](double angle) { return naive_angles_to_pulse_widths_2(angle); };
-           
-            this->angles_to_pw_1 = &Plotter::static_angles_to_pw_1_wrapper;
+            this->angles_to_pw_1 = [this](double angle) {return this->naive_angles_to_pulse_widths_1(angle);};
+            //this->angles_to_pw_1 = &Plotter::naive_angles_to_pulse_widths_1;
+            //this->angles_to_pw_1 = std::bind(&Plotter::naive_angles_to_pulse_widths_1, this, std::placeholders::_1);
         }
 
         this->servo_2_parked_pw = servo_2_parked_pw;
@@ -614,7 +636,8 @@ public:
                 servo_2_angle_pws.push_back(std::make_pair(angle, pw));
                 differences.push_back((acw - cw) / 2);
             }
-            this->hysteresis_correction_2 = xt::mean(differences);
+            //this->hysteresis_correction_2 = xt::mean(differences);
+            this->hysteresis_correction_2 = utils::mean(differences);
         }
 
         if(!servo_2_angle_pws.empty()){
@@ -631,7 +654,9 @@ public:
 
         }
         else{
-            this->angles_to_pw_2 = &this->naive_angles_to_pulse_widths_2;
+            this->angles_to_pw_2 = [this](double angle) {return this->naive_angles_to_pulse_widths_2(angle);};
+            //this->angles_to_pw_2 = &this->naive_angles_to_pulse_widths_2;
+            //this->angles_to_pw_2 = std::bind(&Plotter::angles_to_pw_2, this, std::placeholders::_1);
         }
 
         this->previous_pw_1 = this->previous_pw_2 = 0;
