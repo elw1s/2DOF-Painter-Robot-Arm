@@ -11,8 +11,10 @@
 #include <set>
 #include <cmath>
 #include <functional>
+#include <fstream>
 #include "utils.cpp"
 #include <pigpio.h>
+#include "rapidjson/document.h"
 
 //namespace ct = cturtle;
 class Plotter;
@@ -448,10 +450,190 @@ public:
             this->xy(start_x, start_y, angular_step, wait, resolution, true);
         }
     }
+    
+    std::tuple<bool, double, double, double, double, double> analyse_lines(std::vector<std::vector<std::vector<double>>> lines, bool rotate = false, std::array<int, 4> bounds = {9999,9999,9999,9999}){
+       
+        if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
+            bounds = this->bounds;
+        }
+    
+        std::set<double> x_values_in_lines;
+        std::set<double> y_values_in_lines;
+    
+        for (const auto& line : lines) {
+            for (const auto& point : line) {
+                x_values_in_lines.insert(point[0]);
+                y_values_in_lines.insert(point[1]);
+            }
+        }
 
-    void plot_lines(){
+        int min_x = *std::min_element(x_values_in_lines.begin(), x_values_in_lines.end());
+        int max_x = *std::max_element(x_values_in_lines.begin(), x_values_in_lines.end());
+        int min_y = *std::min_element(y_values_in_lines.begin(), y_values_in_lines.end());
+        int max_y = *std::max_element(y_values_in_lines.begin(), y_values_in_lines.end());
+
+        int x_range = max_x - min_x;
+        int y_range = max_y - min_y;
+        int box_x_range = bounds[2] - bounds[0];
+        int box_y_range = bounds[3] - bounds[1];
+
+        double x_mid_point = (max_x + min_x) / 2.0;
+        double y_mid_point = (max_y + min_y) / 2.0;
+        double box_x_mid_point = (bounds[0] + bounds[2]) / 2.0;
+        double box_y_mid_point = (bounds[1] + bounds[3]) / 2.0;
+
+        double divider, temp;
+        
+        if ((x_range >= y_range && box_x_range >= box_y_range) ||
+            (x_range <= y_range && box_x_range <= box_y_range)) {
+            
+            divider = std::max((double)x_range / box_x_range, (double)y_range / box_y_range);
+            rotate = false;
+        } else {
+            temp = std::max((double)x_range / box_y_range, (double)y_range / box_x_range);
+            divider = temp;
+            rotate = true;
+            std::swap(x_mid_point, y_mid_point);
+        }
+
+        return std::make_tuple(rotate, x_mid_point, y_mid_point, box_x_mid_point, box_y_mid_point, divider);
+    }
+
+    std::vector<std::vector<std::vector<double>>> rotate_and_scale_lines(std::vector<std::vector<std::vector<double>>> lines, bool rotate = false, bool flip = false, std::array<int, 4> bounds = {9999,9999,9999,9999})
+    {
+        auto analysed_lines = this->analyse_lines(lines, rotate, bounds);
+
+        rotate = std::get<0>(analysed_lines);
+        double x_mid_point = std::get<1>(analysed_lines);
+        double y_mid_point = std::get<2>(analysed_lines);
+        double box_x_mid_point = std::get<3>(analysed_lines);
+        double box_y_mid_point = std::get<4>(analysed_lines);
+        double divider = std::get<5>(analysed_lines);
+
+        for (auto& line : lines) {
+            for (auto& point : line) {
+                if (rotate) {
+                    std::swap(point[0], point[1]);
+                }
+
+                double x = point[0];
+                x = x - x_mid_point;
+                x = x / divider;
+
+                if (flip ^ rotate) {
+                    x = -x;
+                }
+
+                x = x + box_x_mid_point;
+
+                double y = point[1];
+                y = y - y_mid_point;
+                y = y / divider;
+                y = y + box_y_mid_point;
+
+                point[0] = x;
+                point[1] = y;
+            }
+        }
+
+        return lines;
+    }
+
+    void plot_file(char * filename = "",std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999, double wait = 9999, double resolution = 9999){
+
+        if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
+            bounds = this->bounds;
+        }
+
+        std::ifstream file(filename);
+        if (file.is_open()) {
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            file.close();
+
+            std::string json_str = buffer.str();
+
+            rapidjson::Document doc;
+            doc.Parse(json_str.c_str());
+
+            if (!doc.IsArray()) {
+                std::cerr << "Invalid JSON format!" << std::endl;
+                return;
+            }
+
+            std::vector<std::vector<std::vector<double>>> lines;
+
+            for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
+                if (!doc[i].IsArray()) {
+                    std::cerr << "Invalid line format!" << std::endl;
+                    return;
+                }
+
+                std::vector<std::vector<double>> line;
+
+                for (rapidjson::SizeType j = 0; j < doc[i].Size(); ++j) {
+                    if (!doc[i][j].IsArray() || doc[i][j].Size() != 2 || !doc[i][j][0].IsInt() || !doc[i][j][1].IsInt()) {
+                        std::cerr << "Invalid point format in line!" << std::endl;
+                        return;
+                    }
+
+                    double x = doc[i][j][0].GetDouble();
+                    double y = doc[i][j][1].GetDouble();
+
+                    line.push_back({x, y});
+                }
+
+                lines.push_back(line);
+            }
+
+            this->plot_lines(lines, bounds, angular_step, wait, resolution, true);
+        } else {
+            std::cerr << "Unable to open file" << std::endl;
+        }
+    }
+
+    double round(double number, int digits) {
+        double multiplier = std::pow(10.0, digits);
+        return std::round(number * multiplier) / multiplier;
+    }
+
+    void plot_lines(std::vector<std::vector<std::vector<double>>> lines, std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999 
+        ,double wait = 9999, double resolution = 9999, bool flip = false, bool rotate = false)
+    {
+        if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
+            bounds = this->bounds;
+        }
+        
+
+        //Çizilen lineları desktopa gönderirken bu fonksiyon öncesini gönder.
+        lines = this->rotate_and_scale_lines(lines, false, true, bounds);
+
+        for(const auto& line : lines){
+            double x, y;
+            x = line[0][0];
+            y = line[0][1];
+
+            if (round(this->x,1) != round(x,1) || round(this->y,1) != round(y,1)) {
+                this->xy(x, y, angular_step, wait, resolution);
+            }
+
+            for (size_t i = 1; i < line.size(); ++i) {
+                x = line[i][0];
+                y = line[i][1];
+                this->xy(x, y,angular_step,wait, resolution, true);
+            }
+
+            std::cout << "Çizilen Line: ";
+            for (const auto& point : line) {
+                std::cout << "(" << point[0] << ", " << point[1] << ") ";
+            }
+            std::cout << std::endl;        
+        }
+
+        this->park();
 
     }
+
 
     int left(){
         return this->bounds[0];

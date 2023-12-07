@@ -18,4 +18,4 @@ target_link_directories(test PUBLIC "${OPENCV_LIB_DIR}")
 # link specific object files we need
 target_link_libraries(test PUBLIC opencv_imgcodecs opencv_core opencv_imgproc PillowResize pigpio)
 
-#find_package(PillowResize REQUIRED)
+find_package(PillowResize REQUIRED)

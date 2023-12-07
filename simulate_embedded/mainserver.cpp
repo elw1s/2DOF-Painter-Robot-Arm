@@ -179,7 +179,7 @@ void* server2Thread(void* arg) {
 
     BrachioGraph::imageToJson("../tmp/sent.jpg", 1024, 2, 1 , 16, 1);
     usleep(2000000);
-    readLines("/home/arda/Desktop/CSE396/simulate_embedded/tmp/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+    readLines("/home/ardakilic/Desktop/CSE396/simulate_embedded/tmp/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
     int lineNum = getLineNumber();
     printf("Line number: %d\n",lineNum);
     sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);

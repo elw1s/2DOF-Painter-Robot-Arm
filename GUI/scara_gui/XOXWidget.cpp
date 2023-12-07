@@ -19,7 +19,7 @@ XOXWidget::XOXWidget(QWidget *parent) : QWidget(parent) {
             button->setMaximumSize(maxButtonSize);
 
             // Set style for the button
-            button->setStyleSheet("QPushButton { background-color: white; border: 1px solid black; }");
+            button->setStyleSheet("QPushButton { color:black; background-color: white; border: 1px solid black; }");
 
             // Set text properties
             button->setFont(QFont("Arial", 14));
