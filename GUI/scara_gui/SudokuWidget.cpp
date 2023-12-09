@@ -18,16 +18,16 @@ SudokuWidget::SudokuWidget(QWidget *parent) : QWidget(parent) {
             button->setFont(QFont("Arial", 45));
 
             if((row == 2 && col == 2) || (row == 2 && col == 5) || (row == 5 && col == 2) || (row == 5 && col == 5)){
-                button->setStyleSheet("color: black; background-color: white; margin-bottom: 3px; margin-right: 3px;");
+                button->setStyleSheet("color: black; background-color: white; margin-bottom: 3px; margin-right: 3px; border: 1px solid black;");
             }
             else if(row == 2 || row == 5){
-                button->setStyleSheet("color: black; background-color: white; margin-bottom: 3px;");
+                button->setStyleSheet("color: black; background-color: white; margin-bottom: 3px; border: 1px solid black;");
             }
             else if(col == 2 || col == 5){
-                button->setStyleSheet("color: black; background-color: white; margin-right: 3px;");
+                button->setStyleSheet("color: black; background-color: white; margin-right: 3px; border: 1px solid black;");
             }
             else{
-                button->setStyleSheet("color: black; background-color: white; ");
+                button->setStyleSheet("color: black; background-color: white; border: 1px solid black;");
             }
 
 
@@ -51,20 +51,20 @@ void SudokuWidget::onCellClicked() {
     if(selectedCell != QPoint(col,row)){
         QPushButton *lastClickedButton = cellButtons[selectedCell.y() * 9 + selectedCell.x()];
         if(lastClickedButton){
-            lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black;");
+            lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black; margin-bottom: 3px; margin-right: 3px;");
         }
     }
 
     selectedCell = QPoint(col, row);
 
     if((row == 2 && col == 2) || (row == 2 && col == 5) || (row == 5 && col == 2) || (row == 5 && col == 5)){
-        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; border-bottom: 2px solid black; margin-bottom: 3px; margin-right: 3px;");
+        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; margin-bottom: 3px; margin-right: 3px;");
     }
     else if(row == 2 || row == 5){
-        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; border-bottom: 2px solid black; margin-bottom: 3px;");
+        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; margin-bottom: 3px;");
     }
     else if(col == 2 || col == 5){
-        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; border-bottom: 2px solid black; margin-right: 3px;");
+        clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black; margin-right: 3px;");
     }
     else{
         clickedButton->setStyleSheet("color: black; background-color: lightblue; border: 1px solid black;");

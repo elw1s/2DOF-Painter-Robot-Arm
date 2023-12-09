@@ -90,10 +90,12 @@ void DrawingApp::resetDrawing() {
 }
 
 void DrawingApp::saveImage() {
-    QString folderPath = "./tmp";
-    QString filePath = folderPath + "/image.jpg";
+    QDir dir;
+    dir = dir.temp();
+    QString filePath = dir.path() + "/cse396/image.jpg";
     drawingArea->getPixmap().toImage().save(filePath, "JPG");
     emit drawButtonClicked();
+
 }
 
 
@@ -103,15 +105,34 @@ void DrawingApp::setPenStroke(int stroke) {
 }
 
 void DrawingApp::setEraserTrue(){
+    if(drawingArea->isEraserActive()){
+
+        eraserButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+        penButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+        drawingArea->eraserMode(false);
+        drawingArea->penMode(false);
+    }
+    else{
         eraserButton->setStyleSheet("border: 1px solid #33C2FF; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
         penButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
         drawingArea->eraserMode(true);
+        drawingArea->penMode(false);
+    }
 }
 
 void DrawingApp::setEraserFalse(){
+    if(drawingArea->isPenActive()){
+            penButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+            eraserButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+            drawingArea->eraserMode(false);
+            drawingArea->penMode(false);
+    }
+    else{
         penButton->setStyleSheet("border: 1px solid #33C2FF; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
         eraserButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
         drawingArea->eraserMode(false);
+        drawingArea->penMode(true);
+    }
 }
 
 QPushButton* DrawingApp::createStyledButton(const QIcon &icon, const QSize &size, const QString &textColor,
@@ -142,5 +163,13 @@ QPushButton* DrawingApp::createStyledButton(const QIcon &icon, const QSize &size
         });
 
         return button;
+}
+
+//Freeze the app
+void DrawingApp::robotDrawingSignal(const bool status){
+        if(status)
+            qDebug() << "Robot is drawing...";
+        else
+            qDebug() << "Robot is NOT drawing...";
 }
 

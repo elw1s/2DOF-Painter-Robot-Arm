@@ -17,6 +17,9 @@ private:
     XOXWidget *gameWidget;
     QPushButton* resetButton;
     QLabel *gameStatusLabel;
+
+public slots:
+    void robotDrawingSignal(const bool status);
 };
 
 #endif // XOXAPP_H

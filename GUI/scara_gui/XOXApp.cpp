@@ -46,3 +46,11 @@ void XOXApp::resetTable() {
     resetButton->setStyleSheet("background-color: grey;"); // Set button color to grey
 
 }
+
+//Freeze the app
+void XOXApp::robotDrawingSignal(const bool status){
+    if(status)
+        qDebug() << "Robot is drawing...";
+    else
+        qDebug() << "Robot is NOT drawing...";
+}

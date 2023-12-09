@@ -19,11 +19,15 @@ public:
 private slots:
     void onAddFile();
     void onClippedImage(const QPixmap& pixmap);
+    void onRotatedImage(const QPixmap& pixmap, qreal rotation, QPointF transformOrigin);
     void onCropButtonClicked();
+    void onRotateButtonClicked();
     void onImageDropped();
     void saveImage();
     QPushButton* createStyledButton(const QIcon &icon, const QSize &size, const QString &textColor,
                                     const QString &borderColor, QWidget *parent);
+public slots:
+    void robotDrawingSignal(const bool status);
 private:
     QPushButton* cropButton;
     QPushButton* rotateButton;

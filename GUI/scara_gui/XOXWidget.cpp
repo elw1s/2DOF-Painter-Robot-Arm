@@ -162,7 +162,7 @@ Move XOXWidget::minimax(bool isMaximizing) {
 }
 
 void XOXWidget::saveMoveImage(){
-    QString fileName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".jpeg";
+    //QString fileName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".jpeg";
 
     // Create a QImage with the size of the grid
     QImage image(180 * 3, 180 * 3, QImage::Format_RGB32);
@@ -184,11 +184,15 @@ void XOXWidget::saveMoveImage(){
     painter.drawText(xPosition, "X");
     painter.drawText(oPosition, "O");
 
-    QString filePath = "/home/ardakilic/Desktop/CSE396/GUI/scara_gui/GameBoards/tictactoe/" + fileName; // Replace with your desired folder path
+    QDir dir;
+    dir = dir.temp();
+    dir.setPath(dir.path()+ "/cse396");
+    QString filePath = dir.path() + "/image.jpg";
     image.save(filePath);
 }
 
-// Function to make the computer's move using minimax
+// ŞU AN OYUN BİTİNCE, EĞER USER KAZANSA BİLE BİLGİSAYARIN HAMLESİNİ DE KOYUYOR
+
 void XOXWidget::makeComputerMove() {
     if (isGameOver) {
         return;
@@ -203,13 +207,13 @@ void XOXWidget::makeComputerMove() {
         buttons[bestMove.index]->setEnabled(false);
         lastMoveO = buttons[bestMove.index];
         isUserTurn = true;
-        saveMoveImage();
         checkGameStatus();
 
         // After the computer's move, check if the game is over
         if (!isGameOver) {
             isUserTurn = true; // Set back to user's turn
             checkGameStatus(); // Check if the game is over after the AI's move
+            saveMoveImage();
         }
     }
 }

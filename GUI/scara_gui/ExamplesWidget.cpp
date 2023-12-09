@@ -62,6 +62,7 @@ ExamplesWidget::ExamplesWidget(QWidget *parent) : QWidget(parent) {
     //gridLayout->setSpacing(1);
 
     gridLayout->setContentsMargins(5, 5, 5, 5); // Adjust margins for spacing
+    gridLayout->setVerticalSpacing(30); // Set vertical spacing between buttons
 
     int row = 0;
     int col = 0;
@@ -90,12 +91,15 @@ QPushButton* ExamplesWidget::createImageButton(const QString &filePath) {
     button->setFixedSize(300, 300); // Square button size
 
     // Apply border to the button
-    button->setStyleSheet("QPushButton { border: 2px solid white; }");
+    button->setStyleSheet("QPushButton { border: 2px solid white;}");
 
     QLabel *imageLabel = new QLabel(button);
     imageLabel->setScaledContents(true);
     imageLabel->setGeometry(5, 5, 290, 290); // Leave 5px space for the image
     imageLabel->setAlignment(Qt::AlignCenter);
+
+    // Set white background for the QLabel
+    imageLabel->setStyleSheet("background-color: white;");
 
     QPixmap pixmap(filePath);
     if (!pixmap.isNull()) {
@@ -108,6 +112,7 @@ QPushButton* ExamplesWidget::createImageButton(const QString &filePath) {
 
     return button;
 }
+
 void ExamplesWidget::imageButtonClicked() {
     QPushButton *clickedButton = qobject_cast<QPushButton*>(sender());
     if (clickedButton) {

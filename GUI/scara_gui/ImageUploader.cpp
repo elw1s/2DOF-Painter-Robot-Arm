@@ -24,7 +24,7 @@ ImageUploader::ImageUploader(QWidget* parent)
 
     QIcon rotateIcon(QString::fromStdString(ROTATE_ICON)); // Replace ":/icons/white_pen_icon.png" with your actual icon path
     rotateButton = createStyledButton(rotateIcon, iconSize, "#FFFFFF", "#767676", this);
-    //connect(cropButton, &QPushButton::clicked, this, &ImageUploader::onCropButtonClicked);
+    connect(rotateButton, &QPushButton::clicked, this, &ImageUploader::onRotateButtonClicked);
     topLayout->addWidget(rotateButton);
 
     m_graphicsView = new QGraphicsView(this);
@@ -69,6 +69,7 @@ ImageUploader::ImageUploader(QWidget* parent)
     m_graphicsView->setScene(m_dragdropScene);
 
     connect(m_clipScene, &CropFeature::clippedImage, this, &ImageUploader::onClippedImage);
+    connect(m_clipScene, &CropFeature::rotatedImage, this, &ImageUploader::onRotatedImage);
     connect(m_dragdropScene, &DragDropScene::imageDropped, this, &ImageUploader::onImageDropped);
 }
 
@@ -97,12 +98,37 @@ void ImageUploader::onClippedImage(const QPixmap& pixmap)
     m_clipScene->setImage(pixmap);
 }
 
+void ImageUploader::onRotatedImage(const QPixmap& pixmap, qreal rotation, QPointF transformOrigin)
+{
+    m_clipScene->setImage(pixmap, rotation, transformOrigin);
+}
+
 void ImageUploader::onCropButtonClicked()
 {
-    cropButton->setStyleSheet("border: 1px solid #33C2FF; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    if(m_clipScene->isCropEnabled()){
+        cropButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    }
+    else{
+        cropButton->setStyleSheet("border: 1px solid #33C2FF; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    }
     addFileButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
     rotateButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
     m_clipScene->setCropEnabled(!m_clipScene->isCropEnabled());
+    m_clipScene->setRotateEnabled(false);
+}
+
+void ImageUploader::onRotateButtonClicked()
+{
+    if(m_clipScene->isRotateEnabled()){
+        rotateButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    }
+    else{
+        rotateButton->setStyleSheet("border: 1px solid #33C2FF; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    }
+    addFileButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    cropButton->setStyleSheet("border: 1px solid #767676; background-color: rgba(28, 28, 28, 0); color: #FFFFFF;");
+    m_clipScene->setRotateEnabled(!m_clipScene->isRotateEnabled());
+    m_clipScene->setCropEnabled(false);
 }
 
 void ImageUploader::onImageDropped() {
@@ -157,12 +183,21 @@ void ImageUploader::saveImage() {
 
     QPixmap croppedPixmap = m_clipScene->getCroppedImage();
     if (!croppedPixmap.isNull()) {
-        QString folderPath = "../tmp"; // Relative path to the 'xz' folder from the application's location
-        QString filePath = folderPath + "/image.jpg"; // Path to the 'xz' folder with the desired file name
-
-        croppedPixmap.toImage().save(filePath, "JPG");
+        QDir dir;
+        dir = dir.temp();
+        QString filePath = dir.path() + "/cse396/image.jpg";
+        bool saved = croppedPixmap.toImage().save(filePath, "JPG");
+        qDebug() << "The image is saved: " << saved;
     } else {
         QMessageBox::warning(this, "Warning", "No cropped image available to save!");
     }
     emit drawButtonClicked();
+}
+
+//Freeze the app
+void ImageUploader::robotDrawingSignal(const bool status){
+    if(status)
+        qDebug() << "Robot is drawing...";
+    else
+        qDebug() << "Robot is NOT drawing...";
 }

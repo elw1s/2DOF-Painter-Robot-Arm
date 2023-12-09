@@ -321,13 +321,13 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     }
 
 
-    void RobotMainMenu::setButtonClicked(){
+void RobotMainMenu::setButtonClicked(){
 
-    }
+}
 
-    void RobotMainMenu::defaultButtonClicked(){
+void RobotMainMenu::defaultButtonClicked(){
 
-    }
+}
 
 void RobotMainMenu::onUpdateTimerServo() {
     if (serverListenerThread && serverListenerThread->isRunning()){
@@ -452,6 +452,7 @@ void RobotMainMenu::initializeServerListener() {
                 this, &RobotMainMenu::updateSensorGraph);
         connect(serverListenerThread, &ServerListenerThread::servoAngles,
                 this, &RobotMainMenu::updateServoAngleGraph);
+        connect(serverListenerThread, &ServerListenerThread::drawingStatus, this, &RobotMainMenu::robotDrawingSignal);
         serverListenerThread->start();
         updateTimerSensor->start(1000);
         updateTimerServo->start(1000);
@@ -459,6 +460,21 @@ void RobotMainMenu::initializeServerListener() {
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";
     }
+}
+
+void RobotMainMenu::robotDrawingSignal(const bool status){
+    emit drawingStatus(status);
+    if(loadingProgressBar->isVisible() && status){
+        loadingProgressBar->setValue(0);
+        projectionWidget->clear();
+    }
+    else if(status){
+        //Çizim yapılıyor
+    }
+    else{
+        //Çizim yapılmıyor
+    }
+
 }
 
 //Eğer server bağlı değilse draw butonuna tıklanılmasın
@@ -494,6 +510,7 @@ void RobotMainMenu::showLoadingBar(int value) {
         loadingMovie->stop(); // Stop the loading circle animation
         loadingLabel->setVisible(false); // Hide the loading movie
         textLabel->setVisible(false);
+        qDebug() << "value=" << value << " **this->totalLine="<< this->totalLine;
         if(this->totalLine > 0){
             loadingProgressBar->setValue((value * 100) / this->totalLine); // Set the loading bar value
         }

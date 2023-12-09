@@ -30,7 +30,7 @@
                 drawLineTo(lastPoint, currentPos,QColor(255,255,255));
 
             }
-            else{
+            else if(pen){
                 drawLineTo(lastPoint, currentPos,QColor(0,0,0));
 
             }
@@ -43,7 +43,7 @@
             if(eraser){
                 drawLineTo(lastPoint, event->pos(),QColor(255,255,255));
             }
-            else{
+            else if(pen){
                 drawLineTo(lastPoint, event->pos(),QColor(0,0,0));
             }
             drawing = false;
@@ -90,6 +90,18 @@
 
     void DrawingArea::eraserMode(bool mode){
         eraser = mode;
+    }
+
+    void DrawingArea::penMode(bool mode){
+        pen = mode;
+    }
+
+    bool DrawingArea::isEraserActive(){
+        return eraser;
+    }
+
+    bool DrawingArea::isPenActive(){
+        return pen;
     }
 
     void DrawingArea::clearDrawing() {

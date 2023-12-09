@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QCoreApplication>
 #include "DrawingArea.h"  // Include DrawingArea header
 #include "ImagePathsConfig.h"
 
@@ -25,6 +26,9 @@ private slots:
     void resetDrawing();
     QPushButton* createStyledButton(const QIcon &icon, const QSize &size, const QString &textColor,
                                     const QString &borderColor, QWidget *parent);
+
+public slots:
+    void robotDrawingSignal(const bool status);
 private:
     DrawingArea *drawingArea;
     QPushButton *saveButton;

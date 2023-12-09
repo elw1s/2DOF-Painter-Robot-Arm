@@ -20,6 +20,11 @@ void RobotProjectionWidget::setAllLines(const QJsonArray &jsonArray) {
     update(); // Trigger a repaint after loading new drawnLines
 }
 
+void RobotProjectionWidget::clear(){
+    drawnLines.clear();
+    allLines.clear();
+    update();
+}
 
 void RobotProjectionWidget::loadLinesFromJson(const QJsonArray &jsonArray) {
     parseJson(jsonArray, true);

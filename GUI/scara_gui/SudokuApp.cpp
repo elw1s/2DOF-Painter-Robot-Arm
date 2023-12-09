@@ -1,5 +1,6 @@
 #include "SudokuApp.h"
 #include <QHBoxLayout> // Include the header file for QHBoxLayout
+#include <QDir>
 
 SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -21,7 +22,7 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
         numberButton->setFixedSize(100, 100);
         numberButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         numberButton->setFont(QFont("Arial", 24));
-        numberButton->setStyleSheet("QPushButton { margin: 0px; padding: 0px; spacing: 0px; background-color: #D3D3D3; border: 1px solid black; }");
+        numberButton->setStyleSheet("QPushButton { margin: 0px; padding: 0px; spacing: 0px; background-color: #19749B; border: 1px solid #33C2FF; }");
         numberButton->setCursor(Qt::PointingHandCursor);
 
         connect(numberButton, &QPushButton::clicked, this, &SudokuApp::onNumberButtonClicked);
@@ -59,12 +60,51 @@ void SudokuApp::onNumberButtonClicked() {
 
 void SudokuApp::onSolveButtonClicked() {
     bool isSolved = sudokuWidget->solveSudoku();
+
     if (isSolved) {
-        QString filePath = "/home/ardakilic/Desktop/CSE396/GUI/scara_gui/GameBoards/sudoku/solved.jpg";
+        QDir dir;
+        dir = dir.temp();
+        dir.setPath(dir.path()+ "/cse396");
+        QString filePath = dir.path() + "/image.jpg";
         sudokuWidget->saveAsImage(filePath);
         // Puzzle is solved
         // You can perform additional actions here if needed
     } else {
         // If the puzzle has no solution, handle this scenario
+    }
+}
+
+//Freeze the app
+void SudokuApp::robotDrawingSignal(const bool status){
+    if(status){
+        toggleOverlay(true);
+        qDebug() << "Robot is drawing...";
+    }
+
+    else{
+        toggleOverlay(false);
+        qDebug() << "Robot is NOT drawing...";
+    }
+}
+
+void SudokuApp::setRightWidget(QWidget *rightWidget){
+    this->m_rightWidget = rightWidget;
+}
+
+void SudokuApp::toggleOverlay(bool showOverlay) {
+    if (showOverlay) {
+        overlayWidget = new QWidget(this);
+        overlayWidget->setStyleSheet("background-color: rgba(128, 128, 128, 50);"); // Grey transparent background
+        overlayWidget->setFixedSize(m_rightWidget->size());
+        overlayWidget->setFocusPolicy(Qt::NoFocus); // Make sure it doesn't receive focus
+        overlayWidget->setAttribute(Qt::WA_TransparentForMouseEvents, true); // Ignore mouse events
+        overlayWidget->raise(); // Bring it to the front
+        overlayWidget->show();
+    } else {
+        if (overlayWidget) {
+            overlayWidget->hide();
+            delete overlayWidget;
+            overlayWidget = nullptr;
+        }
     }
 }

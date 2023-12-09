@@ -40,6 +40,10 @@ int16_t convertTwosComplement(const std::string &binaryString) {
 }
 
 void ServerListenerThread::run() {
+    QDir dir;
+    dir = dir.temp();
+    dir.setPath(dir.path()+ "/cse396");
+
     qDebug() << "Run works";
     emit loadingProgress(-1);
     while (!isInterruptionRequested()) {
@@ -68,6 +72,7 @@ void ServerListenerThread::run() {
         }
         emit loadingProgress(0);
         int calculatedValue = 0;
+        int totalLineNumberForAnImage = 0;
         QByteArray jsonFile;
         QByteArray imageByteArray;
         int chunkSize = 4096 - 1; // 4KB - 1
@@ -89,8 +94,8 @@ void ServerListenerThread::run() {
 
                         if(drawSelected)
                         {
-                            // DOSYA PATH DEGİSTİR!!!
-                            QFile file("/home/ardakilic/Desktop/CSE396/BrachioGraph/images/cat.jpeg");
+                            QString filePath = dir.path() + "/image.jpg";
+                            QFile file(filePath);
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
                                 // Handle error or return an empty byte array
@@ -98,6 +103,7 @@ void ServerListenerThread::run() {
                                 continue;
                             }
 
+                            emit drawingStatus(true);
                             imageByteArray = file.readAll();
                             file.close();
 
@@ -172,7 +178,8 @@ void ServerListenerThread::run() {
                         QString dataString = QString::fromUtf8(jsonFile);
 
                         // Write the string data to a file
-                        QFile outputFile("/home/ardakilic/Desktop/CSE396/simulate_embedded/tmp/received.json");
+                        QString filePath = dir.path() + "/received.json";
+                        QFile outputFile(filePath);
                         if (outputFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
                             QTextStream outputStream(&outputFile);
                             outputStream << dataString;
@@ -197,7 +204,9 @@ void ServerListenerThread::run() {
                         QJsonArray linesArray = doc.array();
 
                         emit allLinesReceived(linesArray);
-                        emit totalLineNumber(receivedData.toInt());
+                        totalLineNumberForAnImage = receivedData.toInt();
+
+                        emit totalLineNumber(totalLineNumberForAnImage);
                         break;
                     }
                     case '4': //Drawn line received
@@ -220,8 +229,11 @@ void ServerListenerThread::run() {
 
                         // Emit signal to notify about received data
                         emit linesReceived(linesArray);
-                        emit loadingProgress(calculatedValue);
                         calculatedValue ++;
+                        emit loadingProgress(calculatedValue);
+                        if(calculatedValue == totalLineNumberForAnImage){
+                            emit drawingStatus(false);;
+                        }
                         break;
                     }
                     case '5': //Servo angles received
@@ -246,7 +258,6 @@ void ServerListenerThread::run() {
                         emit sensorValues(convertTwosComplement(receivedData.toStdString()));
                         break;
                     }
-
                     default:
                         qDebug() << "No message received";
                         break;

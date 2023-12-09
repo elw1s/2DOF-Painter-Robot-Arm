@@ -14,8 +14,11 @@ public:
     DrawingArea(QWidget *parent = nullptr);
     void setPenStroke(int stroke);
     void eraserMode(bool mode);
+    void penMode(bool mode);
     const QPixmap &getPixmap() const;
     void clearDrawing();
+    bool isEraserActive();
+    bool isPenActive();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -33,6 +36,7 @@ private:
     bool drawing;
     int currentStroke;
     bool eraser;
+    bool pen;
 };
 
 

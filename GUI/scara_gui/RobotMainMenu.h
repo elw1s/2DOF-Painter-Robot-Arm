@@ -75,6 +75,9 @@ public slots:
     void setTotalLineNumber(int totalLineNumber);
     void defaultButtonClicked();
     void setButtonClicked();
+    void robotDrawingSignal(const bool status);
+signals:
+    void drawingStatus(const bool status);
 };
 
 #endif // ROBOTMAINMENU_H

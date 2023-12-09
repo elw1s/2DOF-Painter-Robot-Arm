@@ -13,6 +13,8 @@ public:
 private:
     ExamplesWidget *examplesWidget;
     QPushButton *saveButton;
+public slots:
+    void robotDrawingSignal(const bool status);
 };
 
 #endif // EXAMPLESAPP_H

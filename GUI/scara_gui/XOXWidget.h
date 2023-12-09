@@ -10,6 +10,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QDateTime>
+#include <QDir>
 
 struct Move {
     int index;

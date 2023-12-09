@@ -16,15 +16,20 @@ class SudokuApp : public QWidget {
 
 public:
     SudokuApp(QWidget *parent = nullptr);
-
+    void setRightWidget(QWidget *rightWidget);
 private:
     SudokuWidget *sudokuWidget;
     QPushButton *solveButton;
     QGridLayout *numberGrid;
-
+    QWidget *overlayWidget;
+    void toggleOverlay(bool showOverlay);
+    QWidget *m_rightWidget;
 private slots:
     void onNumberButtonClicked();
     void onSolveButtonClicked();
+
+public slots:
+    void robotDrawingSignal(const bool status);
 };
 
 #endif // SUDOKUAPP_H

@@ -59,7 +59,7 @@ void add_image_data_to_array(size_t dataSize) {
 }
 
 void write_image_to_file() {
-    FILE* imageFile = fopen("../tmp/sent.jpg", "wb");
+    FILE* imageFile = fopen("/tmp/cse396/sent.jpg", "wb");
     if (imageFile != NULL) {
         fwrite(imageBuffer, sizeof(unsigned char), imageBufferIndex, imageFile);
         fclose(imageFile);
@@ -177,9 +177,9 @@ void* server2Thread(void* arg) {
 
     //Apply BrachioGraph 
 
-    BrachioGraph::imageToJson("../tmp/sent.jpg", 1024, 2, 1 , 16, 1);
+    BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
     usleep(2000000);
-    readLines("/home/ardakilic/Desktop/CSE396/simulate_embedded/tmp/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+    readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
     int lineNum = getLineNumber();
     printf("Line number: %d\n",lineNum);
     sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);

@@ -40,3 +40,11 @@ ExamplesApp::ExamplesApp(QWidget *parent) : QWidget(parent) {
 
     setLayout(mainLayout);
 }
+
+//Freeze the app
+void ExamplesApp::robotDrawingSignal(const bool status){
+    if(status)
+        qDebug() << "Robot is drawing...";
+    else
+        qDebug() << "Robot is NOT drawing...";
+}

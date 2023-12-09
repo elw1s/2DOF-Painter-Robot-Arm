@@ -55,6 +55,17 @@ int main(int argc, char *argv[]) {
     XOXApp xoxApp = new XOXApp();
     SudokuApp sudoku = new SudokuApp();
 
+    QDir dir;
+    QString folderPath = dir.temp().path() + "/cse396";
+    qDebug() <<"Folder path ==> " << folderPath;
+
+    // Always attempt to create the directory using mkpath()
+    if (!dir.mkpath(folderPath)) {
+        qDebug("Error creating temporary folder");
+        return -1;
+    }
+
+
 
     // Create a QStackedWidget for the content on the right
     QStackedWidget *stackedWidget = new QStackedWidget;
@@ -191,6 +202,14 @@ int main(int argc, char *argv[]) {
     QObject::connect(&drawingApp, &DrawingApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
     QObject::connect(&imageUploader, &ImageUploader::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
 
+
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &drawingApp, &DrawingApp::robotDrawingSignal);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &imageUploader, &ImageUploader::robotDrawingSignal);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &examplesApp, &ExamplesApp::robotDrawingSignal);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &sudoku, &SudokuApp::robotDrawingSignal);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &xoxApp, &XOXApp::robotDrawingSignal);
+
+
     // Create a QWidget to hold the layout
     QWidget *mainWidget = new QWidget;
     mainWidget->setStyleSheet("background-color: #1C1C1C;"); // Set main window background color
@@ -229,6 +248,7 @@ int main(int argc, char *argv[]) {
     rightLayout->addWidget(stackedWidget);
     rightColumn.setStyleSheet("background-color: #1C1C1C;"); // Set right column background color
 
+    sudoku.setRightWidget(&rightColumn);
 
     mainLayout->addWidget(leftWidget);
     mainLayout->addWidget(&rightColumn);

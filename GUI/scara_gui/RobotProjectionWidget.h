@@ -16,6 +16,7 @@ public:
     explicit RobotProjectionWidget(QWidget *parent = nullptr);
     void loadLinesFromJson(const QJsonArray &jsonArray);
     void setAllLines(const QJsonArray &jsonArray);
+    void clear();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;

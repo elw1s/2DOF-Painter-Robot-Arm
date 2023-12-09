@@ -617,7 +617,7 @@ void imageToJson(const std::string& imageFilename,int resolution = 1024,int draw
     lines = vectorise(imageFilename, resolution, drawContours, repeatContours, drawHatch, repeatHatch);
 
     //std::string filename = json_folder + imageFilename + ".json";
-    std::string filename = "/home/arda/Desktop/CSE396/simulate_embedded/tmp/sent.json";
+    std::string filename = "/tmp/cse396/sent.json";
     //std::string filename = "/home/arda/Desktop/CSE396/BrachioGraph/images/cat.json";
     std::cout << "XXXXXXXXXXXX Number of lines:" << lines.size();
     linesToFile(lines, filename);
