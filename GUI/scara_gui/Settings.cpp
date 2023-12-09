@@ -16,13 +16,15 @@ Settings::Settings(const QString& ipAddress, int port, QWidget *parent)
     labelPort = new QLabel("Enter Port", this);
     lineEditIP = new QLineEdit(this);
     lineEditPort = new QLineEdit(this);
+    lineEditIP->setStyleSheet("color: white;");
+    lineEditPort->setStyleSheet("color: white;");
     connectButton = new QPushButton("Connect", this);
     disconnectButton = new QPushButton("Disconnect", this);
     connectButton->setObjectName("connectButton"); // Set object name to apply specific styles
 
     if(port == 0){
         lineEditIP->setText("127.0.0.1");
-        lineEditPort->setText("12345");
+        lineEditPort->setText("8080");
     }
     else{
         lineEditIP->setText(mIpAddress);

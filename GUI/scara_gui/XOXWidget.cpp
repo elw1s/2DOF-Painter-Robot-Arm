@@ -52,6 +52,7 @@ void XOXWidget::buttonClicked() {
 
     clickedButton->setText("X");
     clickedButton->setEnabled(false);
+    lastMoveX = clickedButton;
     checkGameStatus();
 
     if (!isGameOver) {
@@ -160,6 +161,33 @@ Move XOXWidget::minimax(bool isMaximizing) {
     return bestMove;
 }
 
+void XOXWidget::saveMoveImage(){
+    QString fileName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".jpeg";
+
+    // Create a QImage with the size of the grid
+    QImage image(180 * 3, 180 * 3, QImage::Format_RGB32);
+    image.fill(Qt::white); // Fill the image with a white background
+
+    // Create a QPainter to draw on the image
+    QPainter painter(&image);
+
+    QPoint xPosition = lastMoveX->mapTo(this, QPoint(0, 0));
+    QPoint oPosition = lastMoveO->mapTo(this, QPoint(0, 0));
+    xPosition.setX(xPosition.x() - 20);
+    oPosition.setX(oPosition.x() - 20);
+    painter.setFont(QFont("Arial", 32));
+
+    QPen pen(Qt::black);
+    pen.setWidth(4); // Set the pen width to 4 pixels (adjust as needed)
+    painter.setPen(pen);
+
+    painter.drawText(xPosition, "X");
+    painter.drawText(oPosition, "O");
+
+    QString filePath = "/home/ardakilic/Desktop/CSE396/GUI/scara_gui/GameBoards/tictactoe/" + fileName; // Replace with your desired folder path
+    image.save(filePath);
+}
+
 // Function to make the computer's move using minimax
 void XOXWidget::makeComputerMove() {
     if (isGameOver) {
@@ -173,7 +201,9 @@ void XOXWidget::makeComputerMove() {
     if (bestMove.index != -1) {
         buttons[bestMove.index]->setText("O");
         buttons[bestMove.index]->setEnabled(false);
+        lastMoveO = buttons[bestMove.index];
         isUserTurn = true;
+        saveMoveImage();
         checkGameStatus();
 
         // After the computer's move, check if the game is over

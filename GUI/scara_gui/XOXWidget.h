@@ -7,6 +7,9 @@
 #include <QLabel>
 #include <vector>
 #include <QString>
+#include <QImage>
+#include <QPainter>
+#include <QDateTime>
 
 struct Move {
     int index;
@@ -34,6 +37,9 @@ private:
     bool isMoveLegal(int move);
     Move minimax(bool isMaximizing);
     void printBoard();
+    void saveMoveImage();
+    QPushButton *lastMoveX;
+    QPushButton *lastMoveO;
 
 signals:
     void gameOver(const int result); // Add this line to declare the signal

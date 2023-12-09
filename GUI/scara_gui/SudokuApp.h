@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
+#include <QSpacerItem>
 
 #include "SudokuWidget.h"
 
@@ -23,6 +24,7 @@ private:
 
 private slots:
     void onNumberButtonClicked();
+    void onSolveButtonClicked();
 };
 
 #endif // SUDOKUAPP_H

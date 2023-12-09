@@ -6,8 +6,9 @@
 #include <QMouseEvent>
 #include <vector>
 #include <QPushButton>
-
+#include <QFrame>
 #include "NumberSelectionDialog.h"
+#include <QFile>
 
 class SudokuWidget : public QWidget {
     Q_OBJECT
@@ -15,10 +16,19 @@ class SudokuWidget : public QWidget {
 public:
     explicit SudokuWidget(QWidget *parent = nullptr);
     void onNumberSelected(int number);
+    bool solveSudoku();
+    void saveAsImage(const QString &filePath);
 private:
     QPoint selectedCell; // Stores the selected cell
     std::vector<QPushButton*> cellButtons;
+    QGridLayout *gridLayout;
     int selectedButtonIndex;
+    bool findEmptyCell(int &row, int &col);
+    bool isValid(int row, int col, int num);
+    bool isInRow(int row, int num) const;
+    bool isInCol(int col, int num) const;
+    bool isInBox(int startRow, int startCol, int num) const;
+
 private slots:
     void onCellClicked();
 };
