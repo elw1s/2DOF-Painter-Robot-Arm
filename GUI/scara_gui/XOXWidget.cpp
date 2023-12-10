@@ -22,7 +22,7 @@ XOXWidget::XOXWidget(QWidget *parent) : QWidget(parent) {
             button->setStyleSheet("QPushButton { color:black; background-color: white; border: 1px solid black; }");
 
             // Set text properties
-            button->setFont(QFont("Arial", 14));
+            button->setFont(QFont("Arial", 30));
 
             connect(button, &QPushButton::clicked, this, &XOXWidget::buttonClicked);
             gridLayout->addWidget(button, i, j);
@@ -165,7 +165,7 @@ void XOXWidget::saveMoveImage(){
     //QString fileName = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + ".jpeg";
 
     // Create a QImage with the size of the grid
-    QImage image(180 * 3, 180 * 3, QImage::Format_RGB32);
+    QImage image(1024, 1024, QImage::Format_RGB32);
     image.fill(Qt::white); // Fill the image with a white background
 
     // Create a QPainter to draw on the image
@@ -173,9 +173,9 @@ void XOXWidget::saveMoveImage(){
 
     QPoint xPosition = lastMoveX->mapTo(this, QPoint(0, 0));
     QPoint oPosition = lastMoveO->mapTo(this, QPoint(0, 0));
-    xPosition.setX(xPosition.x() - 20);
-    oPosition.setX(oPosition.x() - 20);
-    painter.setFont(QFont("Arial", 32));
+    //xPosition.setX(xPosition.x() - 20);
+    //oPosition.setX(oPosition.x() - 20);
+    painter.setFont(QFont("Arial", 40));
 
     QPen pen(Qt::black);
     pen.setWidth(4); // Set the pen width to 4 pixels (adjust as needed)
@@ -189,6 +189,7 @@ void XOXWidget::saveMoveImage(){
     dir.setPath(dir.path()+ "/cse396");
     QString filePath = dir.path() + "/image.jpg";
     image.save(filePath);
+    emit drawButtonClicked();
 }
 
 // ŞU AN OYUN BİTİNCE, EĞER USER KAZANSA BİLE BİLGİSAYARIN HAMLESİNİ DE KOYUYOR

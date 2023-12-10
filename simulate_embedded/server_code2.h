@@ -3,7 +3,7 @@
 #include <string>
 #include <queue>
 
-void server2(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
+bool server2(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
 int generateRandomNumber2();
 int readLines(std::string filePath, std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);
 int sendLineNumber(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex);

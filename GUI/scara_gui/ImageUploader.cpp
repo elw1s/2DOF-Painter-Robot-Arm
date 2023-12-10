@@ -188,10 +188,8 @@ void ImageUploader::saveImage() {
         QString filePath = dir.path() + "/cse396/image.jpg";
         bool saved = croppedPixmap.toImage().save(filePath, "JPG");
         qDebug() << "The image is saved: " << saved;
-    } else {
-        QMessageBox::warning(this, "Warning", "No cropped image available to save!");
+        emit drawButtonClicked();
     }
-    emit drawButtonClicked();
 }
 
 //Freeze the app

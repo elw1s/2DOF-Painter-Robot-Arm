@@ -7,8 +7,10 @@
 #include <QHBoxLayout>
 #include <QFrame>
 #include <QSpacerItem>
-
+#include <QLabel>
+#include <QMovie>
 #include "SudokuWidget.h"
+#include "ImagePathsConfig.h"
 
 
 class SudokuApp : public QWidget {
@@ -16,20 +18,21 @@ class SudokuApp : public QWidget {
 
 public:
     SudokuApp(QWidget *parent = nullptr);
-    void setRightWidget(QWidget *rightWidget);
 private:
     SudokuWidget *sudokuWidget;
     QPushButton *solveButton;
     QGridLayout *numberGrid;
-    QWidget *overlayWidget;
+    QVBoxLayout *mainLayout;
+    QVBoxLayout *verticalButtonLayout;
     void toggleOverlay(bool showOverlay);
-    QWidget *m_rightWidget;
 private slots:
     void onNumberButtonClicked();
     void onSolveButtonClicked();
 
 public slots:
     void robotDrawingSignal(const bool status);
+signals:
+    void drawButtonClicked();
 };
 
 #endif // SUDOKUAPP_H

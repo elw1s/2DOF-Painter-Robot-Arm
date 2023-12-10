@@ -15,6 +15,8 @@ private:
     QPushButton *saveButton;
 public slots:
     void robotDrawingSignal(const bool status);
+signals:
+    void drawButtonClicked();
 };
 
 #endif // EXAMPLESAPP_H

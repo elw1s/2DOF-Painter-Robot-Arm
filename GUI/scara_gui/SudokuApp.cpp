@@ -3,7 +3,7 @@
 #include <QDir>
 
 SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(50, 50, 50, 50);
 
     // Horizontal layout for sudokuWidget and numberGrid
@@ -32,20 +32,38 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
     horizontalLayout->addLayout(numberGrid);
 
     // Vertical layout for the solveButton
-    QVBoxLayout *verticalButtonLayout = new QVBoxLayout();
+    verticalButtonLayout = new QVBoxLayout();
     solveButton = new QPushButton("Solve", this);
-    solveButton->setFixedSize(100, 30);
-    solveButton->setFont(QFont("Arial", 10));
-    solveButton->setStyleSheet("background-color: #4CAF50; color: white; border: none;");
-    solveButton->setCursor(Qt::PointingHandCursor);
-    connect(solveButton, &QPushButton::clicked, this, &SudokuApp::onSolveButtonClicked);
+    solveButton->setObjectName("saveButton"); // Set object name to apply specific styles
+    solveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    solveButton->setFixedWidth(200);
+    solveButton->setFixedHeight(50); // Set the fixed height
+    solveButton->setStyleSheet("QPushButton#saveButton {"
+                              "    background-color: #33C2FF;"
+                              "    color: #424242;"
+                              "    font-family: Abel;"
+                              "    font-size: 12px;"
+                              "    border: 1px solid #767676;"
+                              "    margin-right: 0px;"
+                              "    margin-bottom: 5px;"
+                              "}"
+                              "QPushButton#saveButton:hover {"
+                              "    background-color: #57D5FF;" // Change color on hover if desired
+                              "}");
 
-    verticalButtonLayout->addWidget(solveButton, 0, Qt::AlignCenter);
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addStretch(); // Push the button to the right
+    buttonLayout->addWidget(solveButton);
+
+    connect(solveButton, &QPushButton::clicked, this, &SudokuApp::onSolveButtonClicked);    
+    verticalButtonLayout->addLayout(buttonLayout);
+
+    mainLayout->setAlignment(Qt::AlignRight | Qt::AlignTop); // Align the layout to the top-right
 
     // Add the layouts to the main layout
     mainLayout->addLayout(horizontalLayout);
+    mainLayout->addStretch();
     mainLayout->addLayout(verticalButtonLayout);
-
     setLayout(mainLayout);
 }
 
@@ -67,6 +85,7 @@ void SudokuApp::onSolveButtonClicked() {
         dir.setPath(dir.path()+ "/cse396");
         QString filePath = dir.path() + "/image.jpg";
         sudokuWidget->saveAsImage(filePath);
+        emit drawButtonClicked();
         // Puzzle is solved
         // You can perform additional actions here if needed
     } else {
@@ -78,33 +97,44 @@ void SudokuApp::onSolveButtonClicked() {
 void SudokuApp::robotDrawingSignal(const bool status){
     if(status){
         toggleOverlay(true);
+        this->setEnabled(false);
         qDebug() << "Robot is drawing...";
     }
 
     else{
         toggleOverlay(false);
+        this->setEnabled(true);
         qDebug() << "Robot is NOT drawing...";
     }
 }
 
-void SudokuApp::setRightWidget(QWidget *rightWidget){
-    this->m_rightWidget = rightWidget;
-}
 
 void SudokuApp::toggleOverlay(bool showOverlay) {
-    if (showOverlay) {
-        overlayWidget = new QWidget(this);
-        overlayWidget->setStyleSheet("background-color: rgba(128, 128, 128, 50);"); // Grey transparent background
-        overlayWidget->setFixedSize(m_rightWidget->size());
-        overlayWidget->setFocusPolicy(Qt::NoFocus); // Make sure it doesn't receive focus
-        overlayWidget->setAttribute(Qt::WA_TransparentForMouseEvents, true); // Ignore mouse events
-        overlayWidget->raise(); // Bring it to the front
-        overlayWidget->show();
-    } else {
-        if (overlayWidget) {
-            overlayWidget->hide();
-            delete overlayWidget;
-            overlayWidget = nullptr;
-        }
+    if(showOverlay){
+        solveButton->setStyleSheet("QPushButton#saveButton {"
+                                   "    background-color: #33C2FF;"
+                                   "    color: #424242;"
+                                   "    font-family: Abel;"
+                                   "    font-size: 12px;"
+                                   "    border: 1px solid #767676;"
+                                   "    margin-right: 0px;"
+                                   "    margin-bottom: 5px;"
+                                   "}"
+                                   "QPushButton#saveButton:hover {"
+                                   "    background-color: #57D5FF;" // Change color on hover if desired
+                                   "}");
+    }
+    else{
+        solveButton->setStyleSheet("QPushButton#saveButton {"
+                                   "    background-color: #4F4F4F;"
+                                   "    color: #DEDEDE;"
+                                   "    font-family: Abel;"
+                                   "    font-size: 12px;"
+                                   "    border: 1px solid #767676;"
+                                   "    margin-right: 0px;"
+                                   "    margin-bottom: 5px;"
+                                   "}"
+                                   );
     }
 }
+

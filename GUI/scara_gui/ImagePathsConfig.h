@@ -30,6 +30,7 @@ extern const std::string PLAY_XOX_TAB_SELECTED;
 extern const std::string PLAY_SUDOKU_TAB_SELECTED;
 extern const std::string SETTINGS_SELECTED;
 extern const std::string EXAMPLES_SELECTED;
-//Robot Main Menu
+//GIFS
 extern const std::string LOADING_GIF;
+extern const std::string ROBOT_IS_DRAWING_GIF;
 #endif // IMAGEPATHSCONFIG_H

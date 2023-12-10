@@ -30,5 +30,6 @@ const std::string DRAW_IMAGE_TAB_SELECTED = ":/resources/draw_image_selected.png
 const std::string UPLOAD_IMAGE_TAB_SELECTED = ":/resources/upload_image_selected.png";
 const std::string SETTINGS_SELECTED = ":/resources/settings_selected.png";
 const std::string EXAMPLES_SELECTED = ":/resources/examples_selected.png";
-//Robot Main Menu
+//GIFS
 const std::string LOADING_GIF = ":/resources/loading.gif";
+const std::string ROBOT_IS_DRAWING_GIF = ":/resources/robot_is_drawing.gif";

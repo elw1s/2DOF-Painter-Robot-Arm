@@ -201,7 +201,9 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(&drawingApp, &DrawingApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
     QObject::connect(&imageUploader, &ImageUploader::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
-
+    QObject::connect(&examplesApp, &ExamplesApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
+    QObject::connect(&sudoku, &SudokuApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
+    QObject::connect(&xoxApp, &XOXApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
 
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &drawingApp, &DrawingApp::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &imageUploader, &ImageUploader::robotDrawingSignal);
@@ -247,8 +249,6 @@ int main(int argc, char *argv[]) {
     QVBoxLayout* rightLayout = new QVBoxLayout(&rightColumn);
     rightLayout->addWidget(stackedWidget);
     rightColumn.setStyleSheet("background-color: #1C1C1C;"); // Set right column background color
-
-    sudoku.setRightWidget(&rightColumn);
 
     mainLayout->addWidget(leftWidget);
     mainLayout->addWidget(&rightColumn);

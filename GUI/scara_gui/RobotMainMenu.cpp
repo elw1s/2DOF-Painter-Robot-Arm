@@ -317,6 +317,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     ipAddress = QString();
     port = 0;
+    serverListenerThread = nullptr;
     initializeServerListener();
     }
 
@@ -529,6 +530,7 @@ void RobotMainMenu::disconnectFromServer(){
         textLabel->setText("Device is not connected!");
         loadingLabel->setVisible(false);
         textLabel->setVisible(true);
+        serverListenerThread = nullptr;
     }
 }
 

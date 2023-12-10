@@ -98,8 +98,6 @@ void ServerListenerThread::run() {
                             QFile file(filePath);
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
-                                // Handle error or return an empty byte array
-                                //return QByteArray();
                                 continue;
                             }
 
@@ -232,7 +230,8 @@ void ServerListenerThread::run() {
                         calculatedValue ++;
                         emit loadingProgress(calculatedValue);
                         if(calculatedValue == totalLineNumberForAnImage){
-                            emit drawingStatus(false);;
+                            emit drawingStatus(false);
+                            jsonFile.clear();
                         }
                         break;
                     }

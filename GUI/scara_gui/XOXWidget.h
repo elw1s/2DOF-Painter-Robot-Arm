@@ -44,6 +44,7 @@ private:
 
 signals:
     void gameOver(const int result); // Add this line to declare the signal
+    void drawButtonClicked();
 };
 
 #endif // XOXWIDGET_H

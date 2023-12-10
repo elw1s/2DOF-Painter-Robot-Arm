@@ -25,9 +25,13 @@ pthread_cond_t clientDisconnectedCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t server2Cond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t case2Mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t clientDisconnectedMutex = PTHREAD_MUTEX_INITIALIZER;
+
 bool case2Encountered = false;
 bool clientDisconnected = false; // Flag to track client disconnection
 bool canSend = false;
+unsigned char imageBuffer[MAX_IMAGE_SIZE]; // Byte array to hold image data
+size_t imageBufferIndex = 0; // Index to keep track of the image buffer position
+
 
 void connection_established(){
     pthread_mutex_lock(&dataMutex);
@@ -40,9 +44,6 @@ void image_received(){
     messagesWaitingToBeSend.push("1Image Received");
     pthread_mutex_unlock(&dataMutex);
 }
-
-unsigned char imageBuffer[MAX_IMAGE_SIZE]; // Byte array to hold image data
-size_t imageBufferIndex = 0; // Index to keep track of the image buffer position
 
 // Function to handle case 1 (Image values)
 void add_image_data_to_array(size_t dataSize) {
@@ -84,22 +85,13 @@ void* communicationThread(void* clientSocket){
             pthread_mutex_unlock(&dataMutex);
             return NULL; // Exit the thread
         }
-        else{
-            //globalDataRecv[bytesRead] = '\0';
-            //printf("~~~~~~~~~~~~~ THE DATA IS RECEIVED ~~~~~~~~~~~~~\n");
-            //printf("Data (%s) received from client!\n", globalDataRecv);
-            
+        else{            
             for (int i = 0; i < MAX_DATA_SIZE; ++i) {
                 if (globalDataRecv[i] == '\0') {
                     break; // Stop printing when the null terminator is encountered
                 }
-                //printf("%c",static_cast<char>(globalDataRecv[i]));
-            }
-            //printf("\n");
-            //Burada globalDataRecv() degerine göre işlem yap.
-            
+            }            
             pthread_mutex_unlock(&dataMutex);
-
             switch (static_cast<char>(globalDataRecv[0]))
             {
             case '0': // Connection established
@@ -114,6 +106,7 @@ void* communicationThread(void* clientSocket){
                 //Server2 direkt bağlantı sağlanınca çalışabilir.
                 add_image_data_to_array(bytesRead);
                 write_image_to_file();
+                imageBufferIndex = 0;
                 pthread_mutex_lock(&case2Mutex);
                 case2Encountered = true;
                 //pthread_cond_signal(&server1Cond);
@@ -169,22 +162,25 @@ void* server1Thread(void* arg) {
 void* server2Thread(void* arg) {
     printf("Thread for server2\n");
 
-    pthread_mutex_lock(&case2Mutex);
-    while (!case2Encountered) {
-        pthread_cond_wait(&server2Cond, &case2Mutex);
-    }
-    pthread_mutex_unlock(&case2Mutex);
-
-    //Apply BrachioGraph 
-
-    BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
-    usleep(2000000);
-    readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
-    int lineNum = getLineNumber();
-    printf("Line number: %d\n",lineNum);
-    sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
     while(true){
-     server2(messagesWaitingToBeSend, &dataCond, &dataMutex);   
+        pthread_mutex_lock(&case2Mutex);
+        while (!case2Encountered) {
+            pthread_cond_wait(&server2Cond, &case2Mutex);
+        }
+        pthread_mutex_unlock(&case2Mutex);
+
+        BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
+        usleep(2000000);
+        readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+        int lineNum = getLineNumber();
+        printf("Line number: %d\n",lineNum);
+        sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
+        while(true){
+            if(!server2(messagesWaitingToBeSend, &dataCond, &dataMutex))
+                break;
+        }
+        printf("server2 started again...\n");
+        case2Encountered = false;
     }
     return NULL;
 }

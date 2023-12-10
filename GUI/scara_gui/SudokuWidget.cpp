@@ -37,6 +37,10 @@ SudokuWidget::SudokuWidget(QWidget *parent) : QWidget(parent) {
         }
     }
 
+
+    selectedCell.setX(-1);
+    selectedCell.setY(-1);
+
     setLayout(gridLayout);
 }
 
@@ -48,10 +52,22 @@ void SudokuWidget::onCellClicked() {
     int row = clickedButton->property("row").toInt();
     int col = clickedButton->property("col").toInt();
 
-    if(selectedCell != QPoint(col,row)){
+    if(selectedCell != QPoint(-1,-1) && selectedCell != QPoint(col,row)){
         QPushButton *lastClickedButton = cellButtons[selectedCell.y() * 9 + selectedCell.x()];
         if(lastClickedButton){
-            lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black; margin-bottom: 3px; margin-right: 3px;");
+            if((row == 2 && col == 2) || (row == 2 && col == 5) || (row == 5 && col == 2) || (row == 5 && col == 5)){
+                lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black; margin-bottom: 3px; margin-right: 3px;");
+            }
+            else if(row == 2 || row == 5){
+                lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black; margin-bottom: 3px;");
+            }
+            else if(col == 2 || col == 5){
+                lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black; margin-right: 3px;");
+            }
+            else{
+                lastClickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black;");
+            }
+
         }
     }
 

@@ -27,5 +27,6 @@
         <file>resources/examples/cat_example.svg</file>
         <file>resources/examples/helloworld_example.svg</file>
         <file>resources/reset.png</file>
+        <file>resources/robot_is_drawing.gif</file>
     </qresource>
 </RCC>

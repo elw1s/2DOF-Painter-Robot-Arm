@@ -154,7 +154,15 @@ int getLineNumber(){
 }
  
 
-void server2(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex) {
+bool server2(std::queue<std::string>& messageQueue, pthread_cond_t* condition, pthread_mutex_t* mutex) {
+    if(lines.size() == 0){
+        pthread_mutex_lock(mutex);
+        messageQueue.push("0Connection Established.");
+        pthread_cond_signal(condition); // Signal the condition variable
+        pthread_mutex_unlock(mutex);
+        return false;
+    } 
    sendDrawnLine(messageQueue,condition,mutex);
    sendServoAngle(messageQueue,condition,mutex);
+   return true;
 }
