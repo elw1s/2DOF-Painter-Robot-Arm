@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QFile>
+#include <QDir>
 #include "ExamplesWidget.h"
 
 class ExamplesApp : public QWidget {
@@ -15,6 +17,7 @@ private:
     QPushButton *saveButton;
 public slots:
     void robotDrawingSignal(const bool status);
+    void saveImage();
 signals:
     void drawButtonClicked();
 };

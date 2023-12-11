@@ -21,6 +21,7 @@ public:
 private:
     SudokuWidget *sudokuWidget;
     QPushButton *solveButton;
+    QPushButton *resetButton;
     QGridLayout *numberGrid;
     QVBoxLayout *mainLayout;
     QVBoxLayout *verticalButtonLayout;
@@ -28,7 +29,7 @@ private:
 private slots:
     void onNumberButtonClicked();
     void onSolveButtonClicked();
-
+    void onResetButtonClicked();
 public slots:
     void robotDrawingSignal(const bool status);
 signals:

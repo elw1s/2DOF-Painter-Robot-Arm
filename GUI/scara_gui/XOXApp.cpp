@@ -93,12 +93,15 @@ void XOXApp::robotDrawingSignal(const bool status){
     if(status){
         this->setEnabled(false);
         toggleOverlay(true);
+        gameStatusLabel->setText("Tic-tac-toe cannot be played while the robot is drawing.");
     }
     else{
         this->setEnabled(true);
         toggleOverlay(false);
+        gameStatusLabel->setText("Game Started");
     }
 }
+
 
 void XOXApp::toggleOverlay(bool showOverlay) {
     if(showOverlay){

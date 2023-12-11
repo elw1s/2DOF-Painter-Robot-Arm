@@ -7,19 +7,14 @@ ExamplesWidget::ExamplesWidget(QWidget *parent) : QWidget(parent) {
     // Example image file paths (you can replace these with your image paths)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QStringList imageFilePaths = {
-        ":/resources/examples/bird_example.svg",
-        ":/resources/examples/cat_example.svg",
-        ":/resources/examples/helloworld_example.svg",
-        ":/resources/examples/bird_example.svg",
-        ":/resources/examples/cat_example.svg",
-        ":/resources/examples/helloworld_example.svg",
-        ":/resources/examples/bird_example.svg",
-        ":/resources/examples/cat_example.svg",
-        ":/resources/examples/helloworld_example.svg",
-        ":/resources/examples/bird_example.svg",
-        ":/resources/examples/cat_example.svg",
-        ":/resources/examples/helloworld_example.svg",
-
+        ":/resources/examples/prague.jpg",
+        ":/resources/examples/cat.jpeg",
+        ":/resources/examples/africa.jpg",
+        ":/resources/examples/prague.jpg",
+        ":/resources/examples/europa.jpg",
+        ":/resources/examples/gtu.jpg",
+        ":/resources/examples/panda.jpg",
+        ":/resources/examples/eagle.jpeg",
         // Add more image paths as needed
     };
 
@@ -130,6 +125,17 @@ void ExamplesWidget::imageButtonClicked() {
             qDebug() << "No file path associated with the button.";
         }
     }
+}
+
+QString ExamplesWidget::getFilePath(){
+    if(this->selectedButton != nullptr){
+        QVariant filePathVariant = this->selectedButton->property("FilePath");
+        if(filePathVariant.isValid()){
+            QString filePath = filePathVariant.toString();
+            return filePath;
+        }
+    }
+    return QString();
 }
 
 void ExamplesWidget::updateSelection(QPushButton *selectedButton) {

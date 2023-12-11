@@ -23,10 +23,19 @@
         <file>resources/loading.gif</file>
         <file>resources/examples_selected.png</file>
         <file>resources/examples.png</file>
-        <file>resources/examples/bird_example.svg</file>
-        <file>resources/examples/cat_example.svg</file>
-        <file>resources/examples/helloworld_example.svg</file>
         <file>resources/reset.png</file>
         <file>resources/robot_is_drawing.gif</file>
+        <file>resources.qrc</file>
+        <file>resources/stats_selected.png</file>
+        <file>resources/stats.png</file>
+        <file>resources/mainMenu_selected.png</file>
+        <file>resources/mainMenu.png</file>
+        <file>resources/examples/prague.jpg</file>
+        <file>resources/examples/cat.jpeg</file>
+        <file>resources/examples/africa.jpg</file>
+        <file>resources/examples/panda.jpg</file>
+        <file>resources/examples/gtu.jpg</file>
+        <file>resources/examples/europa.jpg</file>
+        <file>resources/examples/eagle.jpeg</file>
     </qresource>
 </RCC>

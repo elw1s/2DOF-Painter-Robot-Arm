@@ -11,6 +11,7 @@ class ExamplesWidget : public QWidget {
     Q_OBJECT
 public:
     explicit ExamplesWidget(QWidget *parent = nullptr);
+    QString getFilePath();
 
 private slots:
     void imageButtonClicked();

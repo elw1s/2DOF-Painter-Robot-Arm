@@ -51,11 +51,31 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
                               "    background-color: #57D5FF;" // Change color on hover if desired
                               "}");
 
+    resetButton = new QPushButton("Reset", this);
+    resetButton->setObjectName("resetButton"); // Set object name to apply specific styles
+    resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    resetButton->setFixedWidth(200);
+    resetButton->setFixedHeight(50); // Set the fixed height
+    resetButton->setStyleSheet("QPushButton#resetButton {"
+                               "    background-color: #33C2FF;"
+                               "    color: #424242;"
+                               "    font-family: Abel;"
+                               "    font-size: 12px;"
+                               "    border: 1px solid #767676;"
+                               "    margin-right: 0px;"
+                               "    margin-bottom: 5px;"
+                               "}"
+                               "QPushButton#resetButton:hover {"
+                               "    background-color: #57D5FF;" // Change color on hover if desired
+                               "}");
+
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch(); // Push the button to the right
+    buttonLayout->addWidget(resetButton);
     buttonLayout->addWidget(solveButton);
 
-    connect(solveButton, &QPushButton::clicked, this, &SudokuApp::onSolveButtonClicked);    
+    connect(solveButton, &QPushButton::clicked, this, &SudokuApp::onSolveButtonClicked);
+    connect(resetButton, &QPushButton::clicked, this, &SudokuApp::onResetButtonClicked);
     verticalButtonLayout->addLayout(buttonLayout);
 
     mainLayout->setAlignment(Qt::AlignRight | Qt::AlignTop); // Align the layout to the top-right
@@ -93,6 +113,10 @@ void SudokuApp::onSolveButtonClicked() {
     }
 }
 
+void SudokuApp::onResetButtonClicked() {
+    sudokuWidget->resetBoard();
+}
+
 //Freeze the app
 void SudokuApp::robotDrawingSignal(const bool status){
     if(status){
@@ -124,10 +148,34 @@ void SudokuApp::toggleOverlay(bool showOverlay) {
                                    "QPushButton#saveButton:hover {"
                                    "    background-color: #57D5FF;" // Change color on hover if desired
                                    "}");
+        resetButton->setEnabled(true);
+        resetButton->setStyleSheet("QPushButton#resetButton {"
+                                   "    background-color: #33C2FF;"
+                                   "    color: #424242;"
+                                   "    font-family: Abel;"
+                                   "    font-size: 12px;"
+                                   "    border: 1px solid #767676;"
+                                   "    margin-right: 0px;"
+                                   "    margin-bottom: 5px;"
+                                   "}"
+                                   "QPushButton#resetButton:hover {"
+                                   "    background-color: #57D5FF;" // Change color on hover if desired
+                                   "}");
     }
     else{
         solveButton->setEnabled(false);
         solveButton->setStyleSheet("QPushButton#saveButton {"
+                                   "    background-color: #4F4F4F;"
+                                   "    color: #DEDEDE;"
+                                   "    font-family: Abel;"
+                                   "    font-size: 12px;"
+                                   "    border: 1px solid #767676;"
+                                   "    margin-right: 0px;"
+                                   "    margin-bottom: 5px;"
+                                   "}"
+                                   );
+        resetButton->setEnabled(false);
+        resetButton->setStyleSheet("QPushButton#resetButton {"
                                    "    background-color: #4F4F4F;"
                                    "    color: #DEDEDE;"
                                    "    font-family: Abel;"

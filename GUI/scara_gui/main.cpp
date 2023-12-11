@@ -13,6 +13,7 @@
 #include "ExamplesApp.h"
 #include "XOXApp.h"
 #include "SudokuApp.h"
+#include "StatsApp.h"
 
 void setButtonStyle(QToolButton* button, bool isSelected,const QIcon& icon) {
     QPalette palette = button->palette();
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
     RobotMainMenu  robotMainMenu = new RobotMainMenu();
     XOXApp xoxApp = new XOXApp();
     SudokuApp sudoku = new SudokuApp();
+    StatsApp stats = new StatsApp();
 
     QDir dir;
     QString folderPath = dir.temp().path() + "/cse396";
@@ -75,6 +77,7 @@ int main(int argc, char *argv[]) {
     stackedWidget->addWidget(&imageUploader);
     stackedWidget->addWidget(&xoxApp);
     stackedWidget->addWidget(&sudoku);
+    stackedWidget->addWidget(&stats);
 
     // Create buttons for DrawingApp and ImageUploader
     QToolButton *drawingAppButton = new QToolButton();
@@ -92,11 +95,11 @@ int main(int argc, char *argv[]) {
     setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB))); // Set initial style for the unselected button
 
     QToolButton *robotProjectionButton = new QToolButton();
-    robotProjectionButton->setIcon(QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
-    robotProjectionButton->setText("Robot Projection");
+    robotProjectionButton->setIcon(QIcon(QString::fromStdString(HOME_PAGE)));
+    robotProjectionButton->setText("Main Page");
     robotProjectionButton->setIconSize(QSize(30, 30)); // Adjust the icon size
     robotProjectionButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    setButtonStyle(robotProjectionButton, true,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED))); // Set initial style for the unselected button
+    setButtonStyle(robotProjectionButton, true,QIcon(QString::fromStdString(HOME_PAGE_SELECTED))); // Set initial style for the unselected button
 
     QToolButton *playXOXButton = new QToolButton();
     playXOXButton->setIcon(QIcon(QString::fromStdString(PLAY_XOX_TAB)));
@@ -126,57 +129,81 @@ int main(int argc, char *argv[]) {
     examplesButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     setButtonStyle(examplesButton, false,QIcon(QString::fromStdString(EXAMPLES))); // Set initial style for the unselected button
 
+    QToolButton *statsButton = new QToolButton();
+    statsButton->setIcon(QIcon(QString::fromStdString(STATS)));
+    statsButton->setText("Stats");
+    statsButton->setIconSize(QSize(30, 30)); // Adjust the icon size
+    statsButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    setButtonStyle(statsButton, false,QIcon(QString::fromStdString(STATS))); // Set initial style for the unselected button
+
+    QToolButton *openGazeboButton = new QToolButton();
+    openGazeboButton->setIcon(QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+    openGazeboButton->setText("Open Gazebo");
+    openGazeboButton->setIconSize(QSize(30, 30)); // Adjust the icon size
+    openGazeboButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    setButtonStyle(openGazeboButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB))); // Set initial style for the unselected button
+
     QObject::connect(drawingAppButton, &QToolButton::clicked, [&]() {
         stackedWidget->setCurrentIndex(2);
         setButtonStyle(drawingAppButton, true, QIcon(QString::fromStdString(DRAW_IMAGE_TAB_SELECTED)));
         setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
-        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
         setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
         setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
     });
 
     QObject::connect(imageUploaderButton, &QToolButton::clicked, [&]() {
         stackedWidget->setCurrentIndex(3);
         setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-        setButtonStyle(imageUploaderButton, true,  QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB_SELECTED)));
-        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(imageUploaderButton, true, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB_SELECTED)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
         setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
-        setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
     });
 
     QObject::connect(robotProjectionButton, &QToolButton::clicked, [&]() {
         // Change the index and button styles accordingly
         stackedWidget->setCurrentIndex(0); // Change index based on the actual position in stackedWidget
-        setButtonStyle(robotProjectionButton, true,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
-        setButtonStyle(playXOXButton, false,QIcon(QString::fromStdString(PLAY_XOX_TAB)));
-        setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
-        setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-        setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, true, QIcon(QString::fromStdString(HOME_PAGE_SELECTED)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
     });
 
     QObject::connect(playXOXButton, &QToolButton::clicked, [&]() {
         // Change the index and button styles accordingly
         stackedWidget->setCurrentIndex(4); // Change index based on the actual position in stackedWidget
-        setButtonStyle(robotProjectionButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
-        setButtonStyle(playXOXButton, true,QIcon(QString::fromStdString(PLAY_XOX_TAB_SELECTED)));
-        setButtonStyle(playSudokuButton, false,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
-        setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-        setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+        setButtonStyle(playXOXButton, true, QIcon(QString::fromStdString(PLAY_XOX_TAB_SELECTED)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
     });
 
     QObject::connect(playSudokuButton, &QToolButton::clicked, [&]() {
         // Change the index and button styles accordingly
         stackedWidget->setCurrentIndex(5); // Change index based on the actual position in stackedWidget
-        setButtonStyle(robotProjectionButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
-        setButtonStyle(playXOXButton, false,QIcon(QString::fromStdString(PLAY_XOX_TAB)));
-        setButtonStyle(playSudokuButton, true,QIcon(QString::fromStdString(PLAY_SUDOKU_TAB_SELECTED)));
-        setButtonStyle(drawingAppButton, false,QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-        setButtonStyle(imageUploaderButton, false,QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, true, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB_SELECTED)));
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
     });
 
     QObject::connect(settingsButton, &QToolButton::clicked, [&]() {
@@ -191,10 +218,36 @@ int main(int argc, char *argv[]) {
         stackedWidget->setCurrentIndex(1);
         setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
-        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
         setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
         setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
         setButtonStyle(examplesButton, true, QIcon(QString::fromStdString(EXAMPLES_SELECTED)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+    });
+
+    QObject::connect(statsButton, &QToolButton::clicked, [&]() {
+        stackedWidget->setCurrentIndex(6);
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, true, QIcon(QString::fromStdString(STATS_SELECTED)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+    });
+
+    QObject::connect(openGazeboButton, &QToolButton::clicked, [&]() {
+        stackedWidget->setCurrentIndex(0);
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, true, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
     });
 
     //Connections
@@ -226,14 +279,18 @@ int main(int argc, char *argv[]) {
     playSudokuButton->setMinimumSize(largerButtonSize);
     settingsButton->setMinimumSize(largerButtonSize);
     examplesButton->setMinimumSize(largerButtonSize);
+    statsButton->setMinimumSize(largerButtonSize);
+    openGazeboButton->setMinimumSize(largerButtonSize);
 
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget(robotProjectionButton, 0, Qt::AlignCenter);
+    leftLayout->addWidget(statsButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(examplesButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(drawingAppButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(imageUploaderButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(playXOXButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(playSudokuButton, 0, Qt::AlignCenter);
+    leftLayout->addWidget(openGazeboButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(settingsButton, 0, Qt::AlignCenter);
 
     leftLayout->setSpacing(5); // Adjust the spacing between buttons

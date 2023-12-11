@@ -62,6 +62,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         NumberSelectionDialog.cpp
         SudokuApp.h
         SudokuApp.cpp
+        StatsApp.h
+        StatsApp.cpp
 
 
     )

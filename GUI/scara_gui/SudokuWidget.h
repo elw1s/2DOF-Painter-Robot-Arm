@@ -18,6 +18,7 @@ public:
     void onNumberSelected(int number);
     bool solveSudoku();
     void saveAsImage(const QString &filePath);
+    void resetBoard();
 private:
     QPoint selectedCell; // Stores the selected cell
     std::vector<QPushButton*> cellButtons;
