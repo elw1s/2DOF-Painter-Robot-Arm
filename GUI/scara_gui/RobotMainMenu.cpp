@@ -4,8 +4,8 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     //timeData = new QVector();
     //sensorData = new QVector();
 
-    label = new QLabel("Preview of drawing");
-    label->setStyleSheet("color: white;");
+    //label = new QLabel("Preview of drawing");
+    //label->setStyleSheet("color: white;");
     projectionWidget = new RobotProjectionWidget(this);
     bottomButton = new QPushButton("View 3D Virtualization");
     bottomButton->setObjectName("bottomButton");
@@ -49,6 +49,18 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     loadingProgressBar->setMinimum(0);
     loadingProgressBar->setMaximum(100);
     loadingProgressBar->setVisible(false); // Initially hidden
+    loadingProgressBar->setStyleSheet(
+        "QProgressBar {"
+        "    border: 1px solid #19749B;"
+        "    border-radius: 5px;"
+        "    background-color: #1C1C1C;"
+        "    text-align: center;" // Center align the text in the progress bar
+        "}"
+        "QProgressBar::chunk {"
+        "    background-color: #33C2FF;"
+        "    width: 10px;"
+        "}"
+        );
 
     loadingLabelLayout->addWidget(loadingLabel);
     loadingLabelLayout->addWidget(textLabel);
@@ -56,8 +68,8 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     // Add loading elements below the projection widget
     QVBoxLayout *leftLayout = new QVBoxLayout;
-    leftLayout->addWidget(label,10,Qt::AlignCenter);
-    leftLayout->addWidget(scrollArea,90);
+    //leftLayout->addWidget(label,10,Qt::AlignCenter);
+    leftLayout->addWidget(scrollArea);
     //leftLayout->addWidget(loadingLabel); // Add the loading circle widget
     leftLayout->addLayout(loadingLabelLayout);
     leftLayout->addWidget(loadingProgressBar); // Add the progress bar widget
@@ -279,7 +291,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
                               "    background-color: #57D5FF;" // Change color on hover if desired
                               "}");
 
-    defaultButton = new QPushButton("Set Default Values", this);
+    defaultButton = new QPushButton("Calibrate", this);
     defaultButton->setObjectName("defaultButton"); // Set object name to apply specific styles
     connect(defaultButton, &QPushButton::clicked, this, &RobotMainMenu::defaultButtonClicked);
     defaultButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -464,16 +476,60 @@ void RobotMainMenu::initializeServerListener() {
 }
 
 void RobotMainMenu::robotDrawingSignal(const bool status){
+    qDebug() << "Inside robotDrawingSignal";
     emit drawingStatus(status);
-    if(loadingProgressBar->isVisible() && status){
-        loadingProgressBar->setValue(0);
+    if(status){
         projectionWidget->clear();
-    }
-    else if(status){
-        //Çizim yapılıyor
+        defaultButton->setEnabled(false);
+        defaultButton->setStyleSheet("QPushButton#defaultButton {"
+                                  "    background-color: #4F4F4F;"
+                                  "    color: #DEDEDE;"
+                                  "    font-family: Abel;"
+                                  "    font-size: 12px;"
+                                  "    border: 1px solid #767676;"
+                                  "    margin-right: 0px;"
+                                  "    margin-bottom: 5px;"
+                                  "}"
+                                  );
+        setButton->setEnabled(false);
+        setButton->setStyleSheet("QPushButton#setButton {"
+                                  "    background-color: #4F4F4F;"
+                                  "    color: #DEDEDE;"
+                                  "    font-family: Abel;"
+                                  "    font-size: 12px;"
+                                  "    border: 1px solid #767676;"
+                                  "    margin-right: 0px;"
+                                  "    margin-bottom: 5px;"
+                                  "}"
+                                  );
     }
     else{
-        //Çizim yapılmıyor
+        setButton->setEnabled(true);
+        defaultButton->setEnabled(true);
+        setButton->setStyleSheet("QPushButton#setButton {"
+                                 "    background-color: #33C2FF;"
+                                 "    color: white;"
+                                 "    font-family: Abel;"
+                                 "    font-size: 12px;"
+                                 "    border: 1px solid #767676;"
+                                 "    margin-right: 0px;"
+                                 "    margin-bottom: 5px;"
+                                 "}"
+                                 "QPushButton#setButton:hover {"
+                                 "    background-color: #57D5FF;" // Change color on hover if desired
+                                 "}");
+        defaultButton->setStyleSheet("QPushButton#defaultButton {"
+                                     "    background-color: #33C2FF;"
+                                     "    color: white;"
+                                     "    font-family: Abel;"
+                                     "    font-size: 12px;"
+                                     "    border: 1px solid #767676;"
+                                     "    margin-right: 0px;"
+                                     "    margin-bottom: 5px;"
+                                     "}"
+                                     "QPushButton#defaultButton:hover {"
+                                     "    background-color: #57D5FF;" // Change color on hover if desired
+                                     "}");
     }
 
 }

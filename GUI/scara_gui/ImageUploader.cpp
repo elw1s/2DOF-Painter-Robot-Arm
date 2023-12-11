@@ -194,8 +194,32 @@ void ImageUploader::saveImage() {
 
 //Freeze the app
 void ImageUploader::robotDrawingSignal(const bool status){
-    if(status)
-        qDebug() << "Robot is drawing...";
-    else
-        qDebug() << "Robot is NOT drawing...";
+    if(status){
+        saveButton->setEnabled(false);
+        saveButton->setStyleSheet("QPushButton#saveButton {"
+                                  "    background-color: #4F4F4F;"
+                                  "    color: #DEDEDE;"
+                                  "    font-family: Abel;"
+                                  "    font-size: 12px;"
+                                  "    border: 1px solid #767676;"
+                                  "    margin-right: 0px;"
+                                  "    margin-bottom: 5px;"
+                                  "}"
+                                  );
+    }
+    else{
+        saveButton->setEnabled(true);
+        saveButton->setStyleSheet("QPushButton#saveButton {"
+                                  "    background-color: #33C2FF;"
+                                  "    color: #424242;"
+                                  "    font-family: Abel;"
+                                  "    font-size: 12px;"
+                                  "    border: 1px solid #767676;"
+                                  "    margin-right: 0px;"
+                                  "    margin-bottom: 5px;"
+                                  "}"
+                                  "QPushButton#saveButton:hover {"
+                                  "    background-color: #57D5FF;" // Change color on hover if desired
+                                  "}");
+    }
 }

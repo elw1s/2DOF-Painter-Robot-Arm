@@ -81,7 +81,7 @@ void ServerListenerThread::run() {
             QByteArray receivedData;
             if (tcpSocket->waitForReadyRead(5000)) {
                 receivedData = tcpSocket->readAll();
-                qDebug() <<"Received:" << receivedData;
+                //qDebug() <<"Received:" << receivedData;
 
                 if (!receivedData.isEmpty()) {
                     char command = receivedData[0];
@@ -102,6 +102,7 @@ void ServerListenerThread::run() {
                             }
 
                             emit drawingStatus(true);
+                            emit loadingProgress(0);
                             imageByteArray = file.readAll();
                             file.close();
 
@@ -232,6 +233,7 @@ void ServerListenerThread::run() {
                         if(calculatedValue == totalLineNumberForAnImage){
                             emit drawingStatus(false);
                             jsonFile.clear();
+                            calculatedValue = 0;
                         }
                         break;
                     }
@@ -268,7 +270,7 @@ void ServerListenerThread::run() {
             //Cancel drawing komutu için ise karşı tarafta çalışan server2() threadini cancella.
             if (!messageToSend.isEmpty() && !receivedData.isEmpty()) {
                 tcpSocket->write(messageToSend); // Sending the message to the server
-                qDebug()  << messageToSend << " is sent!";
+                //qDebug()  << messageToSend << " is sent!";
             }
             //QThread::sleep(1);
         }

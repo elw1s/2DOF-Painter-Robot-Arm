@@ -23,6 +23,9 @@ void RobotProjectionWidget::setAllLines(const QJsonArray &jsonArray) {
 void RobotProjectionWidget::clear(){
     drawnLines.clear();
     allLines.clear();
+    qDebug() << "DrawnLines and allLines are cleared...";
+    qDebug() << "Sizes: " << drawnLines.size() << "," << allLines.size();
+    updateScaleFactor();
     update();
 }
 

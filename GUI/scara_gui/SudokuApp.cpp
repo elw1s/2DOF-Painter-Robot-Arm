@@ -96,13 +96,13 @@ void SudokuApp::onSolveButtonClicked() {
 //Freeze the app
 void SudokuApp::robotDrawingSignal(const bool status){
     if(status){
-        toggleOverlay(true);
+        toggleOverlay(false);
         this->setEnabled(false);
         qDebug() << "Robot is drawing...";
     }
 
     else{
-        toggleOverlay(false);
+        toggleOverlay(true);
         this->setEnabled(true);
         qDebug() << "Robot is NOT drawing...";
     }
@@ -111,6 +111,7 @@ void SudokuApp::robotDrawingSignal(const bool status){
 
 void SudokuApp::toggleOverlay(bool showOverlay) {
     if(showOverlay){
+        solveButton->setEnabled(true);
         solveButton->setStyleSheet("QPushButton#saveButton {"
                                    "    background-color: #33C2FF;"
                                    "    color: #424242;"
@@ -125,6 +126,7 @@ void SudokuApp::toggleOverlay(bool showOverlay) {
                                    "}");
     }
     else{
+        solveButton->setEnabled(false);
         solveButton->setStyleSheet("QPushButton#saveButton {"
                                    "    background-color: #4F4F4F;"
                                    "    color: #DEDEDE;"

@@ -169,7 +169,9 @@ void* server2Thread(void* arg) {
         }
         pthread_mutex_unlock(&case2Mutex);
 
-        BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
+        //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
+        //Path değiştir...
+        system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
         usleep(2000000);
         readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
         int lineNum = getLineNumber();
