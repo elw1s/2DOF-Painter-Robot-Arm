@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <map>
 #include <set>
+#include <unistd.h>
 #include <cmath>
 #include <functional>
 #include <fstream>
@@ -371,9 +372,22 @@ public:
         double length_of_step_1 = diff_1/no_of_steps;
         double length_of_step_2 = diff_2/no_of_steps;
 
-        //Tqdm ekle
+        this->angle_1 = this->angle_1 + length_of_step_1;
+        this->angle_2 = this->angle_2 + length_of_step_2;
 
+        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        auto lastMovedSeconds = std::chrono::duration_cast<std::chrono::seconds>(this->last_moved.time_since_epoch()).count();
+        auto time_since_last_moved = seconds - lastMovedSeconds;
 
+        if(time_since_last_moved < wait){
+            
+            //std::this_thread::sleep_for(std::chrono::seconds(5));
+            sleep(wait - time_since_last_moved);
+        }
+
+        this->set_angles(this->angle_1, this->angle_2);
+
+        this->last_moved = std::chrono::steady_clock::now();
 
     }
 
