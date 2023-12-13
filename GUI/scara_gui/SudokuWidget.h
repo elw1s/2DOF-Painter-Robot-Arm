@@ -9,6 +9,8 @@
 #include <QFrame>
 #include "NumberSelectionDialog.h"
 #include <QFile>
+#include <QMessageBox>
+#include <QTimer>
 
 class SudokuWidget : public QWidget {
     Q_OBJECT
@@ -29,7 +31,6 @@ private:
     bool isInRow(int row, int num) const;
     bool isInCol(int col, int num) const;
     bool isInBox(int startRow, int startCol, int num) const;
-
 private slots:
     void onCellClicked();
 };

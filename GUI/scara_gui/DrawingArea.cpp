@@ -3,7 +3,7 @@
     DrawingArea::DrawingArea(QWidget *parent) : QWidget(parent), drawing(false) {
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         setMouseTracking(true);
-        currentStroke = 1;
+        currentStroke = 4;
     }
 
     const QPixmap& DrawingArea::getPixmap() const {

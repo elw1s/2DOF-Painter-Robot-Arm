@@ -64,6 +64,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         SudokuApp.cpp
         StatsApp.h
         StatsApp.cpp
+        ShortestPathWidget.h ShortestPath.h CSVPlotter.h
+        ShortestPathWidget.cpp ShortestPath.cpp CSVPlotter.cpp
 
 
     )

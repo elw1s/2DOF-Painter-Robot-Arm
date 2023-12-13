@@ -101,7 +101,7 @@ void DrawingApp::saveImage() {
 
 void DrawingApp::setPenStroke(int stroke) {
         // Assuming DrawingArea has a function to set the pen stroke
-        drawingArea->setPenStroke(stroke + 1); // +1 to align with the dropdown (index 0-3) and stroke values (1-4)
+        drawingArea->setPenStroke(stroke + 3); // +1 to align with the dropdown (index 0-3) and stroke values (1-4)
 }
 
 void DrawingApp::setEraserTrue(){

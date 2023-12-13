@@ -37,5 +37,7 @@
         <file>resources/examples/gtu.jpg</file>
         <file>resources/examples/europa.jpg</file>
         <file>resources/examples/eagle.jpeg</file>
+        <file>resources/shortestPath_selected.png</file>
+        <file>resources/shortestPath.png</file>
     </qresource>
 </RCC>

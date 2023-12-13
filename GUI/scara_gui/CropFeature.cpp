@@ -1,6 +1,6 @@
 #include "CropFeature.h"
 
-CropFeature::CropFeature(QObject* parent) : QGraphicsScene(parent), m_leftMouseButtonPressed(false), m_cropEnabled(false), m_currentImageItem(nullptr)
+CropFeature::CropFeature(QObject* parent) : QGraphicsScene(parent), m_leftMouseButtonPressed(false), m_cropEnabled(false), m_currentImageItem(nullptr), m_rotateEnabled(false)
 {
 }
 

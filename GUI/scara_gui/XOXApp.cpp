@@ -3,18 +3,36 @@
 XOXApp::XOXApp(QWidget *parent) : QWidget(parent) {
     QVBoxLayout *layout = new QVBoxLayout(this); // Create a QVBoxLayout for XOXApp
 
+    // Create QLabel for title
+    QLabel *titleLabel = new QLabel("How to play?", this);
+    titleLabel->setFont(QFont("Arial", 20, QFont::Bold)); // Setting font size and weight
+    titleLabel->setFixedSize(400, titleLabel->sizeHint().height()); // Set fixed width and height based on text
+    titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
+
+    // Create QLabel for description
+    QLabel *descriptionLabel = new QLabel("Select a cell by clicking on 3x3 grid below. \nThe user will put \"X\" on the grid where AI puts \"O\".\nEach move will be drawn by robot.", this);
+    descriptionLabel->setFont(QFont("Arial", 14)); // Setting font size
+    descriptionLabel->setFixedSize(480, descriptionLabel->sizeHint().height()); // Set fixed width and height based on text
+    descriptionLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
+
+    // Create a vertical layout for the title and description labels
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->addWidget(titleLabel);
+    labelLayout->addWidget(descriptionLabel);
+    labelLayout->setSpacing(0); // Add some spacing between the labels
+
+
+
     gameStatusLabel = new QLabel("Game started", this); // Create the gameStatusLabel
     gameStatusLabel->setAlignment(Qt::AlignHCenter);
     gameStatusLabel->setStyleSheet("color: white;"); // Set text color to white
-    gameStatusLabel->setFont(QFont("Arial", 40)); // Set font size to 30
-    layout->addWidget(gameStatusLabel); // Add gameStatusLabel to the layout
+    gameStatusLabel->setFont(QFont("Arial", 18)); // Set font size to 30
 
     gameWidget = new XOXWidget(this);
     connect(gameWidget, &XOXWidget::gameOver, this, &XOXApp::gameFinished);
     connect(gameWidget, &XOXWidget::drawButtonClicked, this, &XOXApp::drawMove);
-    layout->addWidget(gameWidget); // Add gameWidget to the layout
 
-    resetButton = new QPushButton("Restart", this);
+    resetButton = new QPushButton("Play Again", this);
     resetButton->setObjectName("saveButton"); // Set object name to apply specific styles
     resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     resetButton->setFixedWidth(200);
@@ -33,10 +51,13 @@ XOXApp::XOXApp(QWidget *parent) : QWidget(parent) {
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch(); // Push the button to the right
     buttonLayout->addWidget(resetButton);
-    layout->addLayout(buttonLayout);
     resetButton->setEnabled(false);
     connect(resetButton, &QPushButton::clicked, this, &XOXApp::resetTable);
 
+    layout->addLayout(labelLayout);
+    layout->addWidget(gameWidget); // Add gameWidget to the layout
+    layout->addWidget(gameStatusLabel); // Add gameStatusLabel to the layout
+    layout->addLayout(buttonLayout);
     layout->setSpacing(0);
     setLayout(layout); // Set the layout for XOXApp
 }

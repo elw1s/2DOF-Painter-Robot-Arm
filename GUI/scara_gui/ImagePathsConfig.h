@@ -24,6 +24,7 @@ extern const std::string SETTINGS;
 extern const std::string EXAMPLES;
 extern const std::string STATS;
 extern const std::string HOME_PAGE;
+extern const std::string SHORTEST_PATH;
 //Selected Tab Buttons
 extern const std::string ROBOT_PROJECTION_TAB_SELECTED;
 extern const std::string UPLOAD_IMAGE_TAB_SELECTED;
@@ -34,6 +35,7 @@ extern const std::string SETTINGS_SELECTED;
 extern const std::string EXAMPLES_SELECTED;
 extern const std::string STATS_SELECTED;
 extern const std::string HOME_PAGE_SELECTED;
+extern const std::string SHORTEST_PATH_SELECTED;
 //GIFS
 extern const std::string LOADING_GIF;
 extern const std::string ROBOT_IS_DRAWING_GIF;

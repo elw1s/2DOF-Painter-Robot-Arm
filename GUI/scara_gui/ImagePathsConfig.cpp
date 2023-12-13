@@ -24,6 +24,7 @@ const std::string SETTINGS = ":/resources/settings.png";
 const std::string EXAMPLES = ":/resources/examples.png";
 const std::string HOME_PAGE = ":/resources/mainMenu.png";
 const std::string STATS = ":/resources/stats.png";
+const std::string SHORTEST_PATH = ":/resources/shortestPath.png";
 //Selected TAB buttons
 const std::string PLAY_XOX_TAB_SELECTED = ":/resources/playXOX_selected.png";
 const std::string ROBOT_PROJECTION_TAB_SELECTED = ":/resources/robot_projection_selected.png";
@@ -34,6 +35,7 @@ const std::string SETTINGS_SELECTED = ":/resources/settings_selected.png";
 const std::string EXAMPLES_SELECTED = ":/resources/examples_selected.png";
 const std::string HOME_PAGE_SELECTED = ":/resources/mainMenu_selected.png";
 const std::string STATS_SELECTED = ":/resources/stats_selected.png";
+const std::string SHORTEST_PATH_SELECTED = ":/resources/shortestPath_selected.png";
 //GIFS
 const std::string LOADING_GIF = ":/resources/loading.gif";
 const std::string ROBOT_IS_DRAWING_GIF = ":/resources/robot_is_drawing.gif";

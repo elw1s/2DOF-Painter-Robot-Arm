@@ -14,6 +14,7 @@
 #include "XOXApp.h"
 #include "SudokuApp.h"
 #include "StatsApp.h"
+#include "ShortestPath.h"
 
 void setButtonStyle(QToolButton* button, bool isSelected,const QIcon& icon) {
     QPalette palette = button->palette();
@@ -56,6 +57,7 @@ int main(int argc, char *argv[]) {
     XOXApp xoxApp = new XOXApp();
     SudokuApp sudoku = new SudokuApp();
     StatsApp stats = new StatsApp();
+    ShortestPath shortestPath = new ShortestPath();
 
     QDir dir;
     QString folderPath = dir.temp().path() + "/cse396";
@@ -77,6 +79,7 @@ int main(int argc, char *argv[]) {
     stackedWidget->addWidget(&imageUploader);
     stackedWidget->addWidget(&xoxApp);
     stackedWidget->addWidget(&sudoku);
+    stackedWidget->addWidget(&shortestPath);
     stackedWidget->addWidget(&stats);
 
     // Create buttons for DrawingApp and ImageUploader
@@ -143,6 +146,13 @@ int main(int argc, char *argv[]) {
     openGazeboButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     setButtonStyle(openGazeboButton, false,QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB))); // Set initial style for the unselected button
 
+    QToolButton *shortestPathButton = new QToolButton();
+    shortestPathButton->setIcon(QIcon(QString::fromStdString(SHORTEST_PATH)));
+    shortestPathButton->setText("Shortest Path");
+    shortestPathButton->setIconSize(QSize(30, 30)); // Adjust the icon size
+    shortestPathButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    setButtonStyle(shortestPathButton, false,QIcon(QString::fromStdString(SHORTEST_PATH))); // Set initial style for the unselected button
+
     QObject::connect(drawingAppButton, &QToolButton::clicked, [&]() {
         stackedWidget->setCurrentIndex(2);
         setButtonStyle(drawingAppButton, true, QIcon(QString::fromStdString(DRAW_IMAGE_TAB_SELECTED)));
@@ -153,6 +163,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(imageUploaderButton, &QToolButton::clicked, [&]() {
@@ -165,6 +176,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(robotProjectionButton, &QToolButton::clicked, [&]() {
@@ -178,6 +190,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(playXOXButton, &QToolButton::clicked, [&]() {
@@ -191,6 +204,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(playSudokuButton, &QToolButton::clicked, [&]() {
@@ -204,6 +218,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(settingsButton, &QToolButton::clicked, [&]() {
@@ -224,10 +239,11 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, true, QIcon(QString::fromStdString(EXAMPLES_SELECTED)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(statsButton, &QToolButton::clicked, [&]() {
-        stackedWidget->setCurrentIndex(6);
+        stackedWidget->setCurrentIndex(7);
         setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
         setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
         setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
@@ -236,6 +252,7 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, true, QIcon(QString::fromStdString(STATS_SELECTED)));
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
 
     QObject::connect(openGazeboButton, &QToolButton::clicked, [&]() {
@@ -248,6 +265,20 @@ int main(int argc, char *argv[]) {
         setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
         setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
         setButtonStyle(openGazeboButton, true, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
+        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
+    });
+
+    QObject::connect(shortestPathButton, &QToolButton::clicked, [&]() {
+        stackedWidget->setCurrentIndex(6);
+        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+        setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
+        setButtonStyle(shortestPathButton, true, QIcon(QString::fromStdString(SHORTEST_PATH_SELECTED)));
     });
 
     //Connections
@@ -257,12 +288,14 @@ int main(int argc, char *argv[]) {
     QObject::connect(&examplesApp, &ExamplesApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
     QObject::connect(&sudoku, &SudokuApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
     QObject::connect(&xoxApp, &XOXApp::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
+    QObject::connect(&shortestPath, &ShortestPath::drawButtonClicked, &robotMainMenu, &RobotMainMenu::drawButtonClicked);
 
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &drawingApp, &DrawingApp::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &imageUploader, &ImageUploader::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &examplesApp, &ExamplesApp::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &sudoku, &SudokuApp::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &xoxApp, &XOXApp::robotDrawingSignal);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &shortestPath, &ShortestPath::robotDrawingSignal);
 
 
     // Create a QWidget to hold the layout
@@ -281,6 +314,7 @@ int main(int argc, char *argv[]) {
     examplesButton->setMinimumSize(largerButtonSize);
     statsButton->setMinimumSize(largerButtonSize);
     openGazeboButton->setMinimumSize(largerButtonSize);
+    shortestPathButton->setMinimumSize(largerButtonSize);
 
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget(robotProjectionButton, 0, Qt::AlignCenter);
@@ -290,6 +324,7 @@ int main(int argc, char *argv[]) {
     leftLayout->addWidget(imageUploaderButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(playXOXButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(playSudokuButton, 0, Qt::AlignCenter);
+    leftLayout->addWidget(shortestPathButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(openGazeboButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(settingsButton, 0, Qt::AlignCenter);
 

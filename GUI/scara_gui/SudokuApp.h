@@ -9,6 +9,7 @@
 #include <QSpacerItem>
 #include <QLabel>
 #include <QMovie>
+#include <QKeyEvent>
 #include "SudokuWidget.h"
 #include "ImagePathsConfig.h"
 
@@ -26,6 +27,8 @@ private:
     QVBoxLayout *mainLayout;
     QVBoxLayout *verticalButtonLayout;
     void toggleOverlay(bool showOverlay);
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private slots:
     void onNumberButtonClicked();
     void onSolveButtonClicked();

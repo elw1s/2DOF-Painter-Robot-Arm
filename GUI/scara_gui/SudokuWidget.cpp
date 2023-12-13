@@ -100,8 +100,9 @@ void SudokuWidget::onCellClicked() {
 }
 
 void SudokuWidget::onNumberSelected(int number) {
+    if(selectedCell.y() == -1 && selectedCell.x() == -1) return;
     QPushButton *clickedButton = cellButtons[selectedCell.y() * 9 + selectedCell.x()];
-    if (clickedButton) {
+    if (clickedButton && isValid(selectedCell.y(), selectedCell.x(), number)) {
         clickedButton->setText(QString::number(number));
         //clickedButton->setStyleSheet("color: black; background-color: white; border: 1px solid black;");
         // Find the position of the clickedButton in the gridLayout
@@ -116,6 +117,26 @@ void SudokuWidget::onNumberSelected(int number) {
         } else {
             clickedButton->setStyleSheet("color: black; background-color: white;");
         }
+    }
+    else{
+        QMessageBox *msgBox = new QMessageBox(this);
+        msgBox->setIcon(QMessageBox::Warning);
+        msgBox->setText("The number is not valid");
+        // Set style sheet for the message box
+        msgBox->setStandardButtons(QMessageBox::NoButton);
+        msgBox->setStyleSheet("QMessageBox { background-color: #19749B; }"
+                              "QLabel { color: white; background-color: #19749B; }"
+                              "QIcon {background-color: #19749B;}"
+                              ); // Change colors
+
+        msgBox->show();
+
+        QTimer::singleShot(500, [msgBox]() {
+            if (msgBox && msgBox->isVisible()) {
+                msgBox->close();
+                msgBox->deleteLater(); // Ensure proper cleanup
+            }
+        });
     }
 }
 
@@ -154,6 +175,7 @@ bool SudokuWidget::isValid(int row, int col, int num) {
 }
 
 bool SudokuWidget::solveSudoku() {
+
     int row, col;
 
     // Find the next empty cell
@@ -180,7 +202,6 @@ bool SudokuWidget::solveSudoku() {
             } else {
                 cellButtons[index]->setStyleSheet("color: red; background-color: white;");
             }
-            qDebug() << "IN SOLVE SUDOKU";
             // Recursively attempt to solve the puzzle with the current number in the cell
             if (solveSudoku()) {
                 return true; // If the puzzle is solved with this number, return true

@@ -13,23 +13,23 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
     horizontalLayout->addWidget(sudokuWidget);
 
     // Create the grid layout for number buttons
-    numberGrid = new QGridLayout();
-    numberGrid->setSpacing(0); // Set spacing between buttons to zero
-    numberGrid->setVerticalSpacing(0); // Set vertical spacing between buttons to zero
-    // Add number buttons to the grid layout
-    for (int i = 1; i <= 9; ++i) {
-        QPushButton *numberButton = new QPushButton(QString::number(i), this);
-        numberButton->setFixedSize(100, 100);
-        numberButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        numberButton->setFont(QFont("Arial", 24));
-        numberButton->setStyleSheet("QPushButton { margin: 0px; padding: 0px; spacing: 0px; background-color: #19749B; border: 1px solid #33C2FF; }");
-        numberButton->setCursor(Qt::PointingHandCursor);
+//    numberGrid = new QGridLayout();
+//    numberGrid->setSpacing(0); // Set spacing between buttons to zero
+//    numberGrid->setVerticalSpacing(0); // Set vertical spacing between buttons to zero
+//    // Add number buttons to the grid layout
+//    for (int i = 1; i <= 9; ++i) {
+//        QPushButton *numberButton = new QPushButton(QString::number(i), this);
+//        numberButton->setFixedSize(100, 100);
+//        numberButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//        numberButton->setFont(QFont("Arial", 24));
+//        numberButton->setStyleSheet("QPushButton { margin: 0px; padding: 0px; spacing: 0px; background-color: #19749B; border: 1px solid #33C2FF; }");
+//        numberButton->setCursor(Qt::PointingHandCursor);
 
-        connect(numberButton, &QPushButton::clicked, this, &SudokuApp::onNumberButtonClicked);
+//        connect(numberButton, &QPushButton::clicked, this, &SudokuApp::onNumberButtonClicked);
 
-        numberGrid->addWidget(numberButton, (i - 1) / 3, (i - 1) % 3);
-    }
-    horizontalLayout->addLayout(numberGrid);
+//        numberGrid->addWidget(numberButton, (i - 1) / 3, (i - 1) % 3);
+//    }
+    //horizontalLayout->addLayout(numberGrid);
 
     // Vertical layout for the solveButton
     verticalButtonLayout = new QVBoxLayout();
@@ -80,11 +80,47 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
 
     mainLayout->setAlignment(Qt::AlignRight | Qt::AlignTop); // Align the layout to the top-right
 
-    // Add the layouts to the main layout
+    // Create QLabel for title
+    QLabel *titleLabel = new QLabel("How to play?", this);
+    titleLabel->setFont(QFont("Arial", 20, QFont::Bold)); // Setting font size and weight
+    titleLabel->setFixedSize(400, titleLabel->sizeHint().height()); // Set fixed width and height based on text
+    titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
+
+    // Create QLabel for description
+    QLabel *descriptionLabel = new QLabel("Select a cell on the 9x9 grid below. Enter a number \nusing keyboard. To solve the sudoku, \npress \"Solve\" button.", this);
+    descriptionLabel->setFont(QFont("Arial", 14)); // Setting font size
+    descriptionLabel->setFixedSize(480, descriptionLabel->sizeHint().height()); // Set fixed width and height based on text
+    descriptionLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
+
+    // Create a vertical layout for the title and description labels
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->addWidget(titleLabel);
+    labelLayout->addWidget(descriptionLabel);
+    labelLayout->setSpacing(0); // Add some spacing between the labels
+
+    mainLayout->addLayout(labelLayout);
     mainLayout->addLayout(horizontalLayout);
     mainLayout->addStretch();
     mainLayout->addLayout(verticalButtonLayout);
     setLayout(mainLayout);
+
+    this->installEventFilter(this);
+}
+
+bool SudokuApp::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        int keyPressed = keyEvent->key() - Qt::Key_0; // Convert key code to number
+
+        // Check if the pressed key is a number between 1 to 9
+        if (keyPressed >= 1 && keyPressed <= 9) {
+            sudokuWidget->onNumberSelected(keyPressed);
+            return true; // Event handled
+        }
+    }
+
+    // Pass the event to the base class
+    return QObject::eventFilter(obj, event);
 }
 
 void SudokuApp::onNumberButtonClicked() {
@@ -109,6 +145,7 @@ void SudokuApp::onSolveButtonClicked() {
         // Puzzle is solved
         // You can perform additional actions here if needed
     } else {
+        qDebug() << "Sudoku has no solution..";
         // If the puzzle has no solution, handle this scenario
     }
 }

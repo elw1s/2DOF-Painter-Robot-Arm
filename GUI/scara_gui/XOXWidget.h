@@ -36,11 +36,15 @@ private:
     void makeComputerMove();
     int evaluateBoard();
     bool isMoveLegal(int move);
-    Move minimax(bool isMaximizing);
+    //Move minimax(bool isMaximizing);
+    int minimax(bool isMaximizing, int depth, int alpha, int beta);
+    Move findBestMove();
     void printBoard();
-    void saveMoveImage();
+    void saveMoveImage(bool board);
     QPushButton *lastMoveX;
     QPushButton *lastMoveO;
+    bool saveWithBoard;
+
 
 signals:
     void gameOver(const int result); // Add this line to declare the signal
