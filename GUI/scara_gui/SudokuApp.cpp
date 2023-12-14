@@ -85,13 +85,13 @@ SudokuApp::SudokuApp(QWidget *parent) : QWidget(parent) {
     titleLabel->setFont(QFont("Arial", 20, QFont::Bold)); // Setting font size and weight
     titleLabel->setFixedSize(400, titleLabel->sizeHint().height()); // Set fixed width and height based on text
     titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
-
+    titleLabel->setStyleSheet("color: white;");
     // Create QLabel for description
     QLabel *descriptionLabel = new QLabel("Select a cell on the 9x9 grid below. Enter a number \nusing keyboard. To solve the sudoku, \npress \"Solve\" button.", this);
     descriptionLabel->setFont(QFont("Arial", 14)); // Setting font size
     descriptionLabel->setFixedSize(480, descriptionLabel->sizeHint().height()); // Set fixed width and height based on text
     descriptionLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Align text to the top-left
-
+    descriptionLabel->setStyleSheet("color: white;");
     // Create a vertical layout for the title and description labels
     QVBoxLayout *labelLayout = new QVBoxLayout();
     labelLayout->addWidget(titleLabel);

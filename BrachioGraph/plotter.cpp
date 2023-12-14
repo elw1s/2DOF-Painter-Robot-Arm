@@ -45,7 +45,8 @@ class Pen{
             this->transition_time = transition_time;
             strcpy(this->position, "down");
             this->virtualPlotter = virtualPlotter;
-
+            std::cout << "Inside PEN constructor: " << this->pin << std::endl;
+            std::cout << "Inside PEN constructor: " << pin << std::endl;
             if(this->virtualPlotter){
                 std::cout << "Initialising virtual Pen" << std::endl;
             }
@@ -63,12 +64,13 @@ class Pen{
         }
 
         void down(){
-
+            std::cout << "In down\n";
             if(strcmp(this->position, "up") == 0){
                 if(this->virtualPlotter){
                     this->virtual_pw = this->pw_down;
                 }
                 else{
+                    std::cout << "Ease pen called from down\n";
                     this->ease_pen(this->pw_up, this->pw_down);
                 }
 
@@ -78,18 +80,17 @@ class Pen{
         }
 
         void up(){
+            std::cout << "In up\n";
             if(strcmp(this->position,"down") == 0){
 
                 if(this->virtualPlotter){
                     this->virtual_pw = this->pw_up;
                 }
                 else{
+                    std::cout << "Ease pen called from up\n";
                     this->ease_pen(this->pw_down, this->pw_up);
                 }
                 
-                // if(this->bg->turtle){
-                //     this->bg->turtle->up();
-                // }
                 strcpy(this->position, "up");
             }
         }
@@ -98,10 +99,15 @@ class Pen{
             double diff = end - start;
             double angle = start;
             double length_of_step = diff / abs(diff);
+            std::cout << "inside ease_pen\n";
+            std::cout << "PIN: " << this->pin << std::endl;
+            std::cout << "diff: " << diff << std::endl;
+            std::cout << "abs(diff):" << abs(diff) << std::endl;
             gpioSetMode(this->pin, PI_OUTPUT);
             for(int i = 0; i < abs(diff); i++){
                 angle += length_of_step;
-                gpioServo(this->pin, angle);
+                //gpioServo(this->pin, angle);
+                std::cout << "angle:" << angle << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
         }
@@ -170,9 +176,11 @@ private:
     double virtual_pw_2;
     double x;
     double y;
-    Pen* pen;
+    
 
 public:
+
+    Pen* pen;
 
     double get_angle_1(){
         return this->angle_1;
@@ -224,13 +232,13 @@ public:
     
     /*Return the servo angles required to reach any x/y position. This is a dummy method in
         the base class; it needs to be overridden in a sub-class implementation.*/
-    std::pair<double,double> xy_to_angles(double x = 0, double y = 0){
+    virtual std::pair<double,double> xy_to_angles(double x = 0, double y = 0){
         return std::make_pair(0,0);
     }
         /*Return the servo angles required to reach any x/y position. This is a dummy method in
         the base class; it needs to be overridden in a sub-class implementation.*/
 
-    std::pair<double,double> angles_to_xy(double angle_1, double angle_2){
+    virtual std::pair<double,double> angles_to_xy(double angle_1, double angle_2){
         return std::make_pair(0,0);
     }
 
@@ -375,8 +383,8 @@ public:
         this->angle_1 = this->angle_1 + length_of_step_1;
         this->angle_2 = this->angle_2 + length_of_step_2;
 
-        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-        auto lastMovedSeconds = std::chrono::duration_cast<std::chrono::seconds>(this->last_moved.time_since_epoch()).count();
+        auto seconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+        auto lastMovedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(this->last_moved.time_since_epoch()).count();
         auto time_since_last_moved = seconds - lastMovedSeconds;
 
         if(time_since_last_moved < wait){
@@ -440,7 +448,8 @@ public:
                 std::pair<double,double> angles = this->xy_to_angles(this->x , this-> y);
                 double angle_1 = angles.first;
                 double angle_2 = angles.second;
-
+                std::cout << "no_of_steps : " << no_of_steps << " , length_of_step_x : " << length_of_step_x << " , length_of_step_y : " << length_of_step_y << std::endl;
+                std::cout << "ANGLE 1 : " << angle_1 << " , ANGLE 2 : " << angle_2 << std::endl;
                 this->move_angles(angle_1, angle_2, angular_step, wait, draw);
             }
         }
@@ -903,7 +912,7 @@ public:
             this->pw_down = 1600;
 
 
-        this->pen = new Pen(this,pw_up,pw_down,this->virtualPlotter);
+        this->pen = new Pen(this,this->pw_up,this->pw_down,18,0.25,this->virtualPlotter);
 
         if(angular_step != 9999)
             this->angular_step = angular_step;
