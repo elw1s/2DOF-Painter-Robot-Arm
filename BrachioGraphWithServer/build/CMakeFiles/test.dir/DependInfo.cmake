@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/arda/Desktop/CSE396/BrachioGraph/test.cpp" "CMakeFiles/test.dir/test.cpp.o" "gcc" "CMakeFiles/test.dir/test.cpp.o.d"
+  "/home/arda/Desktop/CSE396/BrachioGraphWithServer/test.cpp" "CMakeFiles/test.dir/test.cpp.o" "gcc" "CMakeFiles/test.dir/test.cpp.o.d"
   )
 
 # Targets to which this target links.

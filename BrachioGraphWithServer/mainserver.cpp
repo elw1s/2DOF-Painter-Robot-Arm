@@ -8,7 +8,7 @@
 #include "server_code1.h"
 #include "server_code2.h"
 #include <queue>
-#include "BrachioGraph.cpp"
+#include "brachiograph.cpp"
 
 #define MAX_DATA_SIZE 4096 // Maximum size for received image data
 #define MAX_IMAGE_SIZE 10000000 // 10 MB
@@ -31,7 +31,7 @@ bool clientDisconnected = false; // Flag to track client disconnection
 bool canSend = false;
 unsigned char imageBuffer[MAX_IMAGE_SIZE]; // Byte array to hold image data
 size_t imageBufferIndex = 0; // Index to keep track of the image buffer position
-
+BrachioGraph bg = BrachioGraph(messagesWaitingToBeSend,&dataCond,&dataMutex);
 
 void connection_established(){
     pthread_mutex_lock(&dataMutex);
@@ -171,9 +171,10 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
+        system("python3 /home/ardakilic/Desktop/CSE396/simulate_embedded/linedraw.py");
         usleep(2000000);
-        readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
+        bg.plot_file("/tmp/cse396/sent.json");
+        //readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
         int lineNum = getLineNumber();
         printf("Line number: %d\n",lineNum);
         sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);

@@ -1,21 +1,57 @@
-#include <chrono>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 int main() {
-    // Get the current timepoint from steady clock
-    auto currentTime = std::chrono::steady_clock::now();
+    std::string filename = "/tmp/cse396/sent.json";
+    std::ifstream file(filename, std::ios::binary); // Open file in binary mode
 
-    // Calculate the duration since the epoch
-    auto duration = currentTime.time_since_epoch();
+    if (file.is_open()) {
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        file.close();
 
-    // Convert the duration to seconds
-    double seconds = std::chrono::duration<double>(duration).count();
+        std::streampos fileSize = buffer.tellg(); // Get the number of bytes read
 
-    // Print the time in seconds since the epoch
-    std::cout << "C++: Value of the monotonic clock (in seconds since epoch): " << seconds << std::endl;
+        if (fileSize != -1) {
+            std::cout << "BG Number of bytes read: " << fileSize << std::endl;
+        } else {
+            std::cerr << "Error determining file size!" << std::endl;
+        }
+    } else {
+        std::cerr << "Unable to open file!" << std::endl;
+    }
 
-    // Your Python execution command here
-    system("python3 monotonic.py");
+    std::ifstream file2(filename, std::ios::binary | std::ios::ate);
+    if (!file2.is_open()) {
+        std::cerr << "Unable to open file2\n";
+        return -1;
+    }
+
+    std::streamsize size = file2.tellg();
+    file2.seekg(0, std::ios::beg);
+
+    std::string jsonData;
+    char ch;
+    int bracketCounter = 0;
+    std::streamsize bytesRead = 0;
+
+    while (file2.get(ch) && bracketCounter < 3) {
+        jsonData += ch;
+        bytesRead++;
+
+        if (ch == '[') {
+            bracketCounter--;
+        } else if (ch == ']') {
+            bracketCounter++;
+        }
+    }
+    std::cout << "MS Number of bytes read: " << bytesRead << std::endl;
+    file2.close();
+
+
+
 
     return 0;
 }

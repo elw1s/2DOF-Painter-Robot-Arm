@@ -31,8 +31,14 @@ std::vector<std::pair<double, double>> servo_2_angle_pws2 = {
 
 std::array<int, 4> bounds = {-8, 4, 8, 13};
 
+std::queue<std::string> messagesWaitingToBeSend;
+pthread_mutex_t dataMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t dataCond = PTHREAD_COND_INITIALIZER;
 
 BrachioGraph bg = new BrachioGraph(
+    messagesWaitingToBeSend,
+    &dataCond,
+    &dataMutex,
     false,
     false,
     9999,
@@ -42,6 +48,7 @@ BrachioGraph bg = new BrachioGraph(
     1500,1500,-10,10,0,0,0,0,servo_1_angle_pws1,servo_2_angle_pws2,
     std::map<double, std::map<std::string, double>>(),std::map<double, 
     std::map<std::string, double>>(),1850,
-    1200,9999,9999,9999);
+    1200,9999,9999,9999
+);
     
  

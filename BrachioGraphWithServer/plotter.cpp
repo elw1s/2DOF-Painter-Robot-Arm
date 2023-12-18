@@ -1,6 +1,6 @@
-#include <iostream>
 #include <vector>
 #include <array>
+#include <iostream>
 #include <algorithm>
 #include <unordered_map>
 #include <chrono>
@@ -16,6 +16,17 @@
 #include "utils.cpp"
 #include <pigpio.h>
 #include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
+#include <queue>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <pthread.h>
+#include <bitset>
+#include "CTurtle.hpp"
+#include "turtle_plotter.cpp"
+
+
 
 //namespace ct = cturtle;
 class Plotter;
@@ -177,6 +188,11 @@ private:
     double virtual_pw_2;
     double x;
     double y;
+    std::queue<std::string>* messageQueue;
+    pthread_cond_t* condition;
+    pthread_mutex_t* mutex;
+    std::vector<std::string> linesInStringFormat;
+    BaseTurtle* baseTurtle;
     
 
 public:
@@ -230,6 +246,19 @@ public:
         this->virtual_pw_2 = this->angles_to_pw_2(90);
         this->virtualPlotter = true;
     }
+
+    void setup_turtle(double coarseness){
+        this->baseTurtle = new BaseTurtle(
+            850,
+            16,
+            10,
+            this,
+            coarseness
+        );
+
+        this->baseTurtle->draw_grid();
+
+    }
     
     /*Return the servo angles required to reach any x/y position. This is a dummy method in
         the base class; it needs to be overridden in a sub-class implementation.*/
@@ -281,6 +310,26 @@ public:
 
     }
 
+    bool send_servo_angle(double angle_1 = 9999, double angle_2 = 9999){
+
+        if(angle_1 == 9999 || angle_2 == 9999) return false;
+        std::vector<int> angles;
+        angles.push_back(angle_1);
+        angles.push_back(angle_2);
+        angles.push_back(90); //3. servonun açısı olmalı
+
+        std::bitset<16> angle1(angles[0]);
+        std::bitset<16> angle2(angles[1]);
+        std::bitset<16> angle3(angles[2]);
+
+        std::string dataToSend = '5' + angle1.to_string() + angle2.to_string() + angle3.to_string(); // DECODER + 3 angles
+        pthread_mutex_lock(this->mutex);
+        this->messageQueue->push(dataToSend);
+        pthread_cond_signal(this->condition); 
+        pthread_mutex_unlock(this->mutex);
+        return true;
+    }
+
     void set_angles(double angle_1 = 9999, double angle_2 = 9999){
         double pw_1 = 9999;
         double pw_2 = 9999;
@@ -323,15 +372,29 @@ public:
             this->pulse_widths_used_2.insert(pw_2);
         }
 
+        this->send_servo_angle(this->angle_1, this->angle_2);
+
         std::pair<double,double> x_and_y = this->angles_to_xy(this->angle_1, this->angle_2);
         this->x = x_and_y.first;
         this->y = x_and_y.second;
 
-        // if(this->turtle){
-        // }
+        if(this->turtle){
+            this->baseTurtle->set_angles(this->angle_1, this->angle_2);
+        }
 
         this->set_pulse_widths(pw_1, pw_2);
 
+    }
+
+    void quiet(vector<int> servos = {14,15,18}){
+        if(this->virtualPlotter){
+            std::cout << "Going quiet" << std::endl;
+        }
+        else{
+            for(int i = 0; i < 3; i++){
+                gpioSetPWMfrequency(servos.at(i), 0);
+            }
+        }
     }
 
     void move_angles(double angle_1 = 9999, double angle_2 = 9999, double angular_step = 9999, double wait = 9999, bool draw = false){
@@ -563,57 +626,104 @@ public:
         return lines;
     }
 
-    void plot_file(char * filename = "",std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999, double wait = 9999, double resolution = 9999){
+    int plot_file(char * filename = "",std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999, double wait = 9999, double resolution = 9999){
 
         if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
             bounds = this->bounds;
         }
 
-        std::ifstream file(filename);
-        if (file.is_open()) {
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            file.close();
+        std::ifstream file(filename, std::ios::binary | std::ios::ate);
+        if (!file.is_open()) {
+            std::cerr << "Unable to open file\n";
+            return -1;
+        }
 
-            std::string json_str = buffer.str();
+        std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
 
-            rapidjson::Document doc;
-            doc.Parse(json_str.c_str());
+        std::string jsonData;
+        char ch;
+        int bracketCounter = 0;
+        std::streamsize bytesRead = 0;
 
-            if (!doc.IsArray()) {
-                std::cerr << "Invalid JSON format!" << std::endl;
-                return;
+        while (file.get(ch) && bracketCounter < 3) {
+            jsonData += ch;
+            bytesRead++;
+
+            if (ch == '[') {
+                bracketCounter--;
+            } else if (ch == ']') {
+                bracketCounter++;
+            }
+        }
+
+        file.close();
+
+
+        rapidjson::Document doc;
+        doc.Parse(jsonData.c_str());
+
+        size_t chunkSize;
+        int offset = 0;
+        while (offset < size) {
+            chunkSize = std::min<size_t>(4096, static_cast<size_t>(size - offset));
+
+            char* messageBuffer = new char[chunkSize + 2]; // +1 for '9' character, +1 for null-termination
+            messageBuffer[0] = '2'; // Set the first character to '9'
+
+            // Copy the data into the message buffer
+            strncpy(messageBuffer + 1, jsonData.c_str() + offset, chunkSize);
+            messageBuffer[chunkSize + 1] = '\0'; // Null-terminate the string
+
+            pthread_mutex_lock(this->mutex);
+            this->messageQueue->push(messageBuffer);
+            printf("%ldB put into messageQueue\n", chunkSize);
+
+            // Signal that a new message is available
+            pthread_cond_signal(this->condition);
+            printf("Signaled\n");
+            pthread_mutex_unlock(this->mutex);
+
+            offset += chunkSize;
+        }
+        if (doc.HasParseError()) {
+                std::cerr << "JSON parse error\n";
+                delete[] jsonData.c_str();
+                return -1;
+        }
+
+        std::vector<std::vector<std::vector<double>>> lines;
+
+        for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
+            if (!doc[i].IsArray()) {
+                std::cerr << "Invalid line format!" << std::endl;
+                return -1;
+            }
+            else{
+                rapidjson::StringBuffer buffer;
+                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                doc[i].Accept(writer);
+                this->linesInStringFormat.push_back(buffer.GetString());
             }
 
-            std::vector<std::vector<std::vector<double>>> lines;
+            std::vector<std::vector<double>> line;
 
-            for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
-                if (!doc[i].IsArray()) {
-                    std::cerr << "Invalid line format!" << std::endl;
-                    return;
+            for (rapidjson::SizeType j = 0; j < doc[i].Size(); ++j) {
+                if (!doc[i][j].IsArray() || doc[i][j].Size() != 2 || !doc[i][j][0].IsInt() || !doc[i][j][1].IsInt()) {
+                    std::cerr << "Invalid point format in line!" << std::endl;
+                    return -1;
                 }
 
-                std::vector<std::vector<double>> line;
+                double x = doc[i][j][0].GetDouble();
+                double y = doc[i][j][1].GetDouble();
 
-                for (rapidjson::SizeType j = 0; j < doc[i].Size(); ++j) {
-                    if (!doc[i][j].IsArray() || doc[i][j].Size() != 2 || !doc[i][j][0].IsInt() || !doc[i][j][1].IsInt()) {
-                        std::cerr << "Invalid point format in line!" << std::endl;
-                        return;
-                    }
+                line.push_back({x, y});
+            }
 
-                    double x = doc[i][j][0].GetDouble();
-                    double y = doc[i][j][1].GetDouble();
-
-                    line.push_back({x, y});
-                }
-
-                lines.push_back(line);
+            lines.push_back(line);
             }
 
             this->plot_lines(lines, bounds, angular_step, wait, resolution, true);
-        } else {
-            std::cerr << "Unable to open file" << std::endl;
-        }
     }
 
     double round(double number, int digits) {
@@ -627,8 +737,14 @@ public:
         if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
             bounds = this->bounds;
         }
-        
 
+        std::string dataToSend = '3' + std::to_string(this->linesInStringFormat.size());
+        pthread_mutex_lock(this->mutex);
+        this->messageQueue->push(dataToSend);
+        pthread_cond_signal(this->condition);
+        pthread_mutex_unlock(this->mutex);
+        
+        std::vector<std::vector<std::vector<double>>> before_scaled_lines = lines;
         //Çizilen lineları desktopa gönderirken bu fonksiyon öncesini gönder.
         lines = this->rotate_and_scale_lines(lines, false, true, bounds);
 
@@ -651,10 +767,26 @@ public:
             for (const auto& point : line) {
                 std::cout << "(" << point[0] << ", " << point[1] << ") ";
             }
-            std::cout << std::endl;        
+            std::cout << std::endl; 
+
+            pthread_mutex_lock(this->mutex);
+            if(!this->linesInStringFormat.empty()){
+                std::string drawnLine = this->linesInStringFormat.at(0);
+                drawnLine = '4' + drawnLine;
+                this->messageQueue->push(drawnLine);
+                this->linesInStringFormat.erase(this->linesInStringFormat.begin());    
+            }
+            pthread_cond_signal(this->condition);
+            pthread_mutex_unlock(this->mutex); 
         }
 
         this->park();
+
+        pthread_mutex_lock(this->mutex);
+        this->messageQueue->push("0Connection Established.");
+        pthread_cond_signal(this->condition);
+        pthread_mutex_unlock(this->mutex);
+
 
     }
 
@@ -748,6 +880,9 @@ public:
     }
 
     Plotter(
+        std::queue<std::string>* messageQueue = nullptr, 
+        pthread_cond_t* condition = nullptr, 
+        pthread_mutex_t* mutex = nullptr,
         bool virtualPlotter = false,
         bool turtle = false,
         double turtle_coarseness = 9999,
@@ -775,18 +910,20 @@ public:
         this->virtualPlotter = virtualPlotter;
         this->angle_1 = servo_1_parked_angle;
         this->angle_2 = servo_2_parked_angle;
+
+        this->messageQueue = *messageQueue;
+        this->condition = condition;
+        this->mutex = mutex;
         
 
-        // if(turtle){
-        //     try{
-
-        //     }
-        //     catch(){
-
-        //     }
-        // }
-        // else
-        this->turtle = false; // You can add port of Turtle to C++ maybe?
+        if(turtle){
+            this->setup_turtle(turtle_coarseness);
+            this->baseTurtle->showturtle();
+        }
+        else{
+            this->turtle = false;
+        }
+        
         this->bounds = bounds;
 
         this->servo_1_parked_pw = servo_1_parked_pw;
@@ -941,4 +1078,3 @@ public:
 
 
 };
-

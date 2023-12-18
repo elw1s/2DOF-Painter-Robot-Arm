@@ -33,10 +33,12 @@ private:
     double y;
 
 
-
 public:
 
     BrachioGraph(
+        std::queue<std::string>& messageQueue, 
+        pthread_cond_t* condition, 
+        pthread_mutex_t* mutex,
         bool virtualPlotter = false,
         bool turtle = false,
         double turtle_coarseness = 9999,
@@ -61,6 +63,9 @@ public:
         double wait = 9999,
         double resolution = 9999
     ): Plotter(
+        messageQueue, 
+        condition, 
+        mutex,
         virtualPlotter,
         turtle,
         turtle_coarseness,

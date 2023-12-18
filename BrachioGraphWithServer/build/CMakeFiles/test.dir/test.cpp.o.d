@@ -1,5 +1,5 @@
 CMakeFiles/test.dir/test.cpp.o: \
- /home/arda/Desktop/CSE396/BrachioGraph/test.cpp \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/test.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -146,7 +146,7 @@ CMakeFiles/test.dir/test.cpp.o: \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
  /usr/include/c++/11/bits/istream.tcc \
- /home/arda/Desktop/CSE396/BrachioGraph/brachiograph.cpp \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/brachiograph.cpp \
  /usr/include/c++/11/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
@@ -170,7 +170,7 @@ CMakeFiles/test.dir/test.cpp.o: \
  /usr/include/c++/11/tr1/poly_hermite.tcc \
  /usr/include/c++/11/tr1/poly_laguerre.tcc \
  /usr/include/c++/11/tr1/riemann_zeta.tcc \
- /home/arda/Desktop/CSE396/BrachioGraph/plotter.cpp \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/plotter.cpp \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
@@ -212,157 +212,63 @@ CMakeFiles/test.dir/test.cpp.o: \
  /usr/include/c++/11/bits/stl_tree.h /usr/include/c++/11/bits/stl_map.h \
  /usr/include/c++/11/bits/stl_multimap.h /usr/include/c++/11/set \
  /usr/include/c++/11/bits/stl_set.h \
- /usr/include/c++/11/bits/stl_multiset.h \
- /home/arda/Desktop/CSE396/BrachioGraph/utils.cpp \
- /usr/local/include/opencv4/opencv2/opencv.hpp \
- /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
- /usr/local/include/opencv4/opencv2/core.hpp \
- /usr/local/include/opencv4/opencv2/core/cvdef.h \
- /usr/local/include/opencv4/opencv2/core/version.hpp \
- /usr/local/include/opencv4/opencv2/core/hal/interface.h \
- /usr/include/c++/11/cstddef \
- /usr/local/include/opencv4/opencv2/core/cv_cpu_dispatch.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h \
- /usr/include/c++/11/stdlib.h \
- /usr/local/include/opencv4/opencv2/core/base.hpp \
- /usr/include/c++/11/climits \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /usr/local/include/opencv4/opencv2/core/cvstd.hpp \
- /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
- /usr/local/include/opencv4/opencv2/core/cvstd_wrapper.hpp \
- /usr/include/c++/11/memory \
- /usr/include/c++/11/bits/stl_raw_storage_iter.h \
- /usr/include/c++/11/bits/align.h /usr/include/c++/11/bit \
- /usr/include/c++/11/bits/shared_ptr.h \
- /usr/include/c++/11/bits/shared_ptr_base.h \
- /usr/include/c++/11/bits/allocated_ptr.h \
- /usr/include/c++/11/ext/concurrence.h \
- /usr/include/c++/11/bits/shared_ptr_atomic.h \
- /usr/include/c++/11/bits/atomic_base.h \
- /usr/include/c++/11/bits/atomic_lockfree_defines.h \
- /usr/include/c++/11/backward/auto_ptr.h \
- /usr/include/c++/11/pstl/glue_memory_defs.h \
- /usr/local/include/opencv4/opencv2/core/neon_utils.hpp \
- /usr/local/include/opencv4/opencv2/core/vsx_utils.hpp \
- /usr/include/assert.h /usr/local/include/opencv4/opencv2/core/check.hpp \
- /usr/local/include/opencv4/opencv2/core/traits.hpp \
- /usr/local/include/opencv4/opencv2/core/matx.hpp \
- /usr/local/include/opencv4/opencv2/core/saturate.hpp \
- /usr/local/include/opencv4/opencv2/core/fast_math.hpp \
- /usr/local/include/opencv4/opencv2/core/types.hpp \
- /usr/include/c++/11/cfloat \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
- /usr/local/include/opencv4/opencv2/core/mat.hpp \
- /usr/local/include/opencv4/opencv2/core/bufferpool.hpp \
- /usr/local/include/opencv4/opencv2/core/mat.inl.hpp \
- /usr/local/include/opencv4/opencv2/core/persistence.hpp \
- /usr/local/include/opencv4/opencv2/core/operations.hpp \
- /usr/local/include/opencv4/opencv2/core/cvstd.inl.hpp \
- /usr/include/c++/11/complex \
- /usr/local/include/opencv4/opencv2/core/utility.hpp \
- /usr/include/c++/11/mutex /usr/include/c++/11/bits/std_mutex.h \
- /usr/include/c++/11/bits/unique_lock.h \
- /usr/local/include/opencv4/opencv2/core/optim.hpp \
- /usr/local/include/opencv4/opencv2/core/ovx.hpp \
- /usr/local/include/opencv4/opencv2/core/cvdef.h \
- /usr/local/include/opencv4/opencv2/calib3d.hpp \
- /usr/local/include/opencv4/opencv2/features2d.hpp \
- /usr/local/include/opencv4/opencv2/flann/miniflann.hpp \
- /usr/local/include/opencv4/opencv2/flann/defines.h \
- /usr/local/include/opencv4/opencv2/flann/config.h \
- /usr/local/include/opencv4/opencv2/core/affine.hpp \
- /usr/local/include/opencv4/opencv2/dnn.hpp \
- /usr/local/include/opencv4/opencv2/dnn/dnn.hpp \
- /usr/local/include/opencv4/opencv2/core/async.hpp \
- /usr/local/include/opencv4/opencv2/dnn/../dnn/version.hpp \
- /usr/local/include/opencv4/opencv2/dnn/dict.hpp \
- /usr/local/include/opencv4/opencv2/dnn/layer.hpp \
- /usr/local/include/opencv4/opencv2/dnn/dnn.inl.hpp \
- /usr/local/include/opencv4/opencv2/dnn/utils/inference_engine.hpp \
- /usr/local/include/opencv4/opencv2/dnn/utils/../dnn.hpp \
- /usr/local/include/opencv4/opencv2/flann.hpp \
- /usr/local/include/opencv4/opencv2/flann/flann_base.hpp \
- /usr/local/include/opencv4/opencv2/flann/general.h \
- /usr/local/include/opencv4/opencv2/flann/matrix.h \
- /usr/local/include/opencv4/opencv2/flann/params.h \
- /usr/local/include/opencv4/opencv2/flann/any.h \
- /usr/local/include/opencv4/opencv2/flann/defines.h \
- /usr/local/include/opencv4/opencv2/flann/saving.h \
- /usr/local/include/opencv4/opencv2/flann/nn_index.h \
- /usr/local/include/opencv4/opencv2/flann/result_set.h \
- /usr/local/include/opencv4/opencv2/flann/all_indices.h \
- /usr/local/include/opencv4/opencv2/flann/kdtree_index.h \
- /usr/local/include/opencv4/opencv2/flann/dynamic_bitset.h \
- /usr/local/include/opencv4/opencv2/flann/dist.h \
- /usr/local/include/opencv4/opencv2/flann/heap.h \
- /usr/local/include/opencv4/opencv2/flann/allocator.h \
- /usr/local/include/opencv4/opencv2/flann/random.h \
- /usr/local/include/opencv4/opencv2/flann/kdtree_single_index.h \
- /usr/local/include/opencv4/opencv2/flann/kmeans_index.h \
- /usr/local/include/opencv4/opencv2/flann/logger.h \
- /usr/local/include/opencv4/opencv2/flann/composite_index.h \
- /usr/local/include/opencv4/opencv2/flann/linear_index.h \
- /usr/local/include/opencv4/opencv2/flann/hierarchical_clustering_index.h \
- /usr/local/include/opencv4/opencv2/flann/lsh_index.h \
- /usr/local/include/opencv4/opencv2/flann/lsh_table.h \
- /usr/include/c++/11/math.h \
- /usr/local/include/opencv4/opencv2/flann/autotuned_index.h \
- /usr/local/include/opencv4/opencv2/flann/ground_truth.h \
- /usr/local/include/opencv4/opencv2/flann/index_testing.h \
- /usr/local/include/opencv4/opencv2/flann/timer.h \
- /usr/local/include/opencv4/opencv2/flann/sampling.h \
- /usr/local/include/opencv4/opencv2/highgui.hpp \
- /usr/local/include/opencv4/opencv2/imgcodecs.hpp \
- /usr/local/include/opencv4/opencv2/videoio.hpp \
- /usr/local/include/opencv4/opencv2/imgproc.hpp \
- /usr/local/include/opencv4/opencv2/./imgproc/segmentation.hpp \
- /usr/local/include/opencv4/opencv2/ml.hpp \
- /usr/local/include/opencv4/opencv2/ml/ml.inl.hpp \
- /usr/local/include/opencv4/opencv2/objdetect.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_dictionary.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/aruco_board.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/graphical_code_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/detection_based_tracker.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/face.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/charuco_detector.hpp \
- /usr/local/include/opencv4/opencv2/objdetect/barcode.hpp \
- /usr/local/include/opencv4/opencv2/photo.hpp \
- /usr/local/include/opencv4/opencv2/stitching.hpp \
- /usr/local/include/opencv4/opencv2/stitching/warpers.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/warpers.hpp \
- /usr/local/include/opencv4/opencv2/core/cuda.hpp \
- /usr/local/include/opencv4/opencv2/core/cuda_types.hpp \
- /usr/local/include/opencv4/opencv2/core/cuda.inl.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/warpers_inl.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/warpers.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/matchers.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/motion_estimators.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/matchers.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/util.hpp \
- /usr/include/c++/11/list /usr/include/c++/11/bits/stl_list.h \
- /usr/include/c++/11/bits/list.tcc \
- /usr/local/include/opencv4/opencv2/stitching/detail/util_inl.hpp \
- /usr/include/c++/11/queue /usr/include/c++/11/deque \
- /usr/include/c++/11/bits/stl_deque.h /usr/include/c++/11/bits/deque.tcc \
- /usr/include/c++/11/bits/stl_queue.h \
- /usr/local/include/opencv4/opencv2/stitching/detail/camera.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/exposure_compensate.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/seam_finders.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/blenders.hpp \
- /usr/local/include/opencv4/opencv2/stitching/detail/camera.hpp \
- /usr/local/include/opencv4/opencv2/video.hpp \
- /usr/local/include/opencv4/opencv2/video/tracking.hpp \
- /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
+ /usr/include/c++/11/bits/stl_multiset.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+ /usr/include/linux/close_range.h /usr/include/c++/11/fstream \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/utils.cpp \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \
- /usr/include/c++/11/pstl/glue_numeric_defs.h /usr/local/include/pigpio.h
+ /usr/include/c++/11/bit /usr/include/c++/11/pstl/glue_numeric_defs.h \
+ /usr/local/include/pigpio.h /usr/include/rapidjson/document.h \
+ /usr/include/rapidjson/reader.h /usr/include/rapidjson/allocators.h \
+ /usr/include/rapidjson/rapidjson.h /usr/include/c++/11/cstring \
+ /usr/include/string.h /usr/include/strings.h /usr/include/inttypes.h \
+ /usr/include/c++/11/cassert /usr/include/assert.h \
+ /usr/include/rapidjson/stream.h /usr/include/rapidjson/encodings.h \
+ /usr/include/rapidjson/encodedstream.h \
+ /usr/include/rapidjson/memorystream.h \
+ /usr/include/rapidjson/internal/meta.h \
+ /usr/include/rapidjson/rapidjson.h \
+ /usr/include/rapidjson/internal/stack.h \
+ /usr/include/rapidjson/allocators.h \
+ /usr/include/rapidjson/internal/swap.h \
+ /usr/include/rapidjson/internal/strtod.h \
+ /usr/include/rapidjson/internal/ieee754.h \
+ /usr/include/rapidjson/internal/biginteger.h \
+ /usr/include/rapidjson/internal/diyfp.h \
+ /usr/include/rapidjson/internal/pow10.h \
+ /usr/include/rapidjson/error/error.h /usr/include/rapidjson/rapidjson.h \
+ /usr/include/rapidjson/internal/strfunc.h \
+ /usr/include/rapidjson/stream.h /usr/include/c++/11/iterator \
+ /usr/include/c++/11/bits/stream_iterator.h \
+ /usr/include/rapidjson/stringbuffer.h /usr/include/rapidjson/writer.h \
+ /usr/include/rapidjson/internal/dtoa.h \
+ /usr/include/rapidjson/internal/itoa.h \
+ /usr/include/rapidjson/internal/itoa.h \
+ /usr/include/rapidjson/stringbuffer.h /usr/include/c++/11/queue \
+ /usr/include/c++/11/deque /usr/include/c++/11/bits/stl_deque.h \
+ /usr/include/c++/11/bits/deque.tcc /usr/include/c++/11/bits/stl_queue.h \
+ /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/socket_type.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/c++/11/bitset
