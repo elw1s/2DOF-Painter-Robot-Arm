@@ -40,23 +40,23 @@ public:
         bool virtualPlotter = false,
         bool turtle = false,
         double turtle_coarseness = 9999,
-        std::array<int, 4> bounds = {-10, 5, 10, 15},
+        std::array<int, 4> bounds = {-8, 4, 6, 13},
         double inner_arm = 8,
         double outer_arm = 8,
         double servo_1_parked_pw = 1500,
         double servo_2_parked_pw = 1500,
         double servo_1_degree_ms = -10,
         double servo_2_degree_ms = 10,
-        double servo_1_parked_angle = 0,
-        double servo_2_parked_angle = 0,
+        double servo_1_parked_angle = -90,
+        double servo_2_parked_angle = 90,
         double hysteresis_correction_1 = 0,
         double hysteresis_correction_2 = 0,
         std::vector<std::pair<double,double>> servo_1_angle_pws = std::vector<std::pair<double,double>>(),
         std::vector<std::pair<double,double>> servo_2_angle_pws = std::vector<std::pair<double,double>>(),
         std::map<double, std::map<std::string, double>> servo_1_angle_pws_bidi = std::map<double, std::map<std::string, double>>(),
         std::map<double, std::map<std::string, double>> servo_2_angle_pws_bidi = std::map<double, std::map<std::string, double>>(),
-        double pw_up = 9999,
-        double pw_down = 9999,
+        double pw_up = 1500,
+        double pw_down = 1100,
         double angular_step = 9999,
         double wait = 9999,
         double resolution = 9999
@@ -142,7 +142,7 @@ public:
 
         double outer_angle = std::acos(
             (this->inner_arm * this->inner_arm + this->outer_arm * this->outer_arm - hypotenuse * hypotenuse) 
-            / (2 * hypotenuse * this->outer_arm)
+            / (2 * this->inner_arm * this->outer_arm)
         );
 
         double shoulder_motor_angle = hypotenuse_angle - inner_angle;

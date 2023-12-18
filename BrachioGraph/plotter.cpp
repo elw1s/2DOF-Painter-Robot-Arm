@@ -157,7 +157,8 @@ private:
     double angular_step;
     double wait;
     double resolution;
-    std::chrono::steady_clock::time_point last_moved;
+    //std::chrono::steady_clock::time_point last_moved;
+    double last_moved;
     double angle_1;
     double angle_2;
     //double (*angles_to_pw_1)(double);
@@ -364,10 +365,13 @@ public:
             diff_2 = angle_2 - this->angle_2;
         }
         
-        double abs_diff_1 = std::abs(diff_1 / angular_step);
-        double abs_diff_2 = std::abs(diff_2 / angular_step);
-        int no_of_steps = static_cast<int>(std::max(abs_diff_1, abs_diff_2));
-        no_of_steps = (no_of_steps != 0) ? no_of_steps : 1;
+        //double abs_diff_1 = std::abs(diff_1 / angular_step);
+        //double abs_diff_2 = std::abs(diff_2 / angular_step);
+        //int no_of_steps = static_cast<int>(std::max(abs_diff_1, abs_diff_2));
+        //no_of_steps = (no_of_steps != 0) ? no_of_steps : 1;
+
+        int no_of_steps = std::max(std::abs(diff_1 / angular_step), std::abs(diff_2 / angular_step));
+        no_of_steps = std::max(no_of_steps, 1);
 
         bool disable_tqdm;
         if(no_of_steps < 100){
@@ -379,24 +383,21 @@ public:
 
         double length_of_step_1 = diff_1/no_of_steps;
         double length_of_step_2 = diff_2/no_of_steps;
+        
+        for(int i = 0; i < no_of_steps; i++){
+            this->angle_1 = this->angle_1 + length_of_step_1;
+            this->angle_2 = this->angle_2 + length_of_step_2;
+            double time_since_last_moved = this->monotonic() - this->last_moved;
+            if(time_since_last_moved < wait){
+                std::chrono::microseconds duration(static_cast<long long>(wait - time_since_last_moved));
+                std::this_thread::sleep_for(duration);
+            }
 
-        this->angle_1 = this->angle_1 + length_of_step_1;
-        this->angle_2 = this->angle_2 + length_of_step_2;
+            this->set_angles(this->angle_1, this->angle_2);
 
-        auto seconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-        auto lastMovedSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(this->last_moved.time_since_epoch()).count();
-        auto time_since_last_moved = seconds - lastMovedSeconds;
-
-        if(time_since_last_moved < wait){
-            
-            //std::this_thread::sleep_for(std::chrono::seconds(5));
-            sleep(wait - time_since_last_moved);
-        }
-
-        this->set_angles(this->angle_1, this->angle_2);
-
-        this->last_moved = std::chrono::steady_clock::now();
-
+            //this->last_moved = std::chrono::steady_clock::now();
+            this->last_moved = this->monotonic();
+            }
     }
 
     void park(){
@@ -739,6 +740,13 @@ public:
 
     }
 
+    double monotonic(){
+        auto currentTime = std::chrono::steady_clock::now();
+        auto duration = currentTime.time_since_epoch();
+        double seconds = std::chrono::duration<double>(duration).count();
+        return seconds;
+    }
+
     Plotter(
         bool virtualPlotter = false,
         bool turtle = false,
@@ -762,10 +770,12 @@ public:
         double wait = 9999,
         double resolution = 9999
     ){
-        this->last_moved = std::chrono::steady_clock::now();
+        //this->last_moved = std::chrono::steady_clock::now();
+        this->last_moved = monotonic();
         this->virtualPlotter = virtualPlotter;
         this->angle_1 = servo_1_parked_angle;
         this->angle_2 = servo_2_parked_angle;
+        
 
         // if(turtle){
         //     try{
