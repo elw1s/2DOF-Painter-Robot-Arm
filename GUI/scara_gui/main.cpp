@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
     leftLayout->addWidget(drawingAppButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(imageUploaderButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(playXOXButton, 0, Qt::AlignCenter);
-    leftLayout->addWidget(playSudokuButton, 0, Qt::AlignCenter);
+    //leftLayout->addWidget(playSudokuButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(shortestPathButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(openGazeboButton, 0, Qt::AlignCenter);
     leftLayout->addWidget(settingsButton, 0, Qt::AlignCenter);
