@@ -148,8 +148,8 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     waveformPlot->addGraph();
     waveformPlot->graph(1)->setPen(QPen(QColor("#327ba8"), 2)); // Blue line with color #327ba8
 
-    waveformPlot->addGraph();
-    waveformPlot->graph(2)->setPen(QPen(QColor("#1bb310"), 2)); // Green line
+    //waveformPlot->addGraph();
+    //waveformPlot->graph(2)->setPen(QPen(QColor("#1bb310"), 2)); // Green line
 
     waveformPlot->xAxis->setTickPen(QPen(QColor("#33C2FF"))); // Major ticks on x-axis
     waveformPlot->xAxis->setSubTickPen(QPen(QColor("#19749B"))); // Minor ticks on x-axis
@@ -168,7 +168,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     blueLabel = new QLabel();
     blueLabel->setText("Elbow Motor: 0");
     greenLabel = new QLabel();
-    greenLabel->setText("Lifting Motor: 0");
+    greenLabel->setText("Pen: UP");
 
     redLabel->setStyleSheet("color: #ed4046;"); // Style the label as needed
     blueLabel->setStyleSheet("color: #327ba8;"); // Style the label as needed
@@ -232,25 +232,25 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
 
     // Slider 3 (Green)
-    QSlider *sliderGreen = new QSlider(Qt::Horizontal);
-    sliderGreen->setStyleSheet(
-        "QSlider::groove:horizontal { border: 1px solid #1bb310; background: #1bb310; height: 4px; border-radius: 2px; }"
-        "QSlider::handle:horizontal { background-color: #1bb310; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
-        "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
-        );
-    sliderGreen->setRange(0, 100); // Modify the range as needed
-    sliderGreen->setSingleStep(1); // Set the step size for sliderRed
-    sliderGreen->setPageStep(10); // Set the page step size for sliderRed
-    sliderGreen->setSliderPosition(70); // Set initial slider position
-    sliderGreen->setMinimumSize(150, 60);  // Set minimum size for sliderRed
-    sliderGreen->setMaximumSize(400, 150);  // Set maximum size for sliderRed
-    sliderGreen->setTickInterval(10);
-    sliderGreen->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
-    QLabel *labelGreen = new QLabel("70");
-    labelGreen->setStyleSheet("color: #1bb310;");
+//    QSlider *sliderGreen = new QSlider(Qt::Horizontal);
+//    sliderGreen->setStyleSheet(
+//        "QSlider::groove:horizontal { border: 1px solid #1bb310; background: #1bb310; height: 4px; border-radius: 2px; }"
+//        "QSlider::handle:horizontal { background-color: #1bb310; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
+//        "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
+//        );
+//    sliderGreen->setRange(0, 100); // Modify the range as needed
+//    sliderGreen->setSingleStep(1); // Set the step size for sliderRed
+//    sliderGreen->setPageStep(10); // Set the page step size for sliderRed
+//    sliderGreen->setSliderPosition(70); // Set initial slider position
+//    sliderGreen->setMinimumSize(150, 60);  // Set minimum size for sliderRed
+//    sliderGreen->setMaximumSize(400, 150);  // Set maximum size for sliderRed
+//    sliderGreen->setTickInterval(10);
+//    sliderGreen->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
+//    QLabel *labelGreen = new QLabel("70");
+//    labelGreen->setStyleSheet("color: #1bb310;");
 
-    sliderLayout->addWidget(sliderGreen);
-    sliderLayout->addWidget(labelGreen, 0, Qt::AlignTop | Qt::AlignHCenter);
+//    sliderLayout->addWidget(sliderGreen);
+//    sliderLayout->addWidget(labelGreen, 0, Qt::AlignTop | Qt::AlignHCenter);
 
 
     connect(sliderRed, &QSlider::valueChanged, this, [=](int value) {
@@ -263,10 +263,10 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
         // Do something with the blue slider value (value)
     });
 
-    connect(sliderGreen, &QSlider::valueChanged, this, [=](int value) {
-        labelGreen->setText(QString("%1").arg(value));
-        // Do something with the green slider value (value)
-    });
+//    connect(sliderGreen, &QSlider::valueChanged, this, [=](int value) {
+//        labelGreen->setText(QString("%1").arg(value));
+//        // Do something with the green slider value (value)
+//    });
     sliderLayout->setSpacing(0); // Adjust the spacing between widgets in the layout
     sliderLayout->setContentsMargins(0, 0, 0, 20); // Adjust margins if needed
     rightLayout->addLayout(sliderLayout);
@@ -417,7 +417,14 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
 
     QString redLabelText = QString("Shoulder Motor: %1").arg(firstAngle);
     QString blueLabelText = QString("Elbow Motor: %1").arg(secondAngle);
-    QString greenLabelText = QString("Lifting Motor: %1").arg(thirdAngle);
+    QString greenLabelText;
+    if(thirdAngle == 1500){
+        greenLabelText = QString("PEN: UP");
+    }
+    else if(thirdAngle == 1100){
+        greenLabelText = QString("PEN: DOWN");
+    }
+
 
     redLabel->setText(redLabelText);
     blueLabel->setText(blueLabelText);
@@ -428,7 +435,7 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
     //if(updateTimer->remainingTime() <= 0){
         waveformPlot->graph(0)->setData(timeDataServo, firstAngleData); // Green line
         waveformPlot->graph(1)->setData(timeDataServo, secondAngleData); // Red line
-        waveformPlot->graph(2)->setData(timeDataServo, thirdAngleData); // Blue line
+        //waveformPlot->graph(2)->setData(timeDataServo, thirdAngleData); // Blue line
 
         QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
         dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
@@ -466,6 +473,11 @@ void RobotMainMenu::initializeServerListener() {
         connect(serverListenerThread, &ServerListenerThread::servoAngles,
                 this, &RobotMainMenu::updateServoAngleGraph);
         connect(serverListenerThread, &ServerListenerThread::drawingStatus, this, &RobotMainMenu::robotDrawingSignal);
+
+        connect(serverListenerThread, &ServerListenerThread::stats_last_packet_size, this, &RobotMainMenu::stats_last_packet_size_slot);
+        connect(serverListenerThread, &ServerListenerThread::stats_number_of_drawn_line, this, &RobotMainMenu::stats_number_of_drawn_line_slot);
+        connect(serverListenerThread, &ServerListenerThread::stats_number_of_lines_to_draw, this, &RobotMainMenu::stats_number_of_lines_to_draw_slot);
+        connect(serverListenerThread, &ServerListenerThread::stats_received_packet_num, this, &RobotMainMenu::stats_received_packet_num_slot);
         serverListenerThread->start();
         updateTimerSensor->start(1000);
         updateTimerServo->start(1000);
@@ -473,6 +485,22 @@ void RobotMainMenu::initializeServerListener() {
     } else {
         qDebug() << "IP address or port is not set. Cannot initialize server listener.";
     }
+}
+
+void RobotMainMenu::stats_received_packet_num_slot(const int received_packet_num){
+    emit stats_received_packet_num(received_packet_num);
+}
+
+void RobotMainMenu::stats_last_packet_size_slot(const double last_packet_size){
+    emit stats_last_packet_size(last_packet_size);
+}
+
+void RobotMainMenu::stats_number_of_drawn_line_slot(const int number_of_drawn_line){
+    emit stats_number_of_drawn_line(number_of_drawn_line);
+}
+
+void RobotMainMenu::stats_number_of_lines_to_draw_slot(const int number_of_lines_to_draw){
+    emit stats_number_of_lines_to_draw(number_of_lines_to_draw);
 }
 
 void RobotMainMenu::robotDrawingSignal(const bool status){

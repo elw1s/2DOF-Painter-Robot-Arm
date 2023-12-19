@@ -30,6 +30,7 @@
 
 //namespace ct = cturtle;
 class Plotter;
+bool WITH_GPIO = false;
 
 class Pen{
     private:
@@ -41,6 +42,7 @@ class Pen{
         double transition_time;
         char position[10];
         bool virtualPlotter;
+        double angle;
     public:
         Pen(Plotter* bg = nullptr,
             double pw_up = 1700,
@@ -62,7 +64,8 @@ class Pen{
                 std::cout << "Initialising virtual Pen" << std::endl;
             }
             else{
-                gpioSetPWMfrequency(this->pin, 50);
+                if(WITH_GPIO)
+                    gpioSetPWMfrequency(this->pin, 50);
             }
 
             this->up();
@@ -114,13 +117,20 @@ class Pen{
             std::cout << "PIN: " << this->pin << std::endl;
             std::cout << "diff: " << diff << std::endl;
             std::cout << "abs(diff):" << abs(diff) << std::endl;
-            gpioSetMode(this->pin, PI_OUTPUT);
+            if(WITH_GPIO)
+                gpioSetMode(this->pin, PI_OUTPUT);
             for(int i = 0; i < abs(diff); i++){
                 angle += length_of_step;
-                //gpioServo(this->pin, angle);
-                std::cout << "angle:" << angle << std::endl;
+                if(WITH_GPIO)
+                    gpioServo(this->pin, angle);
+                this->angle = angle;
+                //std::cout << "angle:" << angle << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
+        }
+
+        double get_angle(){
+            return this->angle;
         }
 
         void pw(double pulse_width){
@@ -129,8 +139,10 @@ class Pen{
                 this->virtual_pw = pulse_width;
             }
             else{
-                gpioSetMode(this->pin, PI_OUTPUT);
-                gpioServo(this->pin, pulse_width);
+                if(WITH_GPIO){
+                    gpioSetMode(this->pin, PI_OUTPUT);
+                    gpioServo(this->pin, pulse_width);
+                }
             }
         }
 
@@ -139,7 +151,11 @@ class Pen{
                     return this->virtual_pw;
                 }
                 else{
-                    return gpioGetServoPulsewidth(this->pin);
+                    if(WITH_GPIO){
+                        return gpioGetServoPulsewidth(this->pin);
+                    }
+                    else this->virtual_pw;
+                    
                 }
             }
 };
@@ -191,8 +207,14 @@ private:
     std::queue<std::string>* messageQueue;
     pthread_cond_t* condition;
     pthread_mutex_t* mutex;
+    bool* clientDisconnected;
+    pthread_cond_t* clientDisconnectedCond;
+    pthread_mutex_t* clientDisconnectedMutex;
+    bool* waitMessageReceived;
+    pthread_cond_t* waitCond;
+    pthread_mutex_t* waitMutex;
     std::vector<std::string> linesInStringFormat;
-    BaseTurtle* baseTurtle;
+    //BaseTurtle* baseTurtle;
     
 
 public:
@@ -241,22 +263,22 @@ public:
     }
 
     void virtualise(){
-        std::cout << "Initialising virtual BrachioGraph" << std::endl;
-        this->virtual_pw_1 = this->angles_to_pw_1(-90);
-        this->virtual_pw_2 = this->angles_to_pw_2(90);
-        this->virtualPlotter = true;
+        // std::cout << "Initialising virtual BrachioGraph" << std::endl;
+        // this->virtual_pw_1 = this->angles_to_pw_1(-90);
+        // this->virtual_pw_2 = this->angles_to_pw_2(90);
+        // this->virtualPlotter = true;
     }
 
     void setup_turtle(double coarseness){
-        this->baseTurtle = new BaseTurtle(
-            850,
-            16,
-            10,
-            this,
-            coarseness
-        );
+        // this->baseTurtle = new BaseTurtle(
+        //     850,
+        //     16,
+        //     10,
+        //     this,
+        //     coarseness
+        // );
 
-        this->baseTurtle->draw_grid();
+        // this->baseTurtle->draw_grid();
 
     }
     
@@ -297,11 +319,11 @@ public:
         }
         else{
 
-            if(pw_1 != 9999){
+            if(pw_1 != 9999 && WITH_GPIO){
                 gpioSetMode(14, PI_OUTPUT);
                 gpioServo(14, pw_1); // Example pulse width value (1500 microseconds)
             }
-            if(pw_2 != 9999){
+            if(pw_2 != 9999 && WITH_GPIO){
                 gpioSetMode(15, PI_OUTPUT);
                 gpioServo(15, pw_2); // Example pulse width value (1500 microseconds)
             }
@@ -310,13 +332,22 @@ public:
 
     }
 
-    bool send_servo_angle(double angle_1 = 9999, double angle_2 = 9999){
+    std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
+
+    bool send_servo_angle(double angle_1 = 9999, double angle_2 = 9999, double angle_3 = 9999){
+        auto currentTime = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastTime);
+
+        if(duration < std::chrono::seconds(1)) return false;
 
         if(angle_1 == 9999 || angle_2 == 9999) return false;
         std::vector<int> angles;
         angles.push_back(angle_1);
         angles.push_back(angle_2);
-        angles.push_back(90); //3. servonun açısı olmalı
+        if(angle_3 == 9999)
+            angles.push_back(this->pen->get_angle()); //3. servonun açısı olmalı
+        else
+            angles.push_back(angle_3);
 
         std::bitset<16> angle1(angles[0]);
         std::bitset<16> angle2(angles[1]);
@@ -327,6 +358,7 @@ public:
         this->messageQueue->push(dataToSend);
         pthread_cond_signal(this->condition); 
         pthread_mutex_unlock(this->mutex);
+        lastTime = currentTime;
         return true;
     }
 
@@ -379,23 +411,25 @@ public:
         this->y = x_and_y.second;
 
         if(this->turtle){
-            this->baseTurtle->set_angles(this->angle_1, this->angle_2);
+            //this->baseTurtle->set_angles(this->angle_1, this->angle_2);
         }
 
         this->set_pulse_widths(pw_1, pw_2);
 
+        
+
     }
 
-    void quiet(vector<int> servos = {14,15,18}){
-        if(this->virtualPlotter){
-            std::cout << "Going quiet" << std::endl;
-        }
-        else{
-            for(int i = 0; i < 3; i++){
-                gpioSetPWMfrequency(servos.at(i), 0);
-            }
-        }
-    }
+    // void quiet(vector<int> servos = {14,15,18}){
+    //     if(this->virtualPlotter){
+    //         std::cout << "Going quiet" << std::endl;
+    //     }
+    //     else{
+    //         for(int i = 0; i < 3; i++){
+    //             gpioSetPWMfrequency(servos.at(i), 0);
+    //         }
+    //     }
+    // }
 
     void move_angles(double angle_1 = 9999, double angle_2 = 9999, double angular_step = 9999, double wait = 9999, bool draw = false){
         if(wait != 9999){
@@ -457,10 +491,9 @@ public:
             }
 
             this->set_angles(this->angle_1, this->angle_2);
-
             //this->last_moved = std::chrono::steady_clock::now();
             this->last_moved = this->monotonic();
-            }
+        }
     }
 
     void park(){
@@ -753,6 +786,30 @@ public:
             x = line[0][0];
             y = line[0][1];
 
+            //Finish if client is disconnected OR STOP sent from GUI
+            std::cout << "waiting to acquire lock\n";
+            pthread_mutex_lock(this->clientDisconnectedMutex);
+            std::cout << "plotter locked\n";
+            std::cout << "val: " << (*this->clientDisconnected) << std::endl;
+            if(*this->clientDisconnected){
+                pthread_mutex_unlock(this->clientDisconnectedMutex);
+                std::cout << "plotter unlocked\n";
+                break;
+            }
+            else pthread_mutex_unlock(this->clientDisconnectedMutex);
+            std::cout << "plotter unlocked\n";
+            //Wait before drawing...
+            std::cout << "waitMutex plotter locked\n";
+            std::cout << "val: " << (*this->waitMessageReceived) << std::endl;
+            pthread_mutex_lock(this->waitMutex);
+            while(*this->waitMessageReceived){
+                pthread_cond_wait(this->waitCond, this->waitMutex);
+                std::cout << "waitMutex plotter unlocked\n";
+            }
+            pthread_mutex_unlock(this->waitMutex);
+            std::cout << "waitMutex plotter unlocked\n";
+
+
             if (round(this->x,1) != round(x,1) || round(this->y,1) != round(y,1)) {
                 this->xy(x, y, angular_step, wait, resolution);
             }
@@ -787,7 +844,6 @@ public:
         pthread_cond_signal(this->condition);
         pthread_mutex_unlock(this->mutex);
 
-
     }
 
 
@@ -814,8 +870,10 @@ public:
             actual_pulse_width_2 = this->virtual_pw_2;
         }
         else{
-            actual_pulse_width_1 = gpioGetServoPulsewidth(14);
-            actual_pulse_width_2 = gpioGetServoPulsewidth(15);
+            if(WITH_GPIO){
+                actual_pulse_width_1 = gpioGetServoPulsewidth(14);
+                actual_pulse_width_2 = gpioGetServoPulsewidth(15);
+            }
         }
 
         return std::make_pair(actual_pulse_width_1, actual_pulse_width_2);
@@ -883,6 +941,12 @@ public:
         std::queue<std::string>* messageQueue = nullptr, 
         pthread_cond_t* condition = nullptr, 
         pthread_mutex_t* mutex = nullptr,
+        bool* clientDisconnected = nullptr, 
+        pthread_cond_t* clientDisconnectedCond = nullptr, 
+        pthread_mutex_t* clientDisconnectedMutex = nullptr,
+        bool* waitMessageReceived = nullptr, 
+        pthread_cond_t* waitCond = nullptr, 
+        pthread_mutex_t* waitMutex = nullptr,
         bool virtualPlotter = false,
         bool turtle = false,
         double turtle_coarseness = 9999,
@@ -911,14 +975,20 @@ public:
         this->angle_1 = servo_1_parked_angle;
         this->angle_2 = servo_2_parked_angle;
 
-        this->messageQueue = *messageQueue;
+        this->messageQueue = messageQueue;
         this->condition = condition;
         this->mutex = mutex;
+        this->clientDisconnected = clientDisconnected;
+        this->clientDisconnectedCond = clientDisconnectedCond;
+        this->clientDisconnectedMutex = clientDisconnectedMutex;
+        this->waitMessageReceived = waitMessageReceived;
+        this->waitCond = waitCond;
+        this->waitMutex = waitMutex;
         
 
         if(turtle){
             this->setup_turtle(turtle_coarseness);
-            this->baseTurtle->showturtle();
+            //this->baseTurtle->showturtle();
         }
         else{
             this->turtle = false;
@@ -1023,14 +1093,16 @@ public:
         }
         else{
             try{
-                gpioCfgSetInternals(1);
+                if(WITH_GPIO){
+                    gpioCfgSetInternals(1);
 
-                gpioInitialise();
+                    gpioInitialise();
 
-                gpioSetPWMfrequency(14, 50);
-                gpioSetPWMfrequency(15, 50);
+                    gpioSetPWMfrequency(14, 50);
+                    gpioSetPWMfrequency(15, 50);
 
-                gpioCfgSetInternals(0); 
+                    gpioCfgSetInternals(0); 
+                }
                 this->virtualPlotter = false;
                 // by default we use a wait factor of 0.01 seconds for better control
                 if(wait != 9999)

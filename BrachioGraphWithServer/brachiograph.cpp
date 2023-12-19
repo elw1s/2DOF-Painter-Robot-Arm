@@ -39,6 +39,12 @@ public:
         std::queue<std::string>& messageQueue, 
         pthread_cond_t* condition, 
         pthread_mutex_t* mutex,
+        bool& clientDisconnected, 
+        pthread_cond_t* clientDisconnectedCond, 
+        pthread_mutex_t* clientDisconnectedMutex,
+        bool& waitMessageReceived, 
+        pthread_cond_t* waitCond, 
+        pthread_mutex_t* waitMutex,
         bool virtualPlotter = false,
         bool turtle = false,
         double turtle_coarseness = 9999,
@@ -63,9 +69,15 @@ public:
         double wait = 9999,
         double resolution = 9999
     ): Plotter(
-        messageQueue, 
+        &messageQueue, 
         condition, 
         mutex,
+        &clientDisconnected, 
+        clientDisconnectedCond, 
+        clientDisconnectedMutex,
+        &waitMessageReceived, 
+        waitCond, 
+        waitMutex,
         virtualPlotter,
         turtle,
         turtle_coarseness,
@@ -105,8 +117,8 @@ public:
     }
 
     double radians(double degrees) {
-    return degrees * (M_PI / 180.0);
-}
+        return degrees * (M_PI / 180.0);
+    }
 
     void test_arcs(){
         this->park();

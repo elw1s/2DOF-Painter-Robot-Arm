@@ -1,3 +1,3 @@
-/home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/test.dir
+/home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/server.dir
 /home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/edit_cache.dir
 /home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/rebuild_cache.dir

@@ -22,6 +22,10 @@ signals:
     void totalLineNumber(const int num);
     void servoAngles(const int angle1, const int angle2, const int angle3);
     void sensorValues(const double sensorVal);
+    void stats_received_packet_num(const int received_packet_num);
+    void stats_last_packet_size(const double last_packet_size);
+    void stats_number_of_drawn_line(const int number_of_drawn_line);
+    void stats_number_of_lines_to_draw(const int number_of_lines_to_draw);
 public:
     void run() override;
     ServerListenerThread(const QString& ipAddress, int port, QObject *parent = nullptr);
@@ -39,6 +43,7 @@ private:
     int elbowServoAngle;
     int liftingServoAngle;
     bool connected;
+    int received_packet_num;
 
 public slots:
     void updateServerAddress(const QString& ipAddress, int port);

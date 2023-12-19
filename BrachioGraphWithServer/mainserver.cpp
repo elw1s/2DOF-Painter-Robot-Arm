@@ -6,9 +6,10 @@
 #include <sys/socket.h>
 #include <string.h>
 #include "server_code1.h"
-#include "server_code2.h"
+//#include "server_code2.h"
 #include <queue>
 #include "brachiograph.cpp"
+#include <signal.h>
 
 #define MAX_DATA_SIZE 4096 // Maximum size for received image data
 #define MAX_IMAGE_SIZE 10000000 // 10 MB
@@ -16,22 +17,41 @@
 
 std::queue<std::string> messagesWaitingToBeSend;
 uint8_t globalDataRecv[MAX_DATA_SIZE]; // Global variable for data
-pthread_mutex_t dataMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t canSendMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t dataCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t canSendCond = PTHREAD_COND_INITIALIZER;
-
 pthread_cond_t clientDisconnectedCond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t server2Cond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t waitCond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t waitMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t case2Mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t clientDisconnectedMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t dataMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t canSendMutex = PTHREAD_MUTEX_INITIALIZER;
+
+pthread_t communication_thread, thread1, thread2;
 
 bool case2Encountered = false;
 bool clientDisconnected = false; // Flag to track client disconnection
 bool canSend = false;
+bool wait = false;
 unsigned char imageBuffer[MAX_IMAGE_SIZE]; // Byte array to hold image data
 size_t imageBufferIndex = 0; // Index to keep track of the image buffer position
-BrachioGraph bg = BrachioGraph(messagesWaitingToBeSend,&dataCond,&dataMutex);
+BrachioGraph bg = BrachioGraph(messagesWaitingToBeSend,&dataCond,&dataMutex,clientDisconnected,&clientDisconnectedCond, &clientDisconnectedMutex,wait,&waitCond,&waitMutex);
+int serverSocket;
+
+void sigintHandler(int signal) {
+    printf("Received SIGINT signal. Closing the server socket.\n");
+    pthread_mutex_lock(&clientDisconnectedMutex);
+    clientDisconnected = true;
+    printf("SIGINT client disconnected set to be true\n");
+    pthread_mutex_unlock(&clientDisconnectedMutex);
+    pthread_join(communication_thread, NULL);
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+    close(serverSocket);
+
+    exit(EXIT_SUCCESS);
+}
 
 void connection_established(){
     pthread_mutex_lock(&dataMutex);
@@ -75,14 +95,29 @@ void* communicationThread(void* clientSocket){
 
 
     while(1){
+
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        if(clientDisconnected){
+            pthread_mutex_unlock(&clientDisconnectedMutex);
+            return NULL;
+        }
+        pthread_mutex_unlock(&clientDisconnectedMutex);
         
         pthread_mutex_lock(&dataMutex);
         int bytesRead = recv(socketDescriptor, globalDataRecv, sizeof(globalDataRecv), 0);
         if (bytesRead <= 0) {
-	    // Handle disconnection or error
             printf("Client disconnected or error occurred.\n");
             close(socketDescriptor); // Close the socket
             pthread_mutex_unlock(&dataMutex);
+            pthread_mutex_lock(&clientDisconnectedMutex);
+            clientDisconnected = true;
+            printf("client disconnected set to be true\n");
+            pthread_mutex_unlock(&clientDisconnectedMutex);
+            pthread_mutex_lock(&case2Mutex);
+            case2Encountered = true;
+            //pthread_cond_signal(&server1Cond);
+            pthread_cond_signal(&server2Cond);
+            pthread_mutex_unlock(&case2Mutex);
             return NULL; // Exit the thread
         }
         else{            
@@ -154,7 +189,14 @@ void* server1Thread(void* arg) {
 
     while(true){
         server1(messagesWaitingToBeSend, &dataCond, &dataMutex); 
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        if(clientDisconnected){
+            pthread_mutex_unlock(&clientDisconnectedMutex);
+            break;
+        } 
+        else pthread_mutex_unlock(&clientDisconnectedMutex);
     }
+    printf("Server1 is terminated...\n");
     return NULL;
 }
 
@@ -163,6 +205,14 @@ void* server2Thread(void* arg) {
     printf("Thread for server2\n");
 
     while(true){
+
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        if(clientDisconnected){
+            pthread_mutex_unlock(&clientDisconnectedMutex);
+            break;
+        } 
+        else pthread_mutex_unlock(&clientDisconnectedMutex);
+
         pthread_mutex_lock(&case2Mutex);
         while (!case2Encountered) {
             pthread_cond_wait(&server2Cond, &case2Mutex);
@@ -171,30 +221,33 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/ardakilic/Desktop/CSE396/simulate_embedded/linedraw.py");
+        system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
         usleep(2000000);
         bg.plot_file("/tmp/cse396/sent.json");
         //readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
-        int lineNum = getLineNumber();
-        printf("Line number: %d\n",lineNum);
-        sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
-        while(true){
-            if(!server2(messagesWaitingToBeSend, &dataCond, &dataMutex))
-                break;
-        }
+        //int lineNum = getLineNumber();
+        //printf("Line number: %d\n",lineNum);
+        //sendLineNumber(messagesWaitingToBeSend, &dataCond, &dataMutex);
+        // while(true){
+        //     if(!server2(messagesWaitingToBeSend, &dataCond, &dataMutex))
+        //         break;
+        // }
         printf("server2 started again...\n");
         case2Encountered = false;
     }
+    printf("Server2 is terminated...\n");
     return NULL;
 }
 
 int main() {
     // Create socket for server
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
         perror("Socket creation failed");
         exit(EXIT_FAILURE);
     }
+
+    signal(SIGINT, sigintHandler);
 
     // Define server details
     struct sockaddr_in serverAddr;
@@ -214,8 +267,6 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    printf("Server is listening for incoming connections...\n");
-
     // Accept incoming connections and handle them in separate threads
     while (1) {
         struct sockaddr_in clientAddr;
@@ -223,6 +274,7 @@ int main() {
         socklen_t addrLen = sizeof(clientAddr);
 
         // Accept a new client connection
+        printf("Server is listening for incoming connections...\n");
         clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
         if (clientSocket == -1) {
             perror("Acceptance failed");
@@ -231,19 +283,19 @@ int main() {
 
         printf("New connection accepted\n");
 	
-	clientDisconnected = true;
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        clientDisconnected = false;
+        pthread_mutex_unlock(&clientDisconnectedMutex);
+
+        case2Encountered = false;
 
         // Create the thread for sending and receiving data
-        pthread_t communication_thread;
         if (pthread_create(&communication_thread, NULL, communicationThread, (void*)&clientSocket) != 0) {
             perror("Receiver thread creation failed");
             close(clientSocket);
             exit(EXIT_FAILURE);
         }
 
-
-        // Create threads for server1 and server2
-        pthread_t thread1, thread2;
 
         // Thread for server1
         if (pthread_create(&thread1, NULL, server1Thread, NULL) != 0) {
@@ -259,9 +311,9 @@ int main() {
             continue;
         }
 
-        // Detach the threads for server1 and server2
-        pthread_detach(thread1);
-        pthread_detach(thread2);
+        pthread_join(communication_thread, NULL);
+        pthread_join(thread1, NULL);
+        pthread_join(thread2, NULL);
     }
 
     // Close the server socket

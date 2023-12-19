@@ -76,8 +76,17 @@ public slots:
     void defaultButtonClicked();
     void setButtonClicked();
     void robotDrawingSignal(const bool status);
+    void stats_received_packet_num_slot(const int received_packet_num);
+    void stats_last_packet_size_slot(const double last_packet_size);
+    void stats_number_of_drawn_line_slot(const int number_of_drawn_line);
+    void stats_number_of_lines_to_draw_slot(const int number_of_lines_to_draw);
+
 signals:
     void drawingStatus(const bool status);
+    void stats_received_packet_num(const int received_packet_num);
+    void stats_last_packet_size(const double last_packet_size);
+    void stats_number_of_drawn_line(const int number_of_drawn_line);
+    void stats_number_of_lines_to_draw(const int number_of_lines_to_draw);
 };
 
 #endif // ROBOTMAINMENU_H

@@ -7,6 +7,7 @@ ServerListenerThread::ServerListenerThread(const QString& ipAddress, int port, Q
     drawSelected = false;
     connected = false;
     moveSelected = false;
+    received_packet_num = 0;
 }
 
 int16_t convertTwosComplement(const std::string &binaryString) {
@@ -82,8 +83,12 @@ void ServerListenerThread::run() {
             if (tcpSocket->waitForReadyRead(5000)) {
                 receivedData = tcpSocket->readAll();
                 //qDebug() <<"Received:" << receivedData;
+                received_packet_num++;
+                emit stats_received_packet_num(received_packet_num);
+                emit stats_last_packet_size(receivedData.size());
 
                 if (!receivedData.isEmpty()) {
+
                     char command = receivedData[0];
                     receivedData = receivedData.remove(0, 1); // Removes the first element
                     messageToSend.clear();
@@ -206,6 +211,7 @@ void ServerListenerThread::run() {
                         totalLineNumberForAnImage = receivedData.toInt();
 
                         emit totalLineNumber(totalLineNumberForAnImage);
+                        emit stats_number_of_lines_to_draw(totalLineNumberForAnImage);
                         break;
                     }
                     case '4': //Drawn line received
@@ -230,6 +236,7 @@ void ServerListenerThread::run() {
                         emit linesReceived(linesArray);
                         calculatedValue ++;
                         emit loadingProgress(calculatedValue);
+                        emit stats_number_of_drawn_line(calculatedValue);
                         if(calculatedValue == totalLineNumberForAnImage){
                             emit drawingStatus(false);
                             jsonFile.clear();

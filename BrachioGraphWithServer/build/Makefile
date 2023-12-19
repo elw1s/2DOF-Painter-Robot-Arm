@@ -117,41 +117,65 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named test
+# Target rules for targets named server
 
 # Build rule for target.
-test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
-.PHONY : test
+server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
+.PHONY : server
 
 # fast build rule for target.
-test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
-.PHONY : test/fast
+server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
 
-test.o: test.cpp.o
-.PHONY : test.o
+mainserver.o: mainserver.cpp.o
+.PHONY : mainserver.o
 
 # target to build an object file
-test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.o
-.PHONY : test.cpp.o
+mainserver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mainserver.cpp.o
+.PHONY : mainserver.cpp.o
 
-test.i: test.cpp.i
-.PHONY : test.i
+mainserver.i: mainserver.cpp.i
+.PHONY : mainserver.i
 
 # target to preprocess a source file
-test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.i
-.PHONY : test.cpp.i
+mainserver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mainserver.cpp.i
+.PHONY : mainserver.cpp.i
 
-test.s: test.cpp.s
-.PHONY : test.s
+mainserver.s: mainserver.cpp.s
+.PHONY : mainserver.s
 
 # target to generate assembly for a file
-test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/test.cpp.s
-.PHONY : test.cpp.s
+mainserver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/mainserver.cpp.s
+.PHONY : mainserver.cpp.s
+
+server_code1.o: server_code1.cpp.o
+.PHONY : server_code1.o
+
+# target to build an object file
+server_code1.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_code1.cpp.o
+.PHONY : server_code1.cpp.o
+
+server_code1.i: server_code1.cpp.i
+.PHONY : server_code1.i
+
+# target to preprocess a source file
+server_code1.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_code1.cpp.i
+.PHONY : server_code1.cpp.i
+
+server_code1.s: server_code1.cpp.s
+.PHONY : server_code1.s
+
+# target to generate assembly for a file
+server_code1.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/server_code1.cpp.s
+.PHONY : server_code1.cpp.s
 
 # Help Target
 help:
@@ -161,10 +185,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... test"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
+	@echo "... server"
+	@echo "... mainserver.o"
+	@echo "... mainserver.i"
+	@echo "... mainserver.s"
+	@echo "... server_code1.o"
+	@echo "... server_code1.i"
+	@echo "... server_code1.s"
 .PHONY : help
 
 

@@ -297,6 +297,11 @@ int main(int argc, char *argv[]) {
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &xoxApp, &XOXApp::robotDrawingSignal);
     QObject::connect(&robotMainMenu, &RobotMainMenu::drawingStatus, &shortestPath, &ShortestPath::robotDrawingSignal);
 
+    //STATS PAGE
+    QObject::connect(&robotMainMenu, &RobotMainMenu::stats_last_packet_size, &stats, &StatsApp::updateLastPacketSize);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::stats_number_of_drawn_line, &stats, &StatsApp::updateNumberOfDrawnLine);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::stats_number_of_lines_to_draw, &stats, &StatsApp::updateNumberOfLinesToDraw);
+    QObject::connect(&robotMainMenu, &RobotMainMenu::stats_received_packet_num, &stats, &StatsApp::updateReceivedPackets);
 
     // Create a QWidget to hold the layout
     QWidget *mainWidget = new QWidget;
