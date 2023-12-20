@@ -611,6 +611,7 @@ void RobotMainMenu::disconnectFromServer(){
         serverListenerThread->requestInterruption();
         serverListenerThread->quit();
         serverListenerThread->wait();
+        serverListenerThread->socketDisconnected();
         loadingProgressBar->setVisible(false);
         textLabel->setText("Device is not connected!");
         loadingLabel->setVisible(false);
@@ -630,18 +631,7 @@ int RobotMainMenu::getPort(){
 }
 
 void RobotMainMenu::setColors(const QList<QString>& colorArr) {
-//    if(this->colors.empty()){
-//        this->colors = new QList<QString>(4);
-//    }
-//    for (int i = 0; i < 4; ++i) {
-//        this->colors[i] = colorArr[i];
-//    }
     this->colors = colorArr;
-
-    qDebug() << "Colors:";
-    for(int i = 0; i < 4; i++){
-        qDebug() << this->colors[i];
-    }
 }
 
 QList<QString> RobotMainMenu::getColors(){

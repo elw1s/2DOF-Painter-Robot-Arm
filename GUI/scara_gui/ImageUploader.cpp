@@ -2,6 +2,10 @@
 
 ImageUploader::ImageUploader(QWidget* parent)
 {
+    colorsIndex = 0;
+    numberOfNotDrawnColors = 0;
+    drawClicked = false;
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     QHBoxLayout *topLayout = new QHBoxLayout();
@@ -179,6 +183,35 @@ QPushButton* ImageUploader::createStyledButton(const QIcon &icon, const QSize &s
     return button;
 }
 
+bool ImageUploader::isSimilarColor(const QColor &color1, const QColor &color2, int threshold) {
+    // Calculate the differences between color components
+    int deltaRed = std::abs(color1.red() - color2.red());
+    int deltaGreen = std::abs(color1.green() - color2.green());
+    int deltaBlue = std::abs(color1.blue() - color2.blue());
+
+    // Check if each color component difference is within the threshold
+    return (deltaRed <= threshold && deltaGreen <= threshold && deltaBlue <= threshold);
+}
+
+int ImageUploader::getNumberOfColors(){
+    int numberOfColors = 0;
+    for(int i = 0; i < this->colors.size(); i++){
+        if(this->colors[i]!= "+")
+            numberOfColors++;
+    }
+    return numberOfColors;
+}
+
+QString ImageUploader::getNextColor(int start){
+    for(int i = start; i < this->colors.size(); i++){
+        if(this->colors[i]!= "+"){
+            return this->colors[i];
+        }
+    }
+    return QString("#000000");
+}
+
+
 void ImageUploader::saveImage() {
 
     QPixmap croppedPixmap = m_clipScene->getCroppedImage();
@@ -186,8 +219,43 @@ void ImageUploader::saveImage() {
         QDir dir;
         dir = dir.temp();
         QString filePath = dir.path() + "/cse396/image.jpg";
-        bool saved = croppedPixmap.toImage().save(filePath, "JPG");
-        qDebug() << "The image is saved: " << saved;
+        //bool saved = croppedPixmap.toImage().save(filePath, "JPG");
+        //qDebug() << "The image is saved: " << saved;
+        //emit drawButtonClicked();
+
+        image = croppedPixmap.toImage();
+
+        numberOfNotDrawnColors = getNumberOfColors();
+
+        if(numberOfNotDrawnColors > 0){
+            QColor targetColor(getNextColor(0));
+            QImage currImage = image;
+
+            // Loop through each pixel of the image
+            for (int y = 0; y < currImage.height(); ++y) {
+                for (int x = 0; x < currImage.width(); ++x) {
+                    QColor pixelColor(currImage.pixelColor(x, y));
+
+                    // Check for similarity using the defined function
+                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 10)) {
+                        currImage.setPixelColor(x, y, QColor(Qt::white));
+                    }
+                    else{
+                        image.setPixelColor(x, y, QColor(Qt::white));
+                    }
+                }
+            }
+            numberOfNotDrawnColors--;
+            colorsIndex++;
+            currImage.save(filePath,"JPG");
+            drawClicked = true;
+        }
+        else{
+            image.save(filePath, "JPG");
+            drawClicked = false;
+            numberOfNotDrawnColors = 0;
+            colorsIndex = 0;
+        }
         emit drawButtonClicked();
     }
 }
@@ -221,5 +289,54 @@ void ImageUploader::robotDrawingSignal(const bool status){
                                   "QPushButton#saveButton:hover {"
                                   "    background-color: #57D5FF;" // Change color on hover if desired
                                   "}");
+        QDir dir;
+        dir = dir.temp();
+        QString filePath = dir.path() + "/cse396/image.jpg";
+
+        if(numberOfNotDrawnColors > 0){
+            //Buradaga image'in üstünde degisiklik yap ve currImage degerini kaydet.
+            QColor targetColor(getNextColor(colorsIndex));
+            QImage currImage = image;
+
+            // Loop through each pixel of the image
+            for (int y = 0; y < currImage.height(); ++y) {
+                for (int x = 0; x < currImage.width(); ++x) {
+                    QColor pixelColor(currImage.pixelColor(x, y));
+
+                    // Check for similarity using the defined function
+                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 10)) {
+                        currImage.setPixelColor(x, y, QColor(Qt::white));
+                    }
+                    else{
+                        image.setPixelColor(x, y, QColor(Qt::white));
+                    }
+                }
+            }
+            numberOfNotDrawnColors--;
+            colorsIndex++;
+            currImage.save(filePath,"JPG");
+        }
+        else if(drawClicked){
+            //Burada image'in tamamını degisiklik yapmadan kaydet
+
+            image.save(filePath, "JPG");
+            drawClicked = false;
+            numberOfNotDrawnColors = 0;
+            colorsIndex = 0;
+            emit drawButtonClicked();
+        }
     }
+}
+
+void ImageUploader::setColors(const QList<QString>& colorArr) {
+    this->colors = colorArr;
+
+    qDebug() << "IMAGE UPLOADER Colors:";
+    for(int i = 0; i < 4; i++){
+        qDebug() << this->colors[i];
+    }
+}
+
+QList<QString> ImageUploader::getColors(){
+    return colors;
 }

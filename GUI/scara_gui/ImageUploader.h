@@ -16,6 +16,8 @@ class ImageUploader : public QWidget
 
 public:
     ImageUploader(QWidget* parent = nullptr);
+    QList<QString> getColors();
+    bool isSimilarColor(const QColor &color1, const QColor &color2, int threshold = 10);
 private slots:
     void onAddFile();
     void onClippedImage(const QPixmap& pixmap);
@@ -28,6 +30,7 @@ private slots:
                                     const QString &borderColor, QWidget *parent);
 public slots:
     void robotDrawingSignal(const bool status);
+    void setColors(const QList<QString>& colorArr);
 private:
     QPushButton* cropButton;
     QPushButton* rotateButton;
@@ -38,6 +41,13 @@ private:
     QLabel* m_clippedLabel;
     CropFeature* m_clipScene;
     DragDropScene* m_dragdropScene;
+    QList<QString> colors;
+    QImage image;
+    int colorsIndex;
+    int numberOfNotDrawnColors;
+    int getNumberOfColors();
+    QString getNextColor(int start);
+    bool drawClicked;
 signals:
     void drawButtonClicked();
 };

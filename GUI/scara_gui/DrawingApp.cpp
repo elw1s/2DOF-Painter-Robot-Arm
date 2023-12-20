@@ -197,3 +197,16 @@ void DrawingApp::robotDrawingSignal(const bool status){
     }
 }
 
+void DrawingApp::setColors(const QList<QString>& colorArr) {
+    this->colors = colorArr;
+
+    qDebug() << "DRAWING APP Colors:";
+    for(int i = 0; i < 4; i++){
+        qDebug() << this->colors[i];
+    }
+}
+
+QList<QString> DrawingApp::getColors(){
+    return colors;
+}
+

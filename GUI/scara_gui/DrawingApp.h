@@ -17,7 +17,7 @@ class DrawingApp : public QWidget {
 
 public:
     DrawingApp(QWidget *parent = nullptr);
-
+    QList<QString> getColors();
 private slots:
     void saveImage();
     void setPenStroke(int stroke);
@@ -29,6 +29,7 @@ private slots:
 
 public slots:
     void robotDrawingSignal(const bool status);
+    void setColors(const QList<QString>& colorArr);
 private:
     DrawingArea *drawingArea;
     QPushButton *saveButton;
@@ -36,6 +37,7 @@ private:
     QPushButton *penButton;
     QPushButton *eraserButton;
     QPushButton *resetButton;
+    QList<QString> colors;
 
 signals:
     void drawButtonClicked();

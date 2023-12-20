@@ -227,6 +227,8 @@ int main(int argc, char *argv[]) {
         QObject::connect(&settingsWindow, &Settings::settingsUpdated, &robotMainMenu, &RobotMainMenu::setServerInfo);
         QObject::connect(&settingsWindow, &Settings::disconnectSignal, &robotMainMenu, &RobotMainMenu::disconnectFromServer);
         QObject::connect(&settingsWindow, &Settings::setColors, &robotMainMenu, &RobotMainMenu::setColors);
+        QObject::connect(&settingsWindow, &Settings::setColors, &imageUploader, &ImageUploader::setColors);
+        QObject::connect(&settingsWindow, &Settings::setColors, &drawingApp, &DrawingApp::setColors);
         settingsWindow.exec();
     });
 

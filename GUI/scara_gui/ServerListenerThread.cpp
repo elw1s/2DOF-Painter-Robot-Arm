@@ -309,11 +309,12 @@ void ServerListenerThread::draw(bool isDrawButtonClicked){
 }
 
 void ServerListenerThread::socketDisconnected() {
-    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
-    if (socket) {
+    //QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+    if (tcpSocket != nullptr && tcpSocket) {
+        emit drawingStatus(false);
         qDebug() << "Socket disconnected from the server.";
-        socket->disconnectFromHost();
-        socket->deleteLater(); // Delete the socket properly
+        //tcpSocket->disconnectFromHost();
+        //tcpSocket->deleteLater(); // Delete the socket properly
     }
 }
 
