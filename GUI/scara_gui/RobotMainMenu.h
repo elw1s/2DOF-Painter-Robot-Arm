@@ -28,6 +28,7 @@ public:
     RobotMainMenu(QWidget *parent = nullptr);
     QString getIP();
     int getPort();
+    QList<QString> getColors();
     void updateSensorGraph(double sensorValue);
     void updateServoAngleGraph(int firstAngle, int secondAngle, int thirdAngle);
     void onUpdateTimerServo();
@@ -46,6 +47,7 @@ private:
     QVBoxLayout *rightLayout;
     QString ipAddress;
     int port;
+    QList<QString> colors;
     int totalLine;
     QMovie *loadingMovie;
     QProgressBar *loadingProgressBar;
@@ -69,6 +71,7 @@ private:
     QPushButton* defaultButton;
 public slots:
     void setServerInfo(const QString& ip, int port);
+    void setColors(const QList<QString>& colorArr);
     void disconnectFromServer();
     void initializeServerListener();
     void showLoadingBar(int value); // Show the loading bar with a specific value

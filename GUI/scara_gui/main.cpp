@@ -223,9 +223,10 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(settingsButton, &QToolButton::clicked, [&]() {
         // Show the pop-up window here
-        Settings settingsWindow(robotMainMenu.getIP(), robotMainMenu.getPort());
+        Settings settingsWindow(robotMainMenu.getIP(), robotMainMenu.getPort(), robotMainMenu.getColors());
         QObject::connect(&settingsWindow, &Settings::settingsUpdated, &robotMainMenu, &RobotMainMenu::setServerInfo);
         QObject::connect(&settingsWindow, &Settings::disconnectSignal, &robotMainMenu, &RobotMainMenu::disconnectFromServer);
+        QObject::connect(&settingsWindow, &Settings::setColors, &robotMainMenu, &RobotMainMenu::setColors);
         settingsWindow.exec();
     });
 

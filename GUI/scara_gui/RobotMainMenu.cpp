@@ -329,6 +329,7 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
     ipAddress = QString();
     port = 0;
+    colors << QString("+") << QString("+") << QString("+") << QString("+");
     serverListenerThread = nullptr;
     initializeServerListener();
     }
@@ -615,6 +616,8 @@ void RobotMainMenu::disconnectFromServer(){
         loadingLabel->setVisible(false);
         textLabel->setVisible(true);
         serverListenerThread = nullptr;
+        this->ipAddress = "";
+        this->port = 0;
     }
 }
 
@@ -624,5 +627,24 @@ QString RobotMainMenu::getIP(){
 
 int RobotMainMenu::getPort(){
     return port;
+}
+
+void RobotMainMenu::setColors(const QList<QString>& colorArr) {
+//    if(this->colors.empty()){
+//        this->colors = new QList<QString>(4);
+//    }
+//    for (int i = 0; i < 4; ++i) {
+//        this->colors[i] = colorArr[i];
+//    }
+    this->colors = colorArr;
+
+    qDebug() << "Colors:";
+    for(int i = 0; i < 4; i++){
+        qDebug() << this->colors[i];
+    }
+}
+
+QList<QString> RobotMainMenu::getColors(){
+    return colors;
 }
 

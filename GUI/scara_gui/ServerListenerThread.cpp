@@ -312,6 +312,7 @@ void ServerListenerThread::socketDisconnected() {
     QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
     if (socket) {
         qDebug() << "Socket disconnected from the server.";
+        socket->disconnectFromHost();
         socket->deleteLater(); // Delete the socket properly
     }
 }

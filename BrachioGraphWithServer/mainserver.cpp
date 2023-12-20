@@ -44,6 +44,7 @@ void sigintHandler(int signal) {
     pthread_mutex_lock(&clientDisconnectedMutex);
     clientDisconnected = true;
     printf("SIGINT client disconnected set to be true\n");
+    pthread_cond_signal(&clientDisconnectedCond);
     pthread_mutex_unlock(&clientDisconnectedMutex);
     pthread_join(communication_thread, NULL);
     pthread_join(thread1, NULL);
@@ -111,6 +112,7 @@ void* communicationThread(void* clientSocket){
             pthread_mutex_unlock(&dataMutex);
             pthread_mutex_lock(&clientDisconnectedMutex);
             clientDisconnected = true;
+            pthread_cond_signal(&clientDisconnectedCond);
             printf("client disconnected set to be true\n");
             pthread_mutex_unlock(&clientDisconnectedMutex);
             pthread_mutex_lock(&case2Mutex);
@@ -219,6 +221,13 @@ void* server2Thread(void* arg) {
         }
         pthread_mutex_unlock(&case2Mutex);
 
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        if(clientDisconnected){
+            pthread_mutex_unlock(&clientDisconnectedMutex);
+            break;
+        } 
+        else pthread_mutex_unlock(&clientDisconnectedMutex);
+
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
         system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
@@ -273,16 +282,35 @@ int main() {
         int clientSocket;
         socklen_t addrLen = sizeof(clientAddr);
 
+        
+
         // Accept a new client connection
         printf("Server is listening for incoming connections...\n");
+            
+        
         clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
+        
         if (clientSocket == -1) {
-            perror("Acceptance failed");
+            printf("Acceptance failed\n");
             continue;
         }
 
         printf("New connection accepted\n");
-	
+
+        pthread_mutex_lock(&dataMutex);
+        while(messagesWaitingToBeSend.size()){
+            messagesWaitingToBeSend.pop();
+        }
+        pthread_mutex_unlock(&dataMutex);
+
+        imageBufferIndex = 0;
+        wait = false;
+
+        for(int i = 0; i < MAX_IMAGE_SIZE; i++){
+            imageBuffer[i] = '\0';
+        }
+
+
         pthread_mutex_lock(&clientDisconnectedMutex);
         clientDisconnected = false;
         pthread_mutex_unlock(&clientDisconnectedMutex);
@@ -301,19 +329,26 @@ int main() {
         if (pthread_create(&thread1, NULL, server1Thread, NULL) != 0) {
             perror("Thread creation failed");
             close(clientSocket);
-            continue;
+            exit(EXIT_FAILURE);
         }
 
         // Thread for server2
         if (pthread_create(&thread2, NULL, server2Thread, NULL) != 0) {
             perror("Thread creation failed");
             close(clientSocket);
-            continue;
+            exit(EXIT_FAILURE);
         }
 
         pthread_join(communication_thread, NULL);
         pthread_join(thread1, NULL);
         pthread_join(thread2, NULL);
+
+        pthread_mutex_lock(&clientDisconnectedMutex);
+        std::cout << "CLIENT DISCONNECTED: " << clientDisconnected << std::endl;
+        while(!clientDisconnected){
+            pthread_cond_wait(&clientDisconnectedCond, &clientDisconnectedMutex);
+        }
+        pthread_mutex_unlock(&clientDisconnectedMutex);
     }
 
     // Close the server socket

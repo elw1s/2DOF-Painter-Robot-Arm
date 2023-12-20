@@ -1,9 +1,11 @@
 #include "Settings.h"
 
-Settings::Settings(const QString& ipAddress, int port, QWidget *parent)
-    : QDialog(parent), mIpAddress(ipAddress), mPort(port) {
+Settings::Settings(const QString& ipAddress, int port,const QList<QString>& colorArr, QWidget *parent)
+    : QDialog(parent), mIpAddress(ipAddress), mPort(port), colors(colorArr) {
     setWindowTitle("Settings");
     setFixedSize(800, 600); // Set your desired size
+
+    //colors << QString("+") << QString("+") << QString("+") << QString("+");
 
     QHBoxLayout* mainLayout = new QHBoxLayout(this);
     QVBoxLayout* leftLayout = new QVBoxLayout;
@@ -81,6 +83,8 @@ Settings::Settings(const QString& ipAddress, int port, QWidget *parent)
     connect(connectButton, &QPushButton::clicked, this, &Settings::onOKButtonClicked);
     connect(disconnectButton, &QPushButton::clicked, this, &Settings::onDisconnectButtonClicked);
 
+    qDebug() << "IP: " << mIpAddress << " PORT: " << mPort;
+
     if(mPort == 0){
         disconnectButton->setEnabled(false);
         disconnectButton->setStyleSheet("QPushButton#disconnectButton {"
@@ -129,8 +133,33 @@ Settings::Settings(const QString& ipAddress, int port, QWidget *parent)
     leftLayout->setAlignment(Qt::AlignHCenter | Qt::AlignRight);
     rightLayout->addWidget(contributorsLabel);
 
-    mainLayout->addLayout(leftLayout, 65); // 65% width for leftLayout
-    mainLayout->addLayout(rightLayout, 35); // 35% width for rightLayout
+    QHBoxLayout *colorButtonsLayout = new QHBoxLayout(this);
+    colorButtonsLayout->setContentsMargins(0,0,0,0);
+    colorButtonsLayout->setSpacing(0);
+    QLabel *colorPicker = new QLabel(this);
+    colorPicker->setText(QString("Color Palette"));
+    leftLayout->addWidget(colorPicker);
+    QFont font = QFont();
+    font.setPointSize(24);
+    for (int i = 0; i < 4; ++i) {
+        colorButtons[i] = new QPushButton(this);
+        colorButtons[i]->setFixedSize(30, 30); // Set fixed size 30x30
+        colorButtons[i]->setStyleSheet("background-color: #4F4F4F; border: 1px solid black; color: white;"); // Initial background and border color
+        if(colors[i] == "+"){
+            colorButtons[i]->setText(colors[i]);
+        }
+        else{
+            colorButtons[i]->setText(QString(""));
+            colorButtons[i]->setStyleSheet(QString("background-color: %1; border: 1px solid black; color: white;").arg(colors[i]));
+        }
+        colorButtons[i]->setFont(font);
+        connect(colorButtons[i], &QPushButton::clicked, [this, i]() { onColorButtonClicked(i); });
+        colorButtonsLayout->addWidget(colorButtons[i],Qt::AlignLeft);
+    }
+
+    leftLayout->addLayout(colorButtonsLayout);
+    mainLayout->addLayout(leftLayout, 65);
+    mainLayout->addLayout(rightLayout, 35);
     setLayout(mainLayout);
 }
 
@@ -195,6 +224,25 @@ void Settings::onDisconnectButtonClicked(){
                                  "QPushButton#connectButton:hover {"
                                  "    background-color: #57D5FF;" // Change color on hover if desired
                                  "}");
-    //mPort == 0; ise yaramadi
     emit disconnectSignal();
 }
+
+void Settings::onColorButtonClicked(int buttonIndex) {
+    QColorDialog colorDialog(this);
+    QColor color = colorDialog.getColor(Qt::white, this, "Select Color");
+
+    if (color.isValid()) {
+        updateButtonColor(buttonIndex, color);
+        qDebug() << "Selected color for button" << buttonIndex << ": " << color.name();
+    }
+}
+
+void Settings::updateButtonColor(int buttonIndex, const QColor& color) {
+    if (buttonIndex >= 0 && buttonIndex < 4) {
+        colorButtons[buttonIndex]->setStyleSheet(QString("background-color: %1").arg(color.name()));
+        colorButtons[buttonIndex]->setText(QString(""));
+        this->colors[buttonIndex] = QString::fromStdString(color.name().toStdString());
+        emit setColors(this->colors);
+    }
+}
+
