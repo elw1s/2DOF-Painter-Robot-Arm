@@ -142,7 +142,6 @@ public:
 
     //Returns the servo angles required to reacy any x/y position.
     std::pair<double,double> xy_to_angles(double x = 0, double y = 0) override{
-        std::cout << "INSIDE BRACHIOGRAPH XY_TO_ANGLES" << std::endl;
         double hypotenuse = std::sqrt(x * x + y * y);
 
         if(hypotenuse > this->inner_arm + this->outer_arm){
@@ -169,7 +168,6 @@ public:
     
     //Returns the x/y co-ordinates represented by a pair of servo angles.
     std::pair<double,double> angles_to_xy(double shoulder_motor_angle, double elbow_motor_angle) override{
-        std::cout << "INSIDE BRACHIOGRAPH ANGLES_TO_XY" << std::endl;
         elbow_motor_angle = radians(elbow_motor_angle);
         shoulder_motor_angle = radians(shoulder_motor_angle); 
 

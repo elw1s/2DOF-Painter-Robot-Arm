@@ -279,7 +279,7 @@ void ServerListenerThread::run() {
                 tcpSocket->write(messageToSend); // Sending the message to the server
                 //qDebug()  << messageToSend << " is sent!";
             }
-            //QThread::sleep(1);
+            QThread::msleep(100);
         }
 
         tcpSocket->disconnectFromHost();

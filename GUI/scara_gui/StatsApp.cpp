@@ -2,37 +2,57 @@
 
 StatsApp::StatsApp(QWidget *parent) : QWidget(parent) {
     mainLayout = new QVBoxLayout(this);
-
-    // First horizontal layout
-    firstHBoxLayout = new QHBoxLayout;
+    QHBoxLayout *rightLayout = new QHBoxLayout(this);
+    QVBoxLayout *leftLayout = new QVBoxLayout(this);
+    QHBoxLayout *topLayout = new QHBoxLayout(this);
+    receivedPacketWithinOneSecond = 0;
     receivedPacketsLabel = new QLabel("Number of received packets: 0");
     receivedLinesLabel = new QLabel("Number of received lines: 0");
-    firstHBoxLayout->addWidget(receivedPacketsLabel);
-    firstHBoxLayout->addWidget(receivedLinesLabel);
-    firstHBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    mainLayout->addLayout(firstHBoxLayout);
-
-    // Second horizontal layout
-    secondHBoxLayout = new QHBoxLayout;
     totalLinesLabel = new QLabel("Number of total lines: 0");
     lastPacketSizeLabel = new QLabel("Last packet size: 0 KB");
-    secondHBoxLayout->addWidget(totalLinesLabel);
-    secondHBoxLayout->addWidget(lastPacketSizeLabel);
-    secondHBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    mainLayout->addLayout(secondHBoxLayout);
+    receivedPacketsLabel->setFont(QFont(receivedPacketsLabel->font().family(), 18));
+    receivedLinesLabel->setFont(QFont(receivedLinesLabel->font().family(), 18));
+    totalLinesLabel->setFont(QFont(totalLinesLabel->font().family(), 18));
+    lastPacketSizeLabel->setFont(QFont(lastPacketSizeLabel->font().family(), 18));
+    leftLayout->setSpacing(0);
+    leftLayout->setContentsMargins(0,0,0,0);
+    leftLayout->addWidget(receivedPacketsLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
+    leftLayout->addWidget(receivedLinesLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
+    leftLayout->addWidget(totalLinesLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
+    leftLayout->addWidget(lastPacketSizeLabel, 0, Qt::AlignLeft | Qt::AlignVCenter);
+
+    topLayout->addLayout(leftLayout);
+    mainLayout->addLayout(topLayout);
 
     plotLayout = new QHBoxLayout;
     customPlot = new QCustomPlot(this);
+    customPlot->setInteraction(QCP::iRangeDrag, true); // Enable dragging the plot range
+    customPlot->setInteraction(QCP::iRangeZoom, true); // Enable zooming using the mouse wheel
+    customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
     customPlot->setObjectName(QStringLiteral("customPlot"));
     customPlot->setBackground(QBrush(QColor("#4F4F4F"))); // Set plot background color
     customPlot->xAxis->setLabelColor(Qt::white);
     customPlot->yAxis->setLabelColor(Qt::white);
     customPlot->xAxis->setLabel("Time");
-    customPlot->yAxis->setLabel("Received Packet Sizes");
+    customPlot->yAxis->setLabel("Received Packet Number");
     customPlot->xAxis->setTickLabelColor(QColor("#33C2FF")); // Set tick and subtick colors
     customPlot->yAxis->setTickLabelColor(QColor("#33C2FF"));
     customPlot->xAxis->setTickPen(QColor("white"));
     customPlot->yAxis->setTickPen(QColor("white"));
+    customPlot->yAxis->setTicker(QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed));
+
+    plotUpdateTimer = new QTimer(this);
+    plotUpdateTimer->setInterval(1000);
+    connect(plotUpdateTimer, &QTimer::timeout, this, &StatsApp::updatePacketFrequencyPlot);
+    plotUpdateTimer->start();
+
+    plotResetTimer = new QTimer(this);
+    plotResetTimer->setInterval(120000);
+    connect(plotResetTimer, &QTimer::timeout, this, &StatsApp::resetPlot);
+    plotResetTimer->start();
+
+
+
     plotLayout->addWidget(customPlot);
     mainLayout->addLayout(plotLayout);
     setLayout(mainLayout);
@@ -41,6 +61,7 @@ StatsApp::StatsApp(QWidget *parent) : QWidget(parent) {
 // Slot to update number of received packets label
 void StatsApp::updateReceivedPackets(int numPackets) {
     receivedPacketsLabel->setText("Number of received packets: " + QString::number(numPackets));
+    receivedPacketWithinOneSecond++;
 }
 
 // Slot to update number of received lines label
@@ -53,36 +74,42 @@ void StatsApp::updateNumberOfLinesToDraw(int numLines) {
     totalLinesLabel->setText("Number of total lines: " + QString::number(numLines));
 }
 
-// Slot to update last packet size label
 void StatsApp::updateLastPacketSize(double size) {
-
-//    QDateTime currentDateTime = QDateTime::currentDateTime(); // Get current date and time
-
-//    if (receivedSizePlot.size() >= 10) {
-//        receivedSizePlot.removeFirst();
-//        timeDataPlot.removeFirst();
-//    }
-
-//    timeDataPlot.append(currentDateTime.toMSecsSinceEpoch() / 1000.0); // Convert QDateTime to seconds since epoch
-//    receivedSizePlot.append(size / 1024.0);
-
-//    QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
-//    dateTimeTicker->setDateTimeFormat("hh:mm:ss"); // Set tick label format
-//    dateTimeTicker->setTickCount(3); // Show only four ticks
-//    dateTimeTicker->setTickStepStrategy(QCPAxisTicker::tssMeetTickCount);
-//    customPlot->xAxis->setTicker(dateTimeTicker); // Set ticker
-
-//    QCPBars* bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-//    bars->setWidth(9/(double)timeDataPlot.size());
-//    bars->setPen(Qt::NoPen);
-//    bars->setBrush(QColor("#33C2FF"));
-//    bars->setData(timeDataPlot, receivedSizePlot);
-
-//    customPlot->xAxis->setRange(-0.5, qMax(9.5, timeDataPlot.size() - 0.5));
-//    double maxY = *std::max_element(receivedSizePlot.constBegin(), receivedSizePlot.constEnd());
-//    customPlot->yAxis->setRange(0, maxY); // Set minimum to 0 and maximum to maxY
-//    customPlot->replot();
-
     double sizeInKB = size / 1024.0;
-    lastPacketSizeLabel->setText("Last packet size: " + QString::number(sizeInKB, 'f', 2) + " KB");
+    lastPacketSizeLabel->setText("Last packet size: " + QString::number(sizeInKB, 'f', 3) + " KB");
 }
+
+void StatsApp::resetPlot(){
+    timeDataPlot.clear();
+    receivedSizePlot.clear();
+}
+
+void StatsApp::updatePacketFrequencyPlot() {
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    int packetsWithinOneSecond = receivedPacketWithinOneSecond;
+    receivedPacketWithinOneSecond = 0;
+    timeDataPlot.append(currentDateTime.toMSecsSinceEpoch() / 1000.0);
+    receivedSizePlot.append(packetsWithinOneSecond);
+
+    customPlot->clearPlottables();
+    QCPGraph *scatter = new QCPGraph(customPlot->xAxis, customPlot->yAxis);
+    scatter->setLineStyle(QCPGraph::lsLine);
+    scatter->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+    scatter->setPen(QPen(QColor("#19749B")));
+    scatter->setBrush(QColor("#33C2FF"));
+    scatter->setData(timeDataPlot, receivedSizePlot);
+
+    QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+    dateTimeTicker->setDateTimeFormat("hh:mm:ss");
+    customPlot->xAxis->setTicker(dateTimeTicker);
+
+    customPlot->xAxis->setRange(timeDataPlot.first(), timeDataPlot.last());
+
+    double maxY = *std::max_element(receivedSizePlot.constBegin(), receivedSizePlot.constEnd());
+    double minY = *std::min_element(receivedSizePlot.constBegin(), receivedSizePlot.constEnd());
+    double margin = 0.1 * (maxY - minY);
+    customPlot->yAxis->setRange(minY - margin, maxY + margin);
+
+    customPlot->replot();
+}
+

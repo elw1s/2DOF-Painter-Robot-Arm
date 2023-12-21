@@ -249,6 +249,8 @@ void ImageUploader::saveImage() {
             colorsIndex++;
             currImage.save(filePath,"JPG");
             drawClicked = true;
+            ColorDialog *dialog = new ColorDialog(targetColor, "Please attach the pen in the color below");
+            dialog->exec();
         }
         else{
             image.save(filePath, "JPG");
@@ -315,14 +317,17 @@ void ImageUploader::robotDrawingSignal(const bool status){
             numberOfNotDrawnColors--;
             colorsIndex++;
             currImage.save(filePath,"JPG");
+            ColorDialog *dialog = new ColorDialog(targetColor, "Please attach the pen in the color below");
+            dialog->exec();
+            emit drawButtonClicked();
         }
         else if(drawClicked){
-            //Burada image'in tamamını degisiklik yapmadan kaydet
-
             image.save(filePath, "JPG");
             drawClicked = false;
             numberOfNotDrawnColors = 0;
             colorsIndex = 0;
+            ColorDialog *dialog = new ColorDialog(QColor(Qt::black), "Please attach the pen in the color below");
+            dialog->exec();
             emit drawButtonClicked();
         }
     }

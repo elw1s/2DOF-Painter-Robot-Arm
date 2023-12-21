@@ -9,6 +9,7 @@
 #include <random>
 #include <bitset>
 
+
 int generateRandomNumber1() {
     std::random_device rd;
     std::mt19937 gen(rd());

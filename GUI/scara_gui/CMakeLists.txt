@@ -66,6 +66,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         StatsApp.cpp
         ShortestPathWidget.h ShortestPath.h CSVPlotter.h
         ShortestPathWidget.cpp ShortestPath.cpp CSVPlotter.cpp
+        ColorDialog.cpp
+        ColorDialog.h
 
 
     )

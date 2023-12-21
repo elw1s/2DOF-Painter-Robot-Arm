@@ -26,12 +26,17 @@ private:
     double receivedPacketSizes;
     QVector<double> timeDataPlot;
     QVector<double> receivedSizePlot;
+    int receivedPacketWithinOneSecond;
+    QTimer *plotUpdateTimer;
+    QTimer *plotResetTimer;
 
 public slots:
     void updateReceivedPackets(int numPackets);
     void updateNumberOfDrawnLine(int numLines);
     void updateNumberOfLinesToDraw(int numLines);
     void updateLastPacketSize(double size);
+    void updatePacketFrequencyPlot();
+    void resetPlot();
 };
 
 #endif // STATSAPP_H

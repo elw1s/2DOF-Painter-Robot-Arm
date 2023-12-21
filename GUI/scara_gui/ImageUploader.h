@@ -9,6 +9,7 @@
 #include "CropFeature.h"  // Include the header for CropFeature
 #include "ImagePathsConfig.h"
 #include "DragDropScene.h"
+#include "ColorDialog.h"
 
 class ImageUploader : public QWidget
 {
