@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/mainserver.cpp.o: \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -93,7 +93,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
  /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/string.h \
  /usr/include/strings.h \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.h \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.h \
  /usr/include/c++/11/queue /usr/include/c++/11/deque \
  /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/c++/11/bits/functexcept.h \
@@ -162,7 +162,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
  /usr/include/c++/11/bits/basic_string.tcc \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/brachiograph.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/brachiograph.cpp \
  /usr/include/c++/11/iostream /usr/include/c++/11/ostream \
  /usr/include/c++/11/ios /usr/include/c++/11/exception \
  /usr/include/c++/11/bits/exception_ptr.h \
@@ -207,7 +207,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/c++/11/tr1/poly_hermite.tcc \
  /usr/include/c++/11/tr1/poly_laguerre.tcc \
  /usr/include/c++/11/tr1/riemann_zeta.tcc \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/plotter.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/plotter.cpp \
  /usr/include/c++/11/array /usr/include/c++/11/utility \
  /usr/include/c++/11/bits/stl_relops.h /usr/include/c++/11/algorithm \
  /usr/include/c++/11/bits/stl_algo.h \
@@ -248,7 +248,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/utils.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/utils.cpp \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \
  /usr/include/c++/11/bit /usr/include/c++/11/pstl/glue_numeric_defs.h \
  /usr/local/include/pigpio.h /usr/include/rapidjson/document.h \
@@ -278,8 +278,8 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/rapidjson/internal/itoa.h \
  /usr/include/rapidjson/internal/itoa.h \
  /usr/include/rapidjson/stringbuffer.h /usr/include/c++/11/bitset \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/CTurtle.hpp \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/CImg.h \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/CTurtle.hpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/CImg.h \
  /usr/include/c++/11/cstdarg /usr/include/c++/11/cfloat \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
  /usr/include/c++/11/climits \
@@ -323,7 +323,7 @@ CMakeFiles/server.dir/mainserver.cpp.o: \
  /usr/include/c++/11/bits/random.tcc /usr/include/c++/11/mutex \
  /usr/include/c++/11/bits/std_mutex.h \
  /usr/include/c++/11/bits/unique_lock.h \
- /home/arda/Desktop/CSE396/BrachioGraphWithServer/turtle_plotter.cpp \
+ /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/turtle_plotter.cpp \
  /usr/include/signal.h \
  /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
  /usr/include/x86_64-linux-gnu/bits/signum-arch.h \

@@ -620,6 +620,26 @@ public:
         double multiplier = std::pow(10.0, digits);
         return std::round(number * multiplier) / multiplier;
     }
+    
+    void box(std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999, double wait = 9999, double resolution = 9999, int repeat = 1, bool reverse = false){
+        std::array<int, 4> innerBounds = bounds[0] != 9999 ? bounds: this->bounds;
+
+        this->xy(bounds[0],bounds[1], angular_step, wait, resolution);
+
+        if(!reverse){
+            this->xy(bounds.at(2),bounds.at(1), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(2),bounds.at(3), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(0),bounds.at(3), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(0),bounds.at(1), angular_step, wait, resolution,true) ;
+        }
+        else{
+            this->xy(bounds.at(0),bounds.at(3), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(2),bounds.at(3), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(2),bounds.at(1), angular_step, wait, resolution,true) ;
+            this->xy(bounds.at(0),bounds.at(1), angular_step, wait, resolution,true) ;
+        }
+        this->park();
+    }
 
     void plot_lines(std::vector<std::vector<std::vector<double>>> lines, std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999 
         ,double wait = 9999, double resolution = 9999, bool flip = false, bool rotate = false)

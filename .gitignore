@@ -17,3 +17,4 @@ simulate_embedded/build/
 simulate_embedded/pillow-resize/
 BrachioGraph/build/
 BrachioGraph/pillow-resize/
+BrachioGraphWithServer/build/

@@ -237,7 +237,7 @@ void ImageUploader::saveImage() {
                     QColor pixelColor(currImage.pixelColor(x, y));
 
                     // Check for similarity using the defined function
-                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 10)) {
+                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 50)) {
                         currImage.setPixelColor(x, y, QColor(Qt::white));
                     }
                     else{
@@ -306,7 +306,7 @@ void ImageUploader::robotDrawingSignal(const bool status){
                     QColor pixelColor(currImage.pixelColor(x, y));
 
                     // Check for similarity using the defined function
-                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 10)) {
+                    if (!pixelColor.operator==(targetColor) && !isSimilarColor(pixelColor, targetColor, 50)) {
                         currImage.setPixelColor(x, y, QColor(Qt::white));
                     }
                     else{

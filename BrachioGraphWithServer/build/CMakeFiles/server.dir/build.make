@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/arda/Desktop/CSE396/BrachioGraphWithServer
+CMAKE_SOURCE_DIR = /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/arda/Desktop/CSE396/BrachioGraphWithServer/build
+CMAKE_BINARY_DIR = /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/server.dir/depend.make
@@ -72,30 +72,30 @@ include CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/mainserver.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/mainserver.cpp.o: ../mainserver.cpp
 CMakeFiles/server.dir/mainserver.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/server.dir/mainserver.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/mainserver.cpp.o -MF CMakeFiles/server.dir/mainserver.cpp.o.d -o CMakeFiles/server.dir/mainserver.cpp.o -c /home/arda/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/server.dir/mainserver.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/mainserver.cpp.o -MF CMakeFiles/server.dir/mainserver.cpp.o.d -o CMakeFiles/server.dir/mainserver.cpp.o -c /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp
 
 CMakeFiles/server.dir/mainserver.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/mainserver.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/arda/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp > CMakeFiles/server.dir/mainserver.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp > CMakeFiles/server.dir/mainserver.cpp.i
 
 CMakeFiles/server.dir/mainserver.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/mainserver.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/arda/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp -o CMakeFiles/server.dir/mainserver.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/mainserver.cpp -o CMakeFiles/server.dir/mainserver.cpp.s
 
 CMakeFiles/server.dir/server_code1.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/server_code1.cpp.o: ../server_code1.cpp
 CMakeFiles/server.dir/server_code1.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/server.dir/server_code1.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/server_code1.cpp.o -MF CMakeFiles/server.dir/server_code1.cpp.o.d -o CMakeFiles/server.dir/server_code1.cpp.o -c /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/server.dir/server_code1.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/server_code1.cpp.o -MF CMakeFiles/server.dir/server_code1.cpp.o.d -o CMakeFiles/server.dir/server_code1.cpp.o -c /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp
 
 CMakeFiles/server.dir/server_code1.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/server_code1.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp > CMakeFiles/server.dir/server_code1.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp > CMakeFiles/server.dir/server_code1.cpp.i
 
 CMakeFiles/server.dir/server_code1.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/server_code1.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp -o CMakeFiles/server.dir/server_code1.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp -o CMakeFiles/server.dir/server_code1.cpp.s
 
 # Object files for target server
 server_OBJECTS = \
@@ -109,7 +109,7 @@ server: CMakeFiles/server.dir/mainserver.cpp.o
 server: CMakeFiles/server.dir/server_code1.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -121,6 +121,6 @@ CMakeFiles/server.dir/clean:
 .PHONY : CMakeFiles/server.dir/clean
 
 CMakeFiles/server.dir/depend:
-	cd /home/arda/Desktop/CSE396/BrachioGraphWithServer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/arda/Desktop/CSE396/BrachioGraphWithServer /home/arda/Desktop/CSE396/BrachioGraphWithServer /home/arda/Desktop/CSE396/BrachioGraphWithServer/build /home/arda/Desktop/CSE396/BrachioGraphWithServer/build /home/arda/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/server.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/build/CMakeFiles/server.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/server.dir/depend
 
