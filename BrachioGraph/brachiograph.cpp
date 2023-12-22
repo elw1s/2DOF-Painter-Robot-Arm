@@ -55,8 +55,8 @@ public:
         std::vector<std::pair<double,double>> servo_2_angle_pws = std::vector<std::pair<double,double>>(),
         std::map<double, std::map<std::string, double>> servo_1_angle_pws_bidi = std::map<double, std::map<std::string, double>>(),
         std::map<double, std::map<std::string, double>> servo_2_angle_pws_bidi = std::map<double, std::map<std::string, double>>(),
-        double pw_up = 1500,
-        double pw_down = 1100,
+        double pw_up = 1100,
+        double pw_down = 1500,
         double angular_step = 9999,
         double wait = 9999,
         double resolution = 9999

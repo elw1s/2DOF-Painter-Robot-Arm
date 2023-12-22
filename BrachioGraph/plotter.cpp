@@ -106,7 +106,7 @@ class Pen{
             gpioSetMode(this->pin, PI_OUTPUT);
             for(int i = 0; i < abs(diff); i++){
                 angle += length_of_step;
-                //gpioServo(this->pin, angle);
+                gpioServo(this->pin, angle);
                 std::cout << "angle:" << angle << std::endl;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
@@ -365,11 +365,6 @@ public:
             diff_2 = angle_2 - this->angle_2;
         }
         
-        //double abs_diff_1 = std::abs(diff_1 / angular_step);
-        //double abs_diff_2 = std::abs(diff_2 / angular_step);
-        //int no_of_steps = static_cast<int>(std::max(abs_diff_1, abs_diff_2));
-        //no_of_steps = (no_of_steps != 0) ? no_of_steps : 1;
-
         int no_of_steps = std::max(std::abs(diff_1 / angular_step), std::abs(diff_2 / angular_step));
         no_of_steps = std::max(no_of_steps, 1);
 
@@ -389,7 +384,7 @@ public:
             this->angle_2 = this->angle_2 + length_of_step_2;
             double time_since_last_moved = this->monotonic() - this->last_moved;
             if(time_since_last_moved < wait){
-                std::chrono::microseconds duration(static_cast<long long>(wait - time_since_last_moved));
+                std::chrono::microseconds duration(static_cast<long long>((wait * 1e6) - time_since_last_moved));
                 std::this_thread::sleep_for(duration);
             }
 

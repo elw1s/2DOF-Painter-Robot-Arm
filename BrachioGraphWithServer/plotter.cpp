@@ -480,13 +480,15 @@ public:
 
         double length_of_step_1 = diff_1/no_of_steps;
         double length_of_step_2 = diff_2/no_of_steps;
-        
         for(int i = 0; i < no_of_steps; i++){
             this->angle_1 = this->angle_1 + length_of_step_1;
             this->angle_2 = this->angle_2 + length_of_step_2;
             double time_since_last_moved = this->monotonic() - this->last_moved;
             if(time_since_last_moved < wait){
-                std::chrono::microseconds duration(static_cast<long long>(wait - time_since_last_moved));
+                std::cout << std::setprecision(8) << std::fixed;
+                std::chrono::microseconds duration(static_cast<long long>((wait * 1e6) - time_since_last_moved));
+                //std::cout << "Time since last moved: " << time_since_last_moved << ", wait: " << this->wait << ", duration: " << duration.count() << ", expected sleep time: " << (wait - time_since_last_moved) << ", this->wait: " << this->wait << std::endl;
+                std::cout << std::setprecision(2) << std::fixed;
                 std::this_thread::sleep_for(duration);
             }
 
@@ -914,7 +916,7 @@ public:
             << std::setw(7) << std::right << std::fixed << std::setprecision(0) << y << std::endl;
 
         std::cout << "------------------------------------------" << std::endl;
-
+        std::cout << std::setprecision(2) << std::fixed;
         std::cout << "pen:" << this->pen->getPosition() << std::endl;
         std::cout << "------------------------------------------" << std::endl;
 
@@ -1103,12 +1105,12 @@ public:
 
                     gpioCfgSetInternals(0); 
                 }
-                this->virtualPlotter = false;
-                // by default we use a wait factor of 0.01 seconds for better control
-                if(wait != 9999)
-                    this->wait = wait;
-                else    
-                    this->wait = 0.01;
+                    this->virtualPlotter = false;
+                    // by default we use a wait factor of 0.01 seconds for better control
+                    if(wait != 9999)
+                        this->wait = wait;
+                    else    
+                        this->wait = 0.01;
             }
             catch(...){
                 std::cout << "pigpio daemon is not available; running in virtual mode" << std::endl;
