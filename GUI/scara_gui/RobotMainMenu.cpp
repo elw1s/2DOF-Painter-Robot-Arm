@@ -420,10 +420,10 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
     QString blueLabelText = QString("Elbow Motor: %1").arg(secondAngle);
     QString greenLabelText;
     if(thirdAngle == 1500){
-        greenLabelText = QString("PEN: UP");
+        greenLabelText = QString("PEN: DOWN");
     }
     else if(thirdAngle == 1100){
-        greenLabelText = QString("PEN: DOWN");
+        greenLabelText = QString("PEN: UP");
     }
 
 
