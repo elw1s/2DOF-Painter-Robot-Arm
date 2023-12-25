@@ -129,16 +129,16 @@ void* communicationThread(void* clientSocket){
                 }
             }            
             pthread_mutex_unlock(&dataMutex);
-            switch (static_cast<char>(globalDataRecv[0]))
+            /*switch (static_cast<char>(globalDataRecv[0]))
             {
-            case '0': // Connection established
+            case ('0' || 0): // Connection established
                 connection_established();
                 break;
-            case '1': // Image values
+            case '1' || 1: // Image values
                 add_image_data_to_array(bytesRead);
                 image_received();
                 break;
-            case '2': // End of image
+            case '2' || 2: // End of image
                 //Server1 threadi çalışabilir.
                 //Server2 direkt bağlantı sağlanınca çalışabilir.
                 add_image_data_to_array(bytesRead);
@@ -150,17 +150,49 @@ void* communicationThread(void* clientSocket){
                 pthread_cond_signal(&server2Cond);
                 pthread_mutex_unlock(&case2Mutex);
                 break;
-            case '3': // Set servo angles
+            case '3' || 3: // Set servo angles
                 printf("SET SERVO ANGLES\n");
                 break;
-            case '4': // Stop drawing
+            case '4' || 4: // Stop drawing
                 printf("STOP DRAWING\n");
                 break;
-            case '5': // Cancel drawing
+            case '5' || 5: // Cancel drawing
                 printf("CANCEL DRAWING\n");
                 break;
             default:
                 break;
+            }*/
+            
+            if(static_cast<char>(globalDataRecv[0]) == '0' || static_cast<char>(globalDataRecv[0]) == 0){
+            	connection_established();
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '1' || static_cast<char>(globalDataRecv[0]) == 1){
+            	add_image_data_to_array(bytesRead);
+                image_received();
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '2' || static_cast<char>(globalDataRecv[0]) == 2){
+            	//Server1 threadi çalışabilir.
+                //Server2 direkt bağlantı sağlanınca çalışabilir.
+                add_image_data_to_array(bytesRead);
+                write_image_to_file();
+                imageBufferIndex = 0;
+                pthread_mutex_lock(&case2Mutex);
+                case2Encountered = true;
+                //pthread_cond_signal(&server1Cond);
+                pthread_cond_signal(&server2Cond);
+                pthread_mutex_unlock(&case2Mutex);
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '3' || static_cast<char>(globalDataRecv[0]) == 3){
+            	printf("SET SERVO ANGLES\n");
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '4' || static_cast<char>(globalDataRecv[0]) == 4){
+            	printf("STOP DRAWING\n");
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '5' || static_cast<char>(globalDataRecv[0]) == 5){
+            	printf("CANCEL DRAWING\n");
+            }
+            else{
+            	printf("DO NOTHING\n");
             }
         }    
 
@@ -230,7 +262,7 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/ardakilic/Desktop/CSE396/simulate_embedded/linedraw.py");
+        system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
         usleep(2000000);
         bg.plot_file("/tmp/cse396/sent.json");
         //readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);

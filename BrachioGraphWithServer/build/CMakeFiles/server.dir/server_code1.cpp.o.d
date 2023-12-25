@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/server_code1.cpp.o: \
- /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -171,7 +171,7 @@ CMakeFiles/server.dir/server_code1.cpp.o: \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
  /usr/include/x86_64-linux-gnu/bits/in.h \
- /home/ardakilic/Desktop/CSE396/BrachioGraphWithServer/server_code1.h \
+ /home/arda/Desktop/CSE396/BrachioGraphWithServer/server_code1.h \
  /usr/include/c++/11/queue /usr/include/c++/11/deque \
  /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_deque.h /usr/include/c++/11/bits/deque.tcc \

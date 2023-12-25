@@ -91,7 +91,7 @@ void* communicationThread(void* clientSocket){
                 }
             }            
             pthread_mutex_unlock(&dataMutex);
-            switch (static_cast<char>(globalDataRecv[0]))
+            /*switch (static_cast<char>(globalDataRecv[0]))
             {
             case '0': // Connection established
                 connection_established();
@@ -123,6 +123,37 @@ void* communicationThread(void* clientSocket){
                 break;
             default:
                 break;
+            }*/
+            if(static_cast<char>(globalDataRecv[0]) == '0' || static_cast<char>(globalDataRecv[0]) == 0){
+            	connection_established();
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '1' || static_cast<char>(globalDataRecv[0]) == 1){
+            	add_image_data_to_array(bytesRead);
+                image_received();
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '2' || static_cast<char>(globalDataRecv[0]) == 2){
+            	//Server1 threadi çalışabilir.
+                //Server2 direkt bağlantı sağlanınca çalışabilir.
+                add_image_data_to_array(bytesRead);
+                write_image_to_file();
+                imageBufferIndex = 0;
+                pthread_mutex_lock(&case2Mutex);
+                case2Encountered = true;
+                //pthread_cond_signal(&server1Cond);
+                pthread_cond_signal(&server2Cond);
+                pthread_mutex_unlock(&case2Mutex);
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '3' || static_cast<char>(globalDataRecv[0]) == 3){
+            	printf("SET SERVO ANGLES\n");
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '4' || static_cast<char>(globalDataRecv[0]) == 4){
+            	printf("STOP DRAWING\n");
+            }
+            else if(static_cast<char>(globalDataRecv[0]) == '5' || static_cast<char>(globalDataRecv[0]) == 5){
+            	printf("CANCEL DRAWING\n");
+            }
+            else{
+            	printf("DO NOTHING\n");
             }
         }    
 
