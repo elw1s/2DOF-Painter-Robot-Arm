@@ -1,7 +1,7 @@
 
 # BrachioGraph C++ Implementation with GUI
 
-This project is a direct translation of BrachioGraph (Python) into C++. The project includes a graphical interface developed with Qt6. This interface allows control of the BrachioGraph robot.
+This project is a direct translation of [BrachioGraph (Python) ](https://github.com/evildmp/BrachioGraph) into C++. The project includes a graphical interface developed with Qt6. This interface allows control of the BrachioGraph robot.
 
 ## Structure
 
