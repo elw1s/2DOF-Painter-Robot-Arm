@@ -91,65 +91,33 @@ void* communicationThread(void* clientSocket){
                 }
             }            
             pthread_mutex_unlock(&dataMutex);
-            /*switch (static_cast<char>(globalDataRecv[0]))
-            {
-            case '0': // Connection established
-                connection_established();
-                break;
-            case '1': // Image values
-                add_image_data_to_array(bytesRead);
-                image_received();
-                break;
-            case '2': // End of image
-                //Server1 threadi çalışabilir.
-                //Server2 direkt bağlantı sağlanınca çalışabilir.
-                add_image_data_to_array(bytesRead);
-                write_image_to_file();
-                imageBufferIndex = 0;
-                pthread_mutex_lock(&case2Mutex);
-                case2Encountered = true;
-                //pthread_cond_signal(&server1Cond);
-                pthread_cond_signal(&server2Cond);
-                pthread_mutex_unlock(&case2Mutex);
-                break;
-            case '3': // Set servo angles
-                printf("SET SERVO ANGLES\n");
-                break;
-            case '4': // Stop drawing
-                printf("STOP DRAWING\n");
-                break;
-            case '5': // Cancel drawing
-                printf("CANCEL DRAWING\n");
-                break;
-            default:
-                break;
-            }*/
-            if(static_cast<char>(globalDataRecv[0]) == '0' || static_cast<char>(globalDataRecv[0]) == 0){
+            
+            printf("Gelen komut: %d INT\n", globalDataRecv[0]);
+            printf("Gelen komut: %c CHAR\n", static_cast<char>(globalDataRecv[0]));
+
+            if((globalDataRecv[0]) == 48){
             	connection_established();
             }
-            else if(static_cast<char>(globalDataRecv[0]) == '1' || static_cast<char>(globalDataRecv[0]) == 1){
+            else if((globalDataRecv[0]) == 49){
             	add_image_data_to_array(bytesRead);
                 image_received();
             }
-            else if(static_cast<char>(globalDataRecv[0]) == '2' || static_cast<char>(globalDataRecv[0]) == 2){
-            	//Server1 threadi çalışabilir.
-                //Server2 direkt bağlantı sağlanınca çalışabilir.
+            else if((globalDataRecv[0]) == 50){
                 add_image_data_to_array(bytesRead);
                 write_image_to_file();
                 imageBufferIndex = 0;
                 pthread_mutex_lock(&case2Mutex);
                 case2Encountered = true;
-                //pthread_cond_signal(&server1Cond);
                 pthread_cond_signal(&server2Cond);
                 pthread_mutex_unlock(&case2Mutex);
             }
-            else if(static_cast<char>(globalDataRecv[0]) == '3' || static_cast<char>(globalDataRecv[0]) == 3){
+            else if((globalDataRecv[0]) == 51){
             	printf("SET SERVO ANGLES\n");
             }
-            else if(static_cast<char>(globalDataRecv[0]) == '4' || static_cast<char>(globalDataRecv[0]) == 4){
+            else if((globalDataRecv[0]) == 52){
             	printf("STOP DRAWING\n");
             }
-            else if(static_cast<char>(globalDataRecv[0]) == '5' || static_cast<char>(globalDataRecv[0]) == 5){
+            else if((globalDataRecv[0]) == 53){
             	printf("CANCEL DRAWING\n");
             }
             else{
@@ -165,6 +133,7 @@ void* communicationThread(void* clientSocket){
         send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
         //printf("-------------- THE DATA IS SENT ---------------\n");
         //printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
+        printf("Gönderilen data: %c\n",messagesWaitingToBeSend.front().c_str()[0]);
         messagesWaitingToBeSend.pop();
         //printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);

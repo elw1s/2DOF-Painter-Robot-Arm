@@ -15,6 +15,7 @@
 #include "SudokuApp.h"
 #include "StatsApp.h"
 #include "ShortestPath.h"
+#include "Gazebo.h"
 
 void setButtonStyle(QToolButton* button, bool isSelected,const QIcon& icon) {
     QPalette palette = button->palette();
@@ -58,6 +59,7 @@ int main(int argc, char *argv[]) {
     SudokuApp sudoku = new SudokuApp();
     StatsApp stats = new StatsApp();
     ShortestPath shortestPath = new ShortestPath();
+
 
     QDir dir;
     QString folderPath = dir.temp().path() + "/cse396";
@@ -259,16 +261,17 @@ int main(int argc, char *argv[]) {
     });
 
     QObject::connect(openGazeboButton, &QToolButton::clicked, [&]() {
-        stackedWidget->setCurrentIndex(0);
-        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
-        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
-        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
-        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
-        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
-        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
-        setButtonStyle(openGazeboButton, true, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
-        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
+//        stackedWidget->setCurrentIndex(0);
+//        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
+//        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
+//        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
+//        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
+//        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
+//        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
+//        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
+//        setButtonStyle(openGazeboButton, true, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
+//        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
+        Gazebo gazeboWindow();
     });
 
     QObject::connect(shortestPathButton, &QToolButton::clicked, [&]() {

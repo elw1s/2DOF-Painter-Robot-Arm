@@ -1,0 +1,1 @@
+https://forum.qt.io/topic/137678/tls-initialization-failed-downloading-android-sdk-tools/11

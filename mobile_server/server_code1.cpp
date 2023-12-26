@@ -36,5 +36,6 @@ void server1(std::queue<std::string>& messageQueue, pthread_cond_t* condition, p
     //std::cout << "Send: " << encodedData << " num:" << total << std::endl;
 
     // Introduce some delay to simulate work
-    usleep(500000); 
+    //usleep(500000);
+    sleep(1); 
 }
