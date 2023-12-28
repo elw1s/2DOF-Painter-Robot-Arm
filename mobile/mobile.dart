@@ -6,7 +6,7 @@ import 'dart:math';
 void main() async{
   String imagePath = 'received_image.jpg';
   File imageFile = File(imagePath);
-  final chunkSize = 4095;
+  final chunkSize = 2047;
   int bytesWritten = 0;
   Uint8List extractedBytes = Uint8List(0);
   String messageToSend = "";
@@ -65,7 +65,7 @@ void main() async{
               print("LAST BYTES SEND");
               messageToSend = '2' + String.fromCharCodes(extractedBytes);
               bytesWritten = 0;
-              imageBytes.clear();
+              imageBytes = Uint8List(0);
               draw = false;
           }
           else{
@@ -92,7 +92,7 @@ void main() async{
           print("LAST BYTES SEND");
           messageToSend = '2' + String.fromCharCodes(extractedBytes);
           bytesWritten = 0;
-          imageBytes.clear();
+          imageBytes = Uint8List(0);
           draw = false;
         }
         else{
