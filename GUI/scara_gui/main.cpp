@@ -259,19 +259,14 @@ int main(int argc, char *argv[]) {
         setButtonStyle(openGazeboButton, false, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB)));
         setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
     });
-
+    Gazebo gazeboWindow;
     QObject::connect(openGazeboButton, &QToolButton::clicked, [&]() {
-//        stackedWidget->setCurrentIndex(0);
-//        setButtonStyle(drawingAppButton, false, QIcon(QString::fromStdString(DRAW_IMAGE_TAB)));
-//        setButtonStyle(imageUploaderButton, false, QIcon(QString::fromStdString(UPLOAD_IMAGE_TAB)));
-//        setButtonStyle(robotProjectionButton, false, QIcon(QString::fromStdString(HOME_PAGE)));
-//        setButtonStyle(playXOXButton, false, QIcon(QString::fromStdString(PLAY_XOX_TAB)));
-//        setButtonStyle(playSudokuButton, false, QIcon(QString::fromStdString(PLAY_SUDOKU_TAB)));
-//        setButtonStyle(examplesButton, false, QIcon(QString::fromStdString(EXAMPLES)));
-//        setButtonStyle(statsButton, false, QIcon(QString::fromStdString(STATS)));
-//        setButtonStyle(openGazeboButton, true, QIcon(QString::fromStdString(ROBOT_PROJECTION_TAB_SELECTED)));
-//        setButtonStyle(shortestPathButton, false, QIcon(QString::fromStdString(SHORTEST_PATH)));
-        Gazebo gazeboWindow();
+        gazeboWindow.startExecution();
+        //QObject::connect(&gazeboWindow, &Gazebo::setServoAngles, &robotMainMenu, &RobotMainMenu::sendServoAngles);
+        QObject::connect(&robotMainMenu, &RobotMainMenu::sendServoAngles, &gazeboWindow, &Gazebo::setServoAngles);
+        QObject::connect(qApp, &QCoreApplication::aboutToQuit, [&]() {
+            gazeboWindow.stopExecution(); // Signal the Gazebo process to stop
+        });
     });
 
     QObject::connect(shortestPathButton, &QToolButton::clicked, [&]() {

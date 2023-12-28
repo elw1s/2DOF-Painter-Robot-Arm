@@ -451,6 +451,8 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
 
         waveformPlot->replot();
     //}
+
+    emit sendServoAngles(firstAngle, secondAngle, thirdAngle);
 }
 
 void RobotMainMenu::setServerInfo(const QString& ip, int port) {

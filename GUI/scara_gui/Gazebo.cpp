@@ -1,30 +1,39 @@
 #include "Gazebo.h"
 
-Gazebo::Gazebo() {
-    //runGazeboProject("");
-    //projectPath = "";
+Gazebo::Gazebo(){
+    shouldRun = false;
+    servoAngles.joint1 = 90;
+    servoAngles.joint2 = 95;
+    servoAngles.joint3 = 30;
 }
 
-/*void Gazebo::runGazeboProject(const QString& projectPath) {
-    QProcess gazeboProcess;
-    QStringList arguments;
-
-    // Assuming 'gazebo' is the command to run Gazebo with a given project path
-    arguments << projectPath;
-
-    // Run the Gazebo project through the command line
-    gazeboProcess.start("gazebo", arguments);
-    gazeboProcess.waitForFinished(); // Wait for the process to finish
-}*/
-
 void Gazebo::run() {
-    QProcess gazeboProcess;
+
+    if (!shouldRun) {
+        return; // Exit if shouldRun flag is false
+    }
+
     QStringList arguments;
 
     arguments << projectPath;
 
-    gazeboProcess.start("gazebo", arguments);
-    //gazeboProcess.waitForFinished(); // Wait for the process to finish
+    arguments.append(" 127.0.0.1 ");
+    arguments.append("8081");
+
+    connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
+            this, SLOT(onGazeboProcessFinished(int,QProcess::ExitStatus)));
+
+    //gazeboProcess.start("gazebo", arguments);
+    gazeboProcess.start("/home/arda/Desktop/CSE396/simulate_embedded/gazebo_client", arguments);
+
+    if (!gazeboProcess.waitForStarted()) {
+        qDebug() << "Error: Unable to start the Gazebo process.";
+        stopExecution();
+        return;
+    }
+
+    qDebug() << "Gazebo process started.";
+
     while (!isInterruptionRequested()) {
         tcpSocket = new QTcpSocket();
         tcpSocket->connectToHost("127.0.0.1",8081);
@@ -37,21 +46,55 @@ void Gazebo::run() {
         }
         qDebug() << "Connected to the gazebo.";
         QByteArray messageToSend;
-
         while (!isInterruptionRequested()){
-
-            if (!messageToSend.isEmpty() && tcpSocket->state() == QAbstractSocket::ConnectedState) {
-                tcpSocket->write(messageToSend); // Sending the message to the server
-                qDebug()  << messageToSend << " is sent! (FIRST)";
-                qDebug() << "Message sending...";
-                //tcpSocket->waitForBytesWritten(); // Wait for the message to be sent (optional)
-                qDebug() << "Message sent...";
+            if (tcpSocket->state() == QAbstractSocket::ConnectedState) {
+                messageToSend.append(reinterpret_cast<const char*>(&servoAngles), sizeof(servoAngles));
+                tcpSocket->write(messageToSend); // Sending the serialized struct
+                tcpSocket->waitForBytesWritten(); // Wait for the message to be sent
+                messageToSend.clear();
             }
+            QThread::msleep(1000);
         }
 
+        // Disconnection occurred
+        qDebug() << "Disconnected from the gazebo.";
+        tcpSocket->close();
+        delete tcpSocket;
+        stopExecution();
+    }
+}
+
+void Gazebo::startExecution() {
+    shouldRun = true;
+    qDebug() << "Gazebo is started...";
+    start();
+}
+
+void Gazebo::stopExecution() {
+    shouldRun = false;
+
+    if (gazeboProcess.state() == QProcess::Running) {
+        gazeboProcess.terminate(); // Terminate the Gazebo process if it's running
+        gazeboProcess.waitForFinished(); // Wait for the process to finish termination
     }
 
+    requestInterruption();
 
+    qDebug() << "Gazebo is terminated...";
+}
 
+void Gazebo::onGazeboProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    // Handle the closure of gazeboProcess here
+    qDebug() << "Gazebo process has finished with exit code:" << exitCode;
 
+    // Close and delete the tcpSocket when gazeboProcess finishes
+    if (tcpSocket && tcpSocket->state() != QAbstractSocket::UnconnectedState) {
+        requestInterruption();
+    }
+}
+
+void Gazebo::setServoAngles(double angle_1, double angle_2, double angle_3){
+    servoAngles.joint1 = angle_1;
+    servoAngles.joint2 = angle_2;
+    servoAngles.joint3 = angle_3;
 }

@@ -90,6 +90,7 @@ signals:
     void stats_last_packet_size(const double last_packet_size);
     void stats_number_of_drawn_line(const int number_of_drawn_line);
     void stats_number_of_lines_to_draw(const int number_of_lines_to_draw);
+    void sendServoAngles(const double angle_1, const double angle_2, const double angle_3);
 };
 
 #endif // ROBOTMAINMENU_H
