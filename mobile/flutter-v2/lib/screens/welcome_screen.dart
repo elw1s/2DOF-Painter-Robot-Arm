@@ -28,31 +28,15 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Spacer(),
+              SizedBox(height: 180),
               icon(),
-              SizedBox(
-                height: 20,
-              ),
-              welcomeTextWidget(),
-              SizedBox(
-                height: 10,
-              ),
-              sloganText(),
-              SizedBox(
-                height: 40,
-              ),
-              textField("Enter IP Address", ipAddressController),
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 40),
+              textField("Enter IP Address", ipAddressController, isIPAddress: true),
+              SizedBox(height: 20),
               textField("Enter Port", portController),
-              SizedBox(
-                height: 40,
-              ),
+              SizedBox(height: 40),
               connectButton(context),
-              SizedBox(
-                height: 40,
-              ),
+              SizedBox(height: 40),
             ],
           ),
         ),
@@ -97,13 +81,23 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget textField(String labelText, TextEditingController controller) {
+  Widget textField(String labelText, TextEditingController controller, {bool isIPAddress = false}) {
+    TextInputType inputType = isIPAddress
+        ? TextInputType.numberWithOptions(decimal: true)
+        : TextInputType.number;
+
+    List<TextInputFormatter> inputFormatters = isIPAddress
+        ? [
+      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+    ]
+        : [
+      FilteringTextInputFormatter.digitsOnly,
+    ];
+
     return TextFormField(
       controller: controller,
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly
-      ],
+      keyboardType: inputType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: Color(0xFF33C2FF)),
@@ -119,21 +113,39 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   Widget connectButton(BuildContext context) {
-    return AppButton(
-      label: "Connect to Device!",
-      fontWeight: FontWeight.w600,
-      padding: EdgeInsets.symmetric(vertical: 25),
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Color(0xFF33C2FF), // Background color
+        onPrimary: Color(0xFF424242), // Text color
+        side: BorderSide(width: 1, color: Color(0xFF767676)), // Border
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
+        ),
+      ),
       onPressed: () {
         onGetStartedClicked(context);
       },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 25),
+        child: Text(
+          "Connect to Device!",
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 
   void onGetStartedClicked(BuildContext context) {
+    String ipAddress = ipAddressController.text;
+    int port = int.tryParse(portController.text) ?? 8080; // Use default port 8080 if parsing fails
+
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return DashboardScreen();
+          return DashboardScreen(ipAddress: ipAddress, port: port);
         },
       ),
     );

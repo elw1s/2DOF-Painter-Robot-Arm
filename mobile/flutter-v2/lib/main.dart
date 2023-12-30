@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'app.dart';
+import 'package:provider/provider.dart';
+import 'helpers/drawing_state.dart';
 
 import 'dart:typed_data';
 import 'dart:io';
@@ -7,7 +9,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 void main() async {
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DrawingState(),
+      child: MyApp(),
+    ),
+  );
   
 
   

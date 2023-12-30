@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
+
+import '../../helpers/drawing_state.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,16 +15,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   File? _image;
-  bool draw = false;
-  bool isDrawing = false;
+  late DrawingState drawingState;
+  //bool draw = false;
+  //bool isDrawing = false;
+
+  /*@override
+  void initState(){
+    super.initState();
+    connectionThread();
+  }*/
 
   @override
   void initState(){
     super.initState();
-    connectionThread();
+    drawingState = Provider.of<DrawingState>(context, listen: false);
   }
 
-  void connectionThread() async{
+  /*void connectionThread() async{
     try {
         final Directory tempDir = Directory.systemTemp;
         String imagePath = tempDir.path + '/' + "image.jpg";
@@ -142,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('Bağlantı hatası: $e');
     }
-  }
+  }*/
 
   Future getImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -174,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
       title: 'Flutter Demo',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Image Page'),
+          title: Text('Draw Image'),
         ),
         body: Center(
           child: Column(
@@ -198,15 +208,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: isDrawing ? null : () {
+          onPressed: drawingState.isDrawing ? null : () {
             setState(() {
-              draw = true;
-              isDrawing = true;
+              drawingState.draw = true;
+              drawingState.isDrawing = true;
             });
           },
           child: Icon(Icons.draw),
-          backgroundColor: (isDrawing || (_image == null && !isDrawing)) ? Color(0xFF4F4F4F) : Color(0xFF33C2FF),
-          elevation: (isDrawing || (_image == null && !isDrawing)) ? 0 : 6, // Optional: To remove shadow when disabled
+          backgroundColor: (drawingState.isDrawing || (_image == null && !drawingState.isDrawing)) ? Color(0xFF4F4F4F) : Color(0xFF33C2FF),
+          elevation: (drawingState.isDrawing || (_image == null && !drawingState.isDrawing)) ? 0 : 6, // Optional: To remove shadow when disabled
 
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
