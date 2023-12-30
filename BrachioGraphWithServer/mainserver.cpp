@@ -207,6 +207,7 @@ void* communicationThread(void* clientSocket){
         messagesWaitingToBeSend.pop();
         //printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);
+        usleep(500000);
     }
 }
 
@@ -262,7 +263,7 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/arda/Desktop/CSE396/simulate_embedded/linedraw.py");
+        system("python3 /home/ardakilic/Desktop/CSE396/simulate_embedded/linedraw.py");
         usleep(2000000);
         bg.plot_file("/tmp/cse396/sent.json");
         //readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);

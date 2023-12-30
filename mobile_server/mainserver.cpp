@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <chrono>
 #include <string.h>
 #include "server_code1.h"
 #include "server_code2.h"
@@ -95,14 +96,14 @@ void* communicationThread(void* clientSocket){
             printf("Gelen komut: %d INT\n", globalDataRecv[0]);
             printf("Gelen komut: %c CHAR\n", static_cast<char>(globalDataRecv[0]));
 
-            if((globalDataRecv[0]) == 48){
+            if((globalDataRecv[0]) == 48 || (globalDataRecv[0]) == 0){
             	connection_established();
             }
-            else if((globalDataRecv[0]) == 49){
+            else if((globalDataRecv[0]) == 49 || (globalDataRecv[0]) == 1){
             	add_image_data_to_array(bytesRead);
                 image_received();
             }
-            else if((globalDataRecv[0]) == 50){
+            else if((globalDataRecv[0]) == 50 || (globalDataRecv[0]) == 2){
                 add_image_data_to_array(bytesRead);
                 write_image_to_file();
                 imageBufferIndex = 0;
@@ -111,13 +112,13 @@ void* communicationThread(void* clientSocket){
                 pthread_cond_signal(&server2Cond);
                 pthread_mutex_unlock(&case2Mutex);
             }
-            else if((globalDataRecv[0]) == 51){
+            else if((globalDataRecv[0]) == 51 || (globalDataRecv[0]) == 3){
             	printf("SET SERVO ANGLES\n");
             }
-            else if((globalDataRecv[0]) == 52){
+            else if((globalDataRecv[0]) == 52 || (globalDataRecv[0]) == 4){
             	printf("STOP DRAWING\n");
             }
-            else if((globalDataRecv[0]) == 53){
+            else if((globalDataRecv[0]) == 53 || (globalDataRecv[0]) == 5){
             	printf("CANCEL DRAWING\n");
             }
             else{
@@ -137,6 +138,7 @@ void* communicationThread(void* clientSocket){
         messagesWaitingToBeSend.pop();
         //printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);
+        usleep(500000);
     }
 }
 
@@ -170,7 +172,7 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/arda/Desktop/CSE396/mobile_server/linedraw.py");
+        system("python3 /home/ardakilic/Desktop/CSE396/mobile_server/linedraw.py");
         usleep(2000000);
         readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
         int lineNum = getLineNumber();
