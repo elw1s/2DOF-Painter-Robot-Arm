@@ -10,6 +10,8 @@
 #include <queue>
 #include "brachiograph.cpp"
 #include <signal.h>
+#include <filesystem>
+#include <arpa/inet.h>
 
 #define MAX_DATA_SIZE 4096 // Maximum size for received image data
 #define MAX_IMAGE_SIZE 10000000 // 10 MB
@@ -291,6 +293,24 @@ int main() {
 
     signal(SIGINT, sigintHandler);
 
+    // Get the path to the temporary directory
+    std::filesystem::path tempDir = std::filesystem::temp_directory_path();
+
+    // Append the name of the folder you want to create
+    tempDir /= "cse396";
+
+    // Check if the directory exists
+    if (!std::filesystem::exists(tempDir)) {
+        // Create the directory if it doesn't exist
+        if (std::filesystem::create_directory(tempDir)) {
+            std::cout << "Folder created: " << tempDir << std::endl;
+        } else {
+            std::cerr << "Failed to create folder: " << tempDir << std::endl;
+        }
+    } else {
+        std::cout << "Folder already exists: " << tempDir << std::endl;
+    }
+
     // Define server details
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
@@ -328,7 +348,10 @@ int main() {
             continue;
         }
 
-        printf("New connection accepted\n");
+        char clientIP[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
+        unsigned int clientPort = ntohs(clientAddr.sin_port);
+        printf("New connection accepted from %s:%u\n", clientIP, clientPort);
 
         pthread_mutex_lock(&dataMutex);
         while(messagesWaitingToBeSend.size()){
