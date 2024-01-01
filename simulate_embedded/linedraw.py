@@ -51,18 +51,44 @@ def image_to_json(
     lines_to_file(lines, filename)
 
 
-def makesvg(lines):
+# def makesvg(lines):
+#     print("Generating svg file...")
+#     width = math.ceil(max([max([p[0] * 0.5 for p in l]) for l in lines]))
+#     height = math.ceil(max([max([p[1] * 0.5 for p in l]) for l in lines]))
+#     out = '<svg xmlns="http://www.w3.org/2000/svg" height="%spx" width="%spx" version="1.1">' % (
+#         height,
+#         width,
+#     )
+
+#     for l in lines:
+#         l = ",".join([str(p[0] * 0.5) + "," + str(p[1] * 0.5) for p in l])
+#         out += '<polyline points="' + l + '" stroke="black" stroke-width="1" fill="none" />\n'
+#     out += "</svg>"
+#     return out
+
+def makesvg(lines, image_width, image_height):
     print("Generating svg file...")
-    width = math.ceil(max([max([p[0] * 0.5 for p in l]) for l in lines]))
-    height = math.ceil(max([max([p[1] * 0.5 for p in l]) for l in lines]))
+
+    # Calculate the scale factor to resize the lines to match the image
+    scale_factor = min(image_width, image_height) / max(image_width, image_height)
+
+    # Adjust the canvas size based on the scaled image size
+    width = math.ceil(image_width * scale_factor)
+    height = math.ceil(image_height * scale_factor)
+
     out = '<svg xmlns="http://www.w3.org/2000/svg" height="%spx" width="%spx" version="1.1">' % (
         height,
         width,
     )
 
     for l in lines:
-        l = ",".join([str(p[0] * 0.5) + "," + str(p[1] * 0.5) for p in l])
-        out += '<polyline points="' + l + '" stroke="black" stroke-width="1" fill="none" />\n'
+        # Scale and adjust the coordinates to fit the image and position correctly
+        adjusted_line = [
+            (str(p[0] * scale_factor) + "," + str(p[1] * scale_factor)) for p in l
+        ]
+        adjusted_line = ",".join(adjusted_line)
+        out += '<polyline points="' + adjusted_line + '" stroke="black" stroke-width="1" fill="none" />\n'
+
     out += "</svg>"
     return out
 
@@ -152,7 +178,7 @@ def vectorise(
 
     f = open(svg_folder + image_filename + ".svg", "w")
     print("SVG FILENAME: ", (svg_folder+image_filename +".svg"))
-    f.write(makesvg(lines))
+    f.write(makesvg(lines, w, h))
     f.close()
 
     return lines

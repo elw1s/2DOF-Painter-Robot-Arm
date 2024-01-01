@@ -76,7 +76,7 @@ void ServerListenerThread::run() {
         int totalLineNumberForAnImage = 0;
         QByteArray jsonFile;
         QByteArray imageByteArray;
-        int chunkSize = 4096 - 1; // 4KB - 1
+        int chunkSize = 1024 - 1; // 4KB - 1
         int bytesWritten = 0;
         while (!isInterruptionRequested()) {
             QByteArray receivedData;

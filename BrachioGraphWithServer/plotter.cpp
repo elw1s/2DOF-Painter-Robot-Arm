@@ -23,8 +23,8 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <bitset>
-#include "CTurtle.hpp"
-#include "turtle_plotter.cpp"
+//#include "CTurtle.hpp"
+//#include "turtle_plotter.cpp"
 
 
 

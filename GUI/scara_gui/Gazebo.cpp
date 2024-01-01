@@ -17,20 +17,20 @@ void Gazebo::run() {
 
     arguments << projectPath;
 
-    arguments.append(" 127.0.0.1 ");
+    arguments.append("172.20.10.13");
     arguments.append("8081");
 
     connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
             this, SLOT(onGazeboProcessFinished(int,QProcess::ExitStatus)));
 
     //gazeboProcess.start("gazebo", arguments);
-    gazeboProcess.start("/home/arda/Desktop/CSE396/simulate_embedded/gazebo_client", arguments);
+    //gazeboProcess.start("/home/arda/Desktop/CSE396/simulate_embedded/gazebo_client", arguments);
 
-    if (!gazeboProcess.waitForStarted()) {
-        qDebug() << "Error: Unable to start the Gazebo process.";
-        stopExecution();
-        return;
-    }
+    // if (!gazeboProcess.waitForStarted()) {
+    //     qDebug() << "Error: Unable to start the Gazebo process.";
+    //     stopExecution();
+    //     return;
+    // }
 
     qDebug() << "Gazebo process started.";
 
