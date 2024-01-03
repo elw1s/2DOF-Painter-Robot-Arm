@@ -39,5 +39,9 @@
         <file>resources/examples/eagle.jpeg</file>
         <file>resources/shortestPath_selected.png</file>
         <file>resources/shortestPath.png</file>
+        <file>resources/examples/elephant.jpg</file>
+        <file>resources/examples/infinity.jpg</file>
+        <file>resources/examples/istanbul.jpg</file>
+        <file>resources/examples/lego.jpg</file>
     </qresource>
 </RCC>

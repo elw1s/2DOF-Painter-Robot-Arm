@@ -189,13 +189,13 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     QVBoxLayout *sliderLayout = new QVBoxLayout;
 
     // Slider 1 (Red)
-    QSlider *sliderRed = new QSlider(Qt::Horizontal);
+    sliderRed = new QSlider(Qt::Horizontal);
     sliderRed->setStyleSheet(
         "QSlider::groove:horizontal { border: 1px solid #ed4046; background: #ed4046; height: 4px; border-radius: 2px; }"
         "QSlider::handle:horizontal { background-color: #ed4046; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
         "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
         );
-    sliderRed->setRange(0, 90); // Modify the range as needed
+    sliderRed->setRange(-90, 90); // Modify the range as needed
     sliderRed->setSingleStep(1); // Set the step size for sliderRed
     sliderRed->setPageStep(10); // Set the page step size for sliderRed
     sliderRed->setSliderPosition(50); // Set initial slider position
@@ -210,13 +210,13 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sliderLayout->addWidget(labelRed, 0, Qt::AlignTop | Qt::AlignHCenter);
 
     // Slider 2 (Blue)
-    QSlider *sliderBlue = new QSlider(Qt::Horizontal);
+    sliderBlue = new QSlider(Qt::Horizontal);
     sliderBlue->setStyleSheet(
         "QSlider::groove:horizontal { border: 1px solid #327ba8; background: #327ba8; height: 4px; border-radius: 2px; }"
         "QSlider::handle:horizontal { background-color: #327ba8; border: 1px solid #ffffff; width: 10px; margin: -5px; border-radius: 5px; }"
         "QSlider::handle:horizontal:hover { background-color: #ff0000; border: 1px solid #ffffff; }"
         );
-    sliderBlue->setRange(-90, 90); // Modify the range as needed
+    sliderBlue->setRange(0, 120); // Modify the range as needed
     sliderBlue->setSingleStep(1); // Set the step size for sliderRed
     sliderBlue->setPageStep(10); // Set the page step size for sliderRed
     sliderBlue->setSliderPosition(30); // Set initial slider position
@@ -336,11 +336,17 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
 
 
 void RobotMainMenu::setButtonClicked(){
-
+    if(serverListenerThread && serverListenerThread->isConnected()){
+        serverListenerThread->move(true,sliderRed->value(), sliderBlue->value());
+    }
 }
 
 void RobotMainMenu::defaultButtonClicked(){
-
+    if(serverListenerThread && serverListenerThread->isConnected()){
+        serverListenerThread->move(true,-90, 90);
+        sliderRed->setValue(-90);
+        sliderBlue->setValue(90);
+    }
 }
 
 void RobotMainMenu::onUpdateTimerServo() {
@@ -574,7 +580,7 @@ void RobotMainMenu::drawButtonClicked(){
 
 void RobotMainMenu::moveButtonClicked(){
     if(serverListenerThread && serverListenerThread->isConnected()){
-        serverListenerThread->move(true,0,0,0); //Burada açılar değiştirilecek.
+        //serverListenerThread->move(true,0,0,0); //Burada açılar değiştirilecek.
     }
 }
 

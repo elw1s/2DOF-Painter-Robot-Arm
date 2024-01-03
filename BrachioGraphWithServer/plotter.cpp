@@ -834,8 +834,8 @@ public:
                 drawnLine = '4' + drawnLine;
                 this->messageQueue->push(drawnLine);
                 this->linesInStringFormat.erase(this->linesInStringFormat.begin());    
+                pthread_cond_signal(this->condition);
             }
-            pthread_cond_signal(this->condition);
             pthread_mutex_unlock(this->mutex); 
         }
 

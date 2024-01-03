@@ -10,7 +10,7 @@
 #include <queue>
 #include "brachiograph.cpp"
 #include <signal.h>
-#include <filesystem>
+//#include <filesystem>
 #include <arpa/inet.h>
 
 #define MAX_DATA_SIZE 4096 // Maximum size for received image data
@@ -131,40 +131,7 @@ void* communicationThread(void* clientSocket){
                 }
             }            
             pthread_mutex_unlock(&dataMutex);
-            /*switch (static_cast<char>(globalDataRecv[0]))
-            {
-            case ('0' || 0): // Connection established
-                connection_established();
-                break;
-            case '1' || 1: // Image values
-                add_image_data_to_array(bytesRead);
-                image_received();
-                break;
-            case '2' || 2: // End of image
-                //Server1 threadi çalışabilir.
-                //Server2 direkt bağlantı sağlanınca çalışabilir.
-                add_image_data_to_array(bytesRead);
-                write_image_to_file();
-                imageBufferIndex = 0;
-                pthread_mutex_lock(&case2Mutex);
-                case2Encountered = true;
-                //pthread_cond_signal(&server1Cond);
-                pthread_cond_signal(&server2Cond);
-                pthread_mutex_unlock(&case2Mutex);
-                break;
-            case '3' || 3: // Set servo angles
-                printf("SET SERVO ANGLES\n");
-                break;
-            case '4' || 4: // Stop drawing
-                printf("STOP DRAWING\n");
-                break;
-            case '5' || 5: // Cancel drawing
-                printf("CANCEL DRAWING\n");
-                break;
-            default:
-                break;
-            }*/
-            
+
             if(static_cast<char>(globalDataRecv[0]) == '0' || static_cast<char>(globalDataRecv[0]) == 0){
             	connection_established();
             }
@@ -186,6 +153,23 @@ void* communicationThread(void* clientSocket){
             }
             else if(static_cast<char>(globalDataRecv[0]) == '3' || static_cast<char>(globalDataRecv[0]) == 3){
             	printf("SET SERVO ANGLES\n");
+                int16_t firstNumber = 0;
+                int16_t secondNumber = 0;
+
+                // Combine bytes for the first number (assuming 2 bytes for each number)
+                firstNumber = globalDataRecv[1] | (globalDataRecv[2] << 8);
+                // Combine bytes for the second number
+                secondNumber = globalDataRecv[3] | (globalDataRecv[4] << 8);
+                for (int i = 0; i < MAX_DATA_SIZE; ++i) {
+                    printf("%c",globalDataRecv[i]);
+                    if (globalDataRecv[i] == '\0') {
+                        break; // Stop printing when the null terminator is encountered
+                    }
+                } 
+                printf("\n"); 
+                std::cout << "Angles set to " << firstNumber << " and " << secondNumber << std::endl;
+                bg.set_angles(firstNumber, secondNumber);
+                connection_established();
             }
             else if(static_cast<char>(globalDataRecv[0]) == '4' || static_cast<char>(globalDataRecv[0]) == 4){
             	printf("STOP DRAWING\n");
@@ -265,8 +249,9 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("python3 /home/ardakilic/Desktop/CSE396/simulate_embedded/linedraw.py");
-        usleep(2000000);
+        system("cd .. && cd linedraw && cp /tmp/cse396/image.jpg /tmp/cse396/sent.jpg && python3 linedraw.py -i /tmp/cse396/image.jpg -o /tmp/cse396/sent.svg --contour_simplify 1 -nh");
+        //usleep(2000000);
+        bg.park();
         bg.plot_file("/tmp/cse396/sent.json");
         //readLines("/tmp/cse396/sent.json",messagesWaitingToBeSend,&dataCond, &dataMutex);
         //int lineNum = getLineNumber();
@@ -294,13 +279,13 @@ int main() {
     signal(SIGINT, sigintHandler);
 
     // Get the path to the temporary directory
-    std::filesystem::path tempDir = std::filesystem::temp_directory_path();
+    //std::filesystem::path tempDir = std::filesystem::temp_directory_path();
 
     // Append the name of the folder you want to create
-    tempDir /= "cse396";
+    //tempDir /= "cse396";
 
     // Check if the directory exists
-    if (!std::filesystem::exists(tempDir)) {
+    /*if (!std::filesystem::exists(tempDir)) {
         // Create the directory if it doesn't exist
         if (std::filesystem::create_directory(tempDir)) {
             std::cout << "Folder created: " << tempDir << std::endl;
@@ -309,7 +294,7 @@ int main() {
         }
     } else {
         std::cout << "Folder already exists: " << tempDir << std::endl;
-    }
+    }*/
 
     // Define server details
     struct sockaddr_in serverAddr;
@@ -395,16 +380,17 @@ int main() {
             exit(EXIT_FAILURE);
         }
 
-        pthread_join(communication_thread, NULL);
-        pthread_join(thread1, NULL);
-        pthread_join(thread2, NULL);
-
         pthread_mutex_lock(&clientDisconnectedMutex);
         std::cout << "CLIENT DISCONNECTED: " << clientDisconnected << std::endl;
         while(!clientDisconnected){
             pthread_cond_wait(&clientDisconnectedCond, &clientDisconnectedMutex);
         }
         pthread_mutex_unlock(&clientDisconnectedMutex);
+
+        pthread_join(communication_thread, NULL);
+        pthread_join(thread1, NULL);
+        pthread_join(thread2, NULL);
+
     }
 
     // Close the server socket

@@ -38,5 +38,5 @@ void server1(std::queue<std::string>& messageQueue, pthread_cond_t* condition, p
 
     // Introduce some delay to simulate work
     //usleep(1000000); 
-    sleep(1);
+    sleep(2);
 }

@@ -69,6 +69,8 @@ private:
     QTimer *updateTimerSensor;
     QPushButton* setButton;
     QPushButton* defaultButton;
+    QSlider *sliderRed;
+    QSlider *sliderBlue;
 public slots:
     void setServerInfo(const QString& ip, int port);
     void setColors(const QList<QString>& colorArr);

@@ -30,7 +30,7 @@ public:
     void run() override;
     ServerListenerThread(const QString& ipAddress, int port, QObject *parent = nullptr);
     void socketDisconnected();
-    void move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle, int liftingAngle);
+    void move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle);
     void draw(bool isDrawButtonClicked);
     bool isConnected();
 private:

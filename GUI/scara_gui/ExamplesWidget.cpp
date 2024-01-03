@@ -9,12 +9,14 @@ ExamplesWidget::ExamplesWidget(QWidget *parent) : QWidget(parent) {
     QStringList imageFilePaths = {
         ":/resources/examples/prague.jpg",
         ":/resources/examples/cat.jpeg",
+        ":/resources/examples/infinity.jpg",
         ":/resources/examples/africa.jpg",
-        ":/resources/examples/prague.jpg",
+        ":/resources/examples/lego.jpg",
         ":/resources/examples/europa.jpg",
         ":/resources/examples/gtu.jpg",
         ":/resources/examples/panda.jpg",
         ":/resources/examples/eagle.jpeg",
+        ":/resources/examples/istanbul.jpg",
         // Add more image paths as needed
     };
 

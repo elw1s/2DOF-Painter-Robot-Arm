@@ -40,6 +40,31 @@ int16_t convertTwosComplement(const std::string &binaryString) {
     return value;
 }
 
+QByteArray intToTwosComplement(int value) {
+    QByteArray result;
+
+    // Ensure the size of the integer is 16 bits (2 bytes)
+    if ((value < -32768) || (value > 32767)) {
+        // Handle the case where the value is out of range for a signed 16-bit integer
+        // You might want to return a default value, throw an error, or handle it as needed
+        return result; // Returning an empty result for demonstration
+    }
+
+    // If the value is negative, get its two's complement representation
+    if (value < 0) {
+        // Compute the two's complement by adding 65536 (2^16) to the negative value
+        value += 65536; // 2^16
+    }
+
+    // Store the integer as a 16-bit little-endian byte sequence
+    result.append(static_cast<char>(value & 0xFF)); // Lower byte
+    result.append(static_cast<char>((value >> 8) & 0xFF)); // Upper byte
+
+    return result;
+}
+
+
+
 void ServerListenerThread::run() {
     QDir dir;
     dir = dir.temp();
@@ -131,7 +156,12 @@ void ServerListenerThread::run() {
                         }
                         else if(moveSelected){
                             // Burada move komutu gönderilecek açılara göre
-                            messageToSend = QByteArray::fromStdString("0Connection Established");
+                            qDebug() << shoulderServoAngle << " AND " << elbowServoAngle;
+                            messageToSend.append(intToTwosComplement(shoulderServoAngle));
+                            messageToSend.append(intToTwosComplement(elbowServoAngle));
+                            messageToSend.push_front('3');
+                            qDebug() << "Gönderilen mesaj: " << messageToSend;
+                            //messageToSend = QByteArray::fromStdString("0Connection Established");
                             moveSelected = false;
                         }
                         else{
@@ -295,12 +325,11 @@ bool ServerListenerThread::isConnected(){
     return connected;
 }
 
-void ServerListenerThread::move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle, int liftingAngle){
+void ServerListenerThread::move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle){
     qDebug() << "Move button clicked!";
     moveSelected = isMoveButtonClicked;
     shoulderServoAngle = shoulderAngle;
     elbowServoAngle = elbowAngle;
-    liftingServoAngle = liftingAngle;
 }
 
 void ServerListenerThread::draw(bool isDrawButtonClicked){
