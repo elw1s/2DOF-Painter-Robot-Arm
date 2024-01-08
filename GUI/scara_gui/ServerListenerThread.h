@@ -26,6 +26,7 @@ signals:
     void stats_last_packet_size(const double last_packet_size);
     void stats_number_of_drawn_line(const int number_of_drawn_line);
     void stats_number_of_lines_to_draw(const int number_of_lines_to_draw);
+    void stages(const int value);
 public:
     void run() override;
     ServerListenerThread(const QString& ipAddress, int port, QObject *parent = nullptr);
@@ -33,6 +34,7 @@ public:
     void move(bool isMoveButtonClicked, int shoulderAngle, int elbowAngle);
     void draw(bool isDrawButtonClicked);
     bool isConnected();
+    void applyBorder(const QString filePath);
 private:
     QString mIpAddress;
     int mPort;

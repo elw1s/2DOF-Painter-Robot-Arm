@@ -85,6 +85,7 @@ public slots:
     void stats_last_packet_size_slot(const double last_packet_size);
     void stats_number_of_drawn_line_slot(const int number_of_drawn_line);
     void stats_number_of_lines_to_draw_slot(const int number_of_lines_to_draw);
+    void stagesTextLabel(int value);
 
 signals:
     void drawingStatus(const bool status);

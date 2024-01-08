@@ -218,10 +218,8 @@ bool ShortestPathWidget::solve() {
     Cell start(destinationPosition.first,destinationPosition.second);
 
     // Movement vectors: right, left, down, up
-    //int dx[] = {1, -1, 0, 0};
-    //int dy[] = {0, 0, 1, -1};
-    int dx[] = {1, -1, 0, 0, 1, -1, 1, -1};
-    int dy[] = {0, 0, 1, -1, 1, -1, -1, 1};
+    int dx[] = {1, -1, 0, 0};
+    int dy[] = {0, 0, 1, -1};
     // Matrix to keep track of visited cells during BFS
     vector<vector<bool>> visited(9, vector<bool>(9, false));
 
@@ -275,7 +273,7 @@ bool ShortestPathWidget::solve() {
         }
 
         // Explore movement vectors
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             int newX = current.x + dx[i];
             int newY = current.y + dy[i];
 

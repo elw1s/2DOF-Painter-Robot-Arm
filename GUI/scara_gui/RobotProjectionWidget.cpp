@@ -71,14 +71,14 @@ void RobotProjectionWidget::paintEvent(QPaintEvent *event) {
     // Apply drawing offset
     painter.translate(drawingOffset);
 
-    painter.setPen(QColor(Qt::red));
+    painter.setPen(QColor(Qt::black));
     for (const auto &linePoints : allLines) {
             if (linePoints.size() > 1) {
                 painter.drawPolyline(linePoints.data(), linePoints.size());
             }
     }
 
-    painter.setPen(QColor(Qt::black));
+    painter.setPen(QColor(Qt::red));
     for (const auto &linePoints : drawnLines) {
         if (linePoints.size() > 1) {
             painter.drawPolyline(linePoints.data(), linePoints.size());

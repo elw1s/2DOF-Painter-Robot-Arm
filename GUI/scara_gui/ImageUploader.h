@@ -47,6 +47,7 @@ private:
     int colorsIndex;
     int numberOfNotDrawnColors;
     int getNumberOfColors();
+    void applyBorder(const QString filePath);
     QString getNextColor(int start);
     bool drawClicked;
 signals:

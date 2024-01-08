@@ -69,16 +69,17 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     // Add loading elements below the projection widget
     QVBoxLayout *leftLayout = new QVBoxLayout;
     //leftLayout->addWidget(label,10,Qt::AlignCenter);
+    leftLayout->addLayout(loadingLabelLayout);
     leftLayout->addWidget(scrollArea);
     //leftLayout->addWidget(loadingLabel); // Add the loading circle widget
-    leftLayout->addLayout(loadingLabelLayout);
+    //leftLayout->addLayout(loadingLabelLayout);
     leftLayout->addWidget(loadingProgressBar); // Add the progress bar widget
 
     QVBoxLayout *rightTopLayout = new QVBoxLayout;
     sensorPlot  = new QCustomPlot();
     sensorPlot->addGraph();
-    sensorPlot->yAxis->setLabel("Sensor Value");
-    sensorPlot->yAxis->setRange(-120, 120); // Modify the range as needed
+    sensorPlot->yAxis->setLabel("Sensor Value (Acceleration X axis)");
+    sensorPlot->yAxis->setRange(-1, 1); // Modify the range as needed
     sensorPlot->setBackground(QBrush(QColor("#1C1C1C")));
     sensorPlot->xAxis->setTickLabelColor(Qt::white);
     sensorPlot->yAxis->setTickLabelColor(Qt::white);
@@ -198,12 +199,12 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sliderRed->setRange(-90, 90); // Modify the range as needed
     sliderRed->setSingleStep(1); // Set the step size for sliderRed
     sliderRed->setPageStep(10); // Set the page step size for sliderRed
-    sliderRed->setSliderPosition(50); // Set initial slider position
+    sliderRed->setSliderPosition(-90); // Set initial slider position
     sliderRed->setMinimumSize(150, 60);  // Set minimum size for sliderRed
     sliderRed->setMaximumSize(400, 150);  // Set maximum size for sliderRed
     sliderRed->setTickInterval(10);
     sliderRed->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
-    QLabel *labelRed = new QLabel("50");
+    QLabel *labelRed = new QLabel("-90");
     labelRed->setStyleSheet("color: #ed4046;");
 
     sliderLayout->addWidget(sliderRed);
@@ -219,12 +220,12 @@ RobotMainMenu::RobotMainMenu(QWidget *parent) : QWidget(parent) {
     sliderBlue->setRange(0, 120); // Modify the range as needed
     sliderBlue->setSingleStep(1); // Set the step size for sliderRed
     sliderBlue->setPageStep(10); // Set the page step size for sliderRed
-    sliderBlue->setSliderPosition(30); // Set initial slider position
+    sliderBlue->setSliderPosition(90); // Set initial slider position
     sliderBlue->setMinimumSize(150, 60);  // Set minimum size for sliderRed
     sliderBlue->setMaximumSize(400, 150);  // Set maximum size for sliderRed
     sliderBlue->setTickInterval(10);
     sliderBlue->setTickPosition(QSlider::TicksBelow); // Set the tick position to display ticks below the slider
-    QLabel *labelBlue = new QLabel("30");
+    QLabel *labelBlue = new QLabel("90");
     labelBlue->setStyleSheet("color: #327ba8;");
 
     sliderLayout->addWidget(sliderBlue);
@@ -368,7 +369,6 @@ void RobotMainMenu::onUpdateTimerSensor() {
 }
 
 void RobotMainMenu::updateSensorGraph(double sensorValue) {
-    qDebug()  << "inside uupdateSensorGraph";
     sensorPlot->xAxis->setTickLabels(true);
     //Add the new data point to the vectors
     QDateTime currentDateTime = QDateTime::currentDateTime(); // Get current date and time
@@ -400,7 +400,6 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
     waveformPlot->xAxis->setTickLabels(true);
     QDateTime currentDateTime = QDateTime::currentDateTime();
     timeDataServo.append(currentDateTime.toMSecsSinceEpoch() / 1000.0);
-    qDebug()  << "inside updateServoAnglegraph";
     if(timeDataServo.size() == 4)
     {
         timeDataServo.removeFirst();
@@ -425,10 +424,10 @@ void RobotMainMenu::updateServoAngleGraph(int firstAngle, int secondAngle, int t
     QString redLabelText = QString("Shoulder Motor: %1").arg(firstAngle);
     QString blueLabelText = QString("Elbow Motor: %1").arg(secondAngle);
     QString greenLabelText;
-    if(thirdAngle == 1500){
+    if(thirdAngle == 1700){
         greenLabelText = QString("PEN: DOWN");
     }
-    else if(thirdAngle == 1100){
+    else if(thirdAngle == 1200){
         greenLabelText = QString("PEN: UP");
     }
 
@@ -487,6 +486,7 @@ void RobotMainMenu::initializeServerListener() {
         connect(serverListenerThread, &ServerListenerThread::stats_number_of_drawn_line, this, &RobotMainMenu::stats_number_of_drawn_line_slot);
         connect(serverListenerThread, &ServerListenerThread::stats_number_of_lines_to_draw, this, &RobotMainMenu::stats_number_of_lines_to_draw_slot);
         connect(serverListenerThread, &ServerListenerThread::stats_received_packet_num, this, &RobotMainMenu::stats_received_packet_num_slot);
+        connect(serverListenerThread, &ServerListenerThread::stages, this, &RobotMainMenu::stagesTextLabel);
         serverListenerThread->start();
         updateTimerSensor->start(1000);
         updateTimerServo->start(1000);
@@ -513,7 +513,6 @@ void RobotMainMenu::stats_number_of_lines_to_draw_slot(const int number_of_lines
 }
 
 void RobotMainMenu::robotDrawingSignal(const bool status){
-    qDebug() << "Inside robotDrawingSignal";
     emit drawingStatus(status);
     if(status){
         projectionWidget->clear();
@@ -588,22 +587,67 @@ void RobotMainMenu::setTotalLineNumber(int totalLineNumber){
     this->totalLine = totalLineNumber;
 }
 
+void RobotMainMenu::stagesTextLabel(int value){
+    if(value == 1){
+        textLabel->setText(QString("Sending image to the robot..."));
+        loadingMovie = new QMovie(QString::fromStdString(UPLOAD_GIF)); // Provide the path to your loading GIF
+        loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
+        loadingLabel->setMovie(loadingMovie);
+        loadingLabel->setVisible(true);
+        loadingMovie->start();
+    }
+    else if(value == 2){
+        textLabel->setText(QString("Vectorizing image..."));
+        loadingMovie = new QMovie(QString::fromStdString(IMAGE_PROCESS_GIF)); // Provide the path to your loading GIF
+        loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
+        loadingLabel->setMovie(loadingMovie);
+        loadingLabel->setVisible(true);
+        loadingMovie->start();
+    }
+    else if(value == 3){
+        textLabel->setText(QString("Image process finished..."));
+        loadingMovie = new QMovie(QString::fromStdString(DONE_GIF)); // Provide the path to your loading GIF
+        loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
+        loadingLabel->setMovie(loadingMovie);
+        loadingLabel->setVisible(true);
+        loadingMovie->start();
+    }
+    else{
+        textLabel->setText(QString("Device is connected... IP: %1 Port: %2")
+                               .arg(ipAddress)
+                               .arg(port));
+        loadingLabel->setVisible(false); // Hide the loading movie
+        loadingMovie->stop();
+    }
+}
+
 void RobotMainMenu::showLoadingBar(int value) {
 
     if(value == -1){
-        loadingProgressBar->setVisible(false);
+        //loadingProgressBar->setVisible(false);
         textLabel->setText(QString("Trying to connect the device... IP: %1 Port: %2")
                                   .arg(ipAddress)
                                   .arg(port));
 
+        loadingMovie = new QMovie(QString::fromStdString(LOADING_GIF)); // Provide the path to your loading GIF
+        loadingMovie->setScaledSize(QSize(20, 20)); // Set the size of the movie (GIF)
+        loadingLabel->setMovie(loadingMovie);
         loadingLabel->setVisible(true); // Hide the loading movie
         textLabel->setVisible(true);
         loadingMovie->start(); // Start the loading circle animation
     }
-    else{
-        loadingMovie->stop(); // Stop the loading circle animation
+    else if(value == 0){
+        textLabel->setText(QString("Device is connected... IP: %1 Port: %2")
+                               .arg(ipAddress)
+                               .arg(port));
+        textLabel->setVisible(true);
         loadingLabel->setVisible(false); // Hide the loading movie
-        textLabel->setVisible(false);
+        loadingMovie->stop();
+    }
+    else{
+        //loadingMovie->stop(); // Stop the loading circle animation
+        //loadingLabel->setVisible(false); // Hide the loading movie
+        //textLabel->setVisible(false);
         qDebug() << "value=" << value << " **this->totalLine="<< this->totalLine;
         if(this->totalLine > 0){
             loadingProgressBar->setValue((value * 100) / this->totalLine); // Set the loading bar value
@@ -616,14 +660,14 @@ void RobotMainMenu::showLoadingBar(int value) {
 
 void RobotMainMenu::disconnectFromServer(){
     if (serverListenerThread) {
+        projectionWidget->clear();
         serverListenerThread->requestInterruption();
         serverListenerThread->quit();
         serverListenerThread->wait();
         serverListenerThread->socketDisconnected();
-        loadingProgressBar->setVisible(false);
         textLabel->setText("Device is not connected!");
-        loadingLabel->setVisible(false);
-        textLabel->setVisible(true);
+        loadingLabel->setVisible(false); // Hide the loading movie
+        loadingMovie->stop();
         serverListenerThread = nullptr;
         this->ipAddress = "";
         this->port = 0;

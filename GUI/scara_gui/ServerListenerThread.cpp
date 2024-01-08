@@ -40,6 +40,37 @@ int16_t convertTwosComplement(const std::string &binaryString) {
     return value;
 }
 
+// double convertTwosComplementToDouble(const std::string &binaryString) {
+//     // Ensure the string length is 16 (16-bit representation)
+//     if (binaryString.length() != 16) {
+//         // Handle error or return default value as needed
+//         return 0; // Default value (you can change this)
+//     }
+
+//     // Check if the most significant bit is 1 (indicating a negative number)
+//     bool isNegative = (binaryString[0] == '1');
+
+//     // Convert the binary string to a 16-bit integer
+//     double value = 0;
+
+//     for (size_t i = 0; i < 16; ++i) {
+//         value <<= 1; // Shift the value left by 1
+
+//         // Add the current bit to the value
+//         if (binaryString[i] == '1') {
+//             value |= 1;
+//         }
+//     }
+
+//     // If it's a negative number, perform two's complement
+//     if (isNegative) {
+//         value = -(~value + 1); // Two's complement calculation
+//     }
+
+//     return value;
+// }
+
+
 QByteArray intToTwosComplement(int value) {
     QByteArray result;
 
@@ -61,6 +92,30 @@ QByteArray intToTwosComplement(int value) {
     result.append(static_cast<char>((value >> 8) & 0xFF)); // Upper byte
 
     return result;
+}
+
+void ServerListenerThread::applyBorder(const QString filePath) {
+    QImage image(filePath); // Load the image
+    if (image.isNull()) {
+        qDebug() << "Failed to load the image.";
+        return; // Exit or handle the failure
+    }
+
+    // Define the size of the border (in pixels)
+    int borderWidth = 10;
+
+    // Create a painter to draw on the image
+    QPainter painter(&image);
+    painter.setPen(QPen(Qt::black, 4)); // Set the pen color to black and width to 4 pixels
+    painter.setRenderHint(QPainter::Antialiasing); // Optional: Enable anti-aliasing for smoother lines
+
+    // Draw a rectangle border around the image
+    painter.drawRect(borderWidth, borderWidth, image.width() - 2 * borderWidth - 4, image.height() - 2 * borderWidth - 4);
+
+    if (!image.save(filePath)) {
+        qDebug() << "Failed to save the framed image.";
+        return; // Exit or handle the failure
+    }
 }
 
 
@@ -101,6 +156,7 @@ void ServerListenerThread::run() {
         int totalLineNumberForAnImage = 0;
         QByteArray jsonFile;
         QByteArray imageByteArray;
+        //int chunkSize = 4096 - 1; // 4KB - 1
         int chunkSize = 1024 - 1; // 4KB - 1
         int bytesWritten = 0;
         while (!isInterruptionRequested()) {
@@ -125,6 +181,7 @@ void ServerListenerThread::run() {
                         if(drawSelected)
                         {
                             QString filePath = dir.path() + "/image.jpg";
+                            //applyBorder(filePath);
                             QFile file(filePath);
                             if (!file.open(QIODevice::ReadOnly)) {
                                 qDebug() << "Failed to open the image file.";
@@ -145,23 +202,22 @@ void ServerListenerThread::run() {
 
                             if (bytesWritten >= imageByteArray.size()){
                                 messageToSend.push_front('2');
+                                emit stages(2);
                                 bytesWritten = 0;
                                 imageByteArray.clear();
                                 drawSelected  = false;
                             }
                             else{
                                 messageToSend.push_front('1');
+                                emit stages(1);
                             }
 
                         }
                         else if(moveSelected){
                             // Burada move komutu gönderilecek açılara göre
-                            qDebug() << shoulderServoAngle << " AND " << elbowServoAngle;
                             messageToSend.append(intToTwosComplement(shoulderServoAngle));
                             messageToSend.append(intToTwosComplement(elbowServoAngle));
                             messageToSend.push_front('3');
-                            qDebug() << "Gönderilen mesaj: " << messageToSend;
-                            //messageToSend = QByteArray::fromStdString("0Connection Established");
                             moveSelected = false;
                         }
                         else{
@@ -183,12 +239,14 @@ void ServerListenerThread::run() {
 
                         if (bytesWritten >= imageByteArray.size()){
                             messageToSend.push_front('2');
+                            emit stages(2);
                             bytesWritten = 0;
                             imageByteArray.clear();
                             drawSelected  = false;
                         }
                         else{
                             messageToSend.push_front('1');
+                            emit stages(1);
                         }
 
                         break;
@@ -202,13 +260,6 @@ void ServerListenerThread::run() {
                     case '3': //Total line num received
                     {
                         messageToSend = QByteArray::fromStdString("6Connection Established");
-                        qDebug() << "Number of lines command";
-                        qDebug()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         << receivedData.toInt() << "";
-
-                        qDebug() << ".......................................";
-                        qDebug() << jsonFile;
-                        qDebug() << ".......................................";
-
                         QString dataString = QString::fromUtf8(jsonFile);
 
                         // Write the string data to a file
@@ -238,6 +289,7 @@ void ServerListenerThread::run() {
                         QJsonArray linesArray = doc.array();
 
                         emit allLinesReceived(linesArray);
+                        emit stages(3);
                         totalLineNumberForAnImage = receivedData.toInt();
 
                         emit totalLineNumber(totalLineNumberForAnImage);
@@ -246,8 +298,10 @@ void ServerListenerThread::run() {
                     }
                     case '4': //Drawn line received
                     {
+                        emit stages(4);
                         messageToSend = QByteArray::fromStdString("6Connection Established");
                         qDebug() << "Drawn line command";
+                        qDebug() << receivedData;
                         QJsonParseError parseError;
                         QJsonDocument doc = QJsonDocument::fromJson(receivedData, &parseError);
                         if (parseError.error != QJsonParseError::NoError) {
@@ -277,23 +331,19 @@ void ServerListenerThread::run() {
                     case '5': //Servo angles received
                     {
                         messageToSend = QByteArray::fromStdString("6Connection Established");
-                        qDebug() << "Servo Angles command";
                         QByteArray firstPart = receivedData.mid(0, 16); // Extract first 16 bytes
                         QByteArray secondPart = receivedData.mid(16, 16); // Extract next 16 bytes
                         QByteArray thirdPart = receivedData.mid(32, 16); // Extract final 16 bytes
-                        qDebug() << "First Servo Angle:" << firstPart.toStdString();
-                        qDebug() << "Second Servo Angle:" << secondPart.toStdString();
-                        qDebug() << "Third Servo Angle:" << thirdPart.toStdString();
                         emit servoAngles(convertTwosComplement(firstPart.toStdString()), convertTwosComplement(secondPart.toStdString()),convertTwosComplement(thirdPart.toStdString()));
                         break;
                     }
                     case '6': //Sensor data received
                     {
                         messageToSend = QByteArray::fromStdString("6Connection Established");
-                        qDebug() << "Sensor data command";
-                        int sensorData = convertTwosComplement(receivedData.toStdString());
-                        qDebug() << "Sensor Data:" << sensorData;
-                        emit sensorValues(convertTwosComplement(receivedData.toStdString()));
+                        //int sensorData = convertTwosComplement(receivedData.toStdString());
+                        //double sensorData = convertTwosComplement(receivedData.toStdString());
+                        double sensorData = receivedData.toDouble();
+                        emit sensorValues(sensorData);
                         break;
                     }
                     default:
@@ -341,6 +391,7 @@ void ServerListenerThread::socketDisconnected() {
     //QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
     if (tcpSocket != nullptr && tcpSocket) {
         emit drawingStatus(false);
+        emit loadingProgress(-1);
         qDebug() << "Socket disconnected from the server.";
         //tcpSocket->disconnectFromHost();
         //tcpSocket->deleteLater(); // Delete the socket properly

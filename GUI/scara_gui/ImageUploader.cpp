@@ -212,6 +212,30 @@ QString ImageUploader::getNextColor(int start){
 }
 
 
+void ImageUploader::applyBorder(const QString filePath) {
+    QImage image(filePath); // Load the image
+    if (image.isNull()) {
+        qDebug() << "Failed to load the image.";
+        return; // Exit or handle the failure
+    }
+
+    // Define the size of the border (in pixels)
+    int borderWidth = 10;
+
+    // Create a painter to draw on the image
+    QPainter painter(&image);
+    painter.setPen(QPen(Qt::black, 4)); // Set the pen color to black and width to 4 pixels
+    painter.setRenderHint(QPainter::Antialiasing); // Optional: Enable anti-aliasing for smoother lines
+
+    // Draw a rectangle border around the image
+    painter.drawRect(borderWidth, borderWidth, image.width() - 2 * borderWidth - 4, image.height() - 2 * borderWidth - 4);
+
+    if (!image.save(filePath)) {
+        qDebug() << "Failed to save the framed image.";
+        return; // Exit or handle the failure
+    }
+}
+
 void ImageUploader::saveImage() {
 
     QPixmap croppedPixmap = m_clipScene->getCroppedImage();
@@ -248,6 +272,7 @@ void ImageUploader::saveImage() {
             numberOfNotDrawnColors--;
             colorsIndex++;
             currImage.save(filePath,"JPG");
+            applyBorder(filePath);
             drawClicked = true;
             ColorDialog *dialog = new ColorDialog(targetColor, "Please attach the pen in the color below");
             dialog->exec();
@@ -317,12 +342,14 @@ void ImageUploader::robotDrawingSignal(const bool status){
             numberOfNotDrawnColors--;
             colorsIndex++;
             currImage.save(filePath,"JPG");
+            applyBorder(filePath);
             ColorDialog *dialog = new ColorDialog(targetColor, "Please attach the pen in the color below");
             dialog->exec();
             emit drawButtonClicked();
         }
         else if(drawClicked){
             image.save(filePath, "JPG");
+            applyBorder(filePath);
             drawClicked = false;
             numberOfNotDrawnColors = 0;
             colorsIndex = 0;

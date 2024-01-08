@@ -38,5 +38,8 @@ extern const std::string HOME_PAGE_SELECTED;
 extern const std::string SHORTEST_PATH_SELECTED;
 //GIFS
 extern const std::string LOADING_GIF;
+extern const std::string DONE_GIF;
+extern const std::string IMAGE_PROCESS_GIF;
+extern const std::string UPLOAD_GIF;
 extern const std::string ROBOT_IS_DRAWING_GIF;
 #endif // IMAGEPATHSCONFIG_H

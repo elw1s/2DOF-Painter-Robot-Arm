@@ -41,6 +41,7 @@ private:
     Move findBestMove();
     void printBoard();
     void saveMoveImage(bool board);
+    void applyBorder(const QString filePath);
     QPushButton *lastMoveX;
     QPushButton *lastMoveO;
     bool saveWithBoard;

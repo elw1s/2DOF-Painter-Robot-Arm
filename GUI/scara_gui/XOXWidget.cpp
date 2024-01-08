@@ -189,7 +189,32 @@ int XOXWidget::minimax(bool isMaximizing, int depth, int alpha, int beta) {
     }
 }
 
+void XOXWidget::applyBorder(const QString filePath) {
+    QImage image(filePath); // Load the image
+    if (image.isNull()) {
+        qDebug() << "Failed to load the image.";
+        return; // Exit or handle the failure
+    }
+
+    // Define the size of the border (in pixels)
+    int borderWidth = 10;
+
+    // Create a painter to draw on the image
+    QPainter painter(&image);
+    painter.setPen(QPen(Qt::black, 4)); // Set the pen color to black and width to 4 pixels
+    painter.setRenderHint(QPainter::Antialiasing); // Optional: Enable anti-aliasing for smoother lines
+
+    // Draw a rectangle border around the image
+    painter.drawRect(borderWidth, borderWidth, image.width() - 2 * borderWidth - 4, image.height() - 2 * borderWidth - 4);
+
+    if (!image.save(filePath)) {
+        qDebug() << "Failed to save the framed image.";
+        return; // Exit or handle the failure
+    }
+}
+
 void XOXWidget::saveMoveImage(bool board) {
+
     QImage image(1024, 1024, QImage::Format_RGB32);
     image.fill(Qt::white);
 
@@ -200,7 +225,7 @@ void XOXWidget::saveMoveImage(bool board) {
     painter.setPen(pen);
 
     //painter.translate(-500, 0);
-
+    painter.translate(-200, 0); // Shift the image to the left by 100 pixels
 
     // Draw button borders and marks if board is true
     if (board) {
@@ -236,6 +261,7 @@ void XOXWidget::saveMoveImage(bool board) {
     dir.setPath(dir.path() + "/cse396");
     QString filePath = dir.path() + "/image.jpg";
     image.save(filePath);
+    applyBorder(filePath);
     emit drawButtonClicked();
 }
 

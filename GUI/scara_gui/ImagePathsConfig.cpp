@@ -38,4 +38,7 @@ const std::string STATS_SELECTED = ":/resources/stats_selected.png";
 const std::string SHORTEST_PATH_SELECTED = ":/resources/shortestPath_selected.png";
 //GIFS
 const std::string LOADING_GIF = ":/resources/loading.gif";
+const std::string DONE_GIF = ":/resources/done.gif";
 const std::string ROBOT_IS_DRAWING_GIF = ":/resources/robot_is_drawing.gif";
+const std::string IMAGE_PROCESS_GIF = ":/resources/image_process.gif";
+const std::string UPLOAD_GIF = ":/resources/upload.gif";

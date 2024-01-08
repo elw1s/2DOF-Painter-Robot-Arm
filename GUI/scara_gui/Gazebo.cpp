@@ -2,9 +2,9 @@
 
 Gazebo::Gazebo(){
     shouldRun = false;
-    servoAngles.joint1 = 90;
-    servoAngles.joint2 = 95;
-    servoAngles.joint3 = 30;
+    servoAngles.joint1 = -90;
+    servoAngles.joint2 = 90;
+    servoAngles.joint3 = 1200;
 }
 
 void Gazebo::run() {
@@ -20,8 +20,8 @@ void Gazebo::run() {
     arguments.append("172.20.10.13");
     arguments.append("8081");
 
-    connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
-            this, SLOT(onGazeboProcessFinished(int,QProcess::ExitStatus)));
+    // connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
+    //         this, SLOT(onGazeboProcessFinished(int,QProcess::ExitStatus)));
 
     //gazeboProcess.start("gazebo", arguments);
     //gazeboProcess.start("/home/arda/Desktop/CSE396/simulate_embedded/gazebo_client", arguments);
@@ -36,7 +36,7 @@ void Gazebo::run() {
 
     while (!isInterruptionRequested()) {
         tcpSocket = new QTcpSocket();
-        tcpSocket->connectToHost("127.0.0.1",8081);
+        tcpSocket->connectToHost("127.0.0.1",3800);
         if (!tcpSocket->waitForConnected(3000)) { // 3-second timeout for connection attempt
             qDebug() << "Error: Cannot connect to the server. Retrying in 3 seconds...";
             tcpSocket->close();

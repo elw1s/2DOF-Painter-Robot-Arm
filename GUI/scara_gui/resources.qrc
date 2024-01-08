@@ -43,5 +43,27 @@
         <file>resources/examples/infinity.jpg</file>
         <file>resources/examples/istanbul.jpg</file>
         <file>resources/examples/lego.jpg</file>
+        <file>resources/xox_images/o_00.jpg</file>
+        <file>resources/xox_images/o_01.jpg</file>
+        <file>resources/xox_images/o_02.jpg</file>
+        <file>resources/xox_images/o_10.jpg</file>
+        <file>resources/xox_images/o_11.jpg</file>
+        <file>resources/xox_images/o_12.jpg</file>
+        <file>resources/xox_images/o_20.jpg</file>
+        <file>resources/xox_images/o_21.jpg</file>
+        <file>resources/xox_images/o_22.jpg</file>
+        <file>resources/xox_images/table.jpg</file>
+        <file>resources/xox_images/x_00.jpg</file>
+        <file>resources/xox_images/x_01.jpg</file>
+        <file>resources/xox_images/x_02.jpg</file>
+        <file>resources/xox_images/x_10.jpg</file>
+        <file>resources/xox_images/x_11.jpg</file>
+        <file>resources/xox_images/x_12.jpg</file>
+        <file>resources/xox_images/x_20.jpg</file>
+        <file>resources/xox_images/x_21.jpg</file>
+        <file>resources/xox_images/x_22.jpg</file>
+        <file>resources/done.gif</file>
+        <file>resources/upload.gif</file>
+        <file>resources/image_process.gif</file>
     </qresource>
 </RCC>
