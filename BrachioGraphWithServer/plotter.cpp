@@ -78,7 +78,6 @@ class Pen{
         }
 
         void down(){
-            std::cout << "In down\n";
             if(strcmp(this->position, "up") == 0){
                 if(this->virtualPlotter){
                     this->virtual_pw = this->pw_down;
@@ -94,7 +93,6 @@ class Pen{
         }
 
         void up(){
-            std::cout << "In up\n";
             if(strcmp(this->position,"down") == 0){
 
                 if(this->virtualPlotter){
@@ -113,10 +111,7 @@ class Pen{
             double diff = end - start;
             double angle = start;
             double length_of_step = diff / abs(diff);
-            std::cout << "inside ease_pen\n";
-            std::cout << "PIN: " << this->pin << std::endl;
-            std::cout << "diff: " << diff << std::endl;
-            std::cout << "abs(diff):" << abs(diff) << std::endl;
+
             if(WITH_GPIO)
                 gpioSetMode(this->pin, PI_OUTPUT);
             for(int i = 0; i < abs(diff); i++){
@@ -485,10 +480,10 @@ public:
             this->angle_2 = this->angle_2 + length_of_step_2;
             double time_since_last_moved = this->monotonic() - this->last_moved;
             if(time_since_last_moved < wait){
-                std::cout << std::setprecision(8) << std::fixed;
+                //std::cout << std::setprecision(8) << std::fixed;
                 std::chrono::microseconds duration(static_cast<long long>((wait * 1e6) - time_since_last_moved));
                 //std::cout << "Time since last moved: " << time_since_last_moved << ", wait: " << this->wait << ", duration: " << duration.count() << ", expected sleep time: " << (wait - time_since_last_moved) << ", this->wait: " << this->wait << std::endl;
-                std::cout << std::setprecision(2) << std::fixed;
+                //std::cout << std::setprecision(2) << std::fixed;
                 std::this_thread::sleep_for(duration);
             }
 
@@ -547,8 +542,8 @@ public:
                 std::pair<double,double> angles = this->xy_to_angles(this->x , this-> y);
                 double angle_1 = angles.first;
                 double angle_2 = angles.second;
-                std::cout << "no_of_steps : " << no_of_steps << " , length_of_step_x : " << length_of_step_x << " , length_of_step_y : " << length_of_step_y << std::endl;
-                std::cout << "ANGLE 1 : " << angle_1 << " , ANGLE 2 : " << angle_2 << std::endl;
+                //std::cout << "no_of_steps : " << no_of_steps << " , length_of_step_x : " << length_of_step_x << " , length_of_step_y : " << length_of_step_y << std::endl;
+                //std::cout << "ANGLE 1 : " << angle_1 << " , ANGLE 2 : " << angle_2 << std::endl;
                 this->move_angles(angle_1, angle_2, angular_step, wait, draw);
             }
         }
@@ -661,6 +656,31 @@ public:
         return lines;
     }
 
+    std::string formatJson(std::string jsonStr){
+        std::cout << jsonStr << std::endl;
+        int paranthesisCount = 0;
+        for(int i = 0 ; i < 3; i++){
+            if(jsonStr.at(i) == '[')
+                paranthesisCount++;
+        }
+
+        if(paranthesisCount > 2)
+            jsonStr.erase(jsonStr.begin());
+
+        paranthesisCount = 0;
+        for(int i = jsonStr.size() - 3; i < jsonStr.size(); i++){
+            if(jsonStr.at(i) == ']')
+                paranthesisCount++;
+        }
+        if(paranthesisCount > 2){
+            jsonStr.pop_back();
+        }
+        std::cout << "*******************************************************************************" << std::endl;
+        std::cout << jsonStr << std::endl;
+        return jsonStr;
+
+    }
+
     int plot_file(char * filename = "",std::array<int, 4> bounds = {9999,9999,9999,9999}, double angular_step = 9999, double wait = 9999, double resolution = 9999){
 
         if(bounds[0] == bounds[1] && bounds[1] == bounds[2] && bounds[2] == bounds[3] && bounds[3] == 9999){
@@ -701,7 +721,7 @@ public:
         size_t chunkSize;
         int offset = 0;
         while (offset < size) {
-            chunkSize = std::min<size_t>(4096, static_cast<size_t>(size - offset));
+            chunkSize = std::min<size_t>(1024, static_cast<size_t>(size - offset));
 
             char* messageBuffer = new char[chunkSize + 2]; // +1 for '9' character, +1 for null-termination
             messageBuffer[0] = '2'; // Set the first character to '9'
@@ -728,7 +748,7 @@ public:
         }
 
         std::vector<std::vector<std::vector<double>>> lines;
-
+        int totalsavedbytes = 0;
         for (rapidjson::SizeType i = 0; i < doc.Size(); ++i) {
             if (!doc[i].IsArray()) {
                 std::cerr << "Invalid line format!" << std::endl;
@@ -738,7 +758,43 @@ public:
                 rapidjson::StringBuffer buffer;
                 rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
                 doc[i].Accept(writer);
-                this->linesInStringFormat.push_back(buffer.GetString());
+                
+                std::string bufferString = buffer.GetString();
+                std::string subArray = "";
+                int byteCount = 0;
+                bool openParanthesis = false;
+                for(int index = 1; index < bufferString.length() - 1; index++){
+                    char character = bufferString.at(index);
+                    if(character == '[')
+                        openParanthesis = true;
+                    else if(character == ']')
+                        openParanthesis = false;
+                    
+                    if(byteCount == 0){
+                        subArray += "[";
+                    }
+                    
+                    if((byteCount >= 1024 && !openParanthesis) || (byteCount <= 1024 && index == (bufferString.length() - 2))){
+                        subArray += "]]";
+                        std::cout << "-------------------------------------------------------------------------------------------------" << std::endl;
+                        totalsavedbytes += byteCount;
+                        std::cout << "index: " << index << "byte count: " << totalsavedbytes << " required length: " << bufferString.length() << std::endl;
+                        std::cout << "index: " << index << "byte count: " << totalsavedbytes << " required size: " << bufferString.size() << std::endl;
+                        this->linesInStringFormat.push_back(formatJson(subArray));
+                        subArray = "";
+                        byteCount = 0;
+                    }
+                    else if(byteCount < 1024 || openParanthesis){
+                        if(byteCount == 0 && character == ',')
+                            continue;
+                        subArray += character;
+                        byteCount++;
+                    }
+                    
+
+                }
+                
+                //this->linesInStringFormat.push_back(bufferString);
             }
 
             std::vector<std::vector<double>> line;
@@ -759,6 +815,18 @@ public:
             }
 
             this->plot_lines(lines, bounds, angular_step, wait, resolution, true);
+
+            pthread_mutex_lock(this->mutex);
+            while(!this->linesInStringFormat.empty()){
+                std::string drawnLine = this->linesInStringFormat.at(0);
+                std::cout << drawnLine << std::endl;
+                drawnLine = '4' + drawnLine;
+                this->messageQueue->push(drawnLine);
+                this->linesInStringFormat.erase(this->linesInStringFormat.begin());    
+                pthread_cond_signal(this->condition);
+            }
+            pthread_mutex_unlock(this->mutex); 
+            
     }
 
     double round(double number, int digits) {
@@ -811,6 +879,16 @@ public:
             pthread_mutex_unlock(this->waitMutex);
             std::cout << "waitMutex plotter unlocked\n";
 
+            pthread_mutex_lock(this->mutex);
+            if(!this->linesInStringFormat.empty()){
+                std::string drawnLine = this->linesInStringFormat.at(0);
+                std::cout << drawnLine << std::endl;
+                drawnLine = '4' + drawnLine;
+                this->messageQueue->push(drawnLine);
+                this->linesInStringFormat.erase(this->linesInStringFormat.begin());    
+                pthread_cond_signal(this->condition);
+            }
+            pthread_mutex_unlock(this->mutex); 
 
             if (round(this->x,1) != round(x,1) || round(this->y,1) != round(y,1)) {
                 this->xy(x, y, angular_step, wait, resolution);
@@ -822,21 +900,12 @@ public:
                 this->xy(x, y,angular_step,wait, resolution, true);
             }
 
-            std::cout << "Çizilen Line: ";
+            /*std::cout << "Çizilen Line: ";
             for (const auto& point : line) {
                 std::cout << "(" << point[0] << ", " << point[1] << ") ";
             }
-            std::cout << std::endl; 
+            std::cout << std::endl; */
 
-            pthread_mutex_lock(this->mutex);
-            if(!this->linesInStringFormat.empty()){
-                std::string drawnLine = this->linesInStringFormat.at(0);
-                drawnLine = '4' + drawnLine;
-                this->messageQueue->push(drawnLine);
-                this->linesInStringFormat.erase(this->linesInStringFormat.begin());    
-                pthread_cond_signal(this->condition);
-            }
-            pthread_mutex_unlock(this->mutex); 
         }
 
         this->park();

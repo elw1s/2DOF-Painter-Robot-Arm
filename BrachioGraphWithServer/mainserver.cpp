@@ -187,13 +187,14 @@ void* communicationThread(void* clientSocket){
             pthread_cond_wait(&dataCond, &dataMutex);
         }
 
-        send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
+        ssize_t sentBytes = send(socketDescriptor, messagesWaitingToBeSend.front().c_str(), strlen(messagesWaitingToBeSend.front().c_str()), 0);
         //printf("-------------- THE DATA IS SENT ---------------\n");
-        //printf("Gönderilen data: %s\n",messagesWaitingToBeSend.front().c_str());
+        printf("Gönderilmesi gereken data boyutu: %d\n",messagesWaitingToBeSend.front().size());
+        printf("Gönderilen data boyutu: %d\n",sentBytes);
         messagesWaitingToBeSend.pop();
-        //printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
+        printf("Bekleyen mesaj sayisi: %ld\n",messagesWaitingToBeSend.size());
         pthread_mutex_unlock(&dataMutex);
-        usleep(500000);
+        //usleep(500000);
     }
 }
 
@@ -249,7 +250,7 @@ void* server2Thread(void* arg) {
 
         //BrachioGraph::imageToJson("/tmp/cse396/sent.jpg", 1024, 2, 1 , 16, 1);
         //Path değiştir...
-        system("cd .. && cd linedraw && cp /tmp/cse396/image.jpg /tmp/cse396/sent.jpg && python3 linedraw.py -i /tmp/cse396/image.jpg -o /tmp/cse396/sent.svg --contour_simplify 1 -nh");
+        system("cd .. && cd linedraw && python3 linedraw.py -i /tmp/cse396/sent.jpg -o /tmp/cse396/sent.svg --contour_simplify 1 -nh");
         //usleep(2000000);
         bg.park();
         bg.plot_file("/tmp/cse396/sent.json");
