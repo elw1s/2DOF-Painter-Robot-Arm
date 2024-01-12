@@ -20,11 +20,11 @@ void Gazebo::run() {
     arguments.append("172.20.10.13");
     arguments.append("8081");
 
-    // connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
+    //connect(&gazeboProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
     //         this, SLOT(onGazeboProcessFinished(int,QProcess::ExitStatus)));
 
     //gazeboProcess.start("gazebo", arguments);
-    //gazeboProcess.start("/home/arda/Desktop/CSE396/simulate_embedded/gazebo_client", arguments);
+    //gazeboProcess.start("cd brachiograph_ws/docker/ && sudo ./", arguments);
 
     // if (!gazeboProcess.waitForStarted()) {
     //     qDebug() << "Error: Unable to start the Gazebo process.";

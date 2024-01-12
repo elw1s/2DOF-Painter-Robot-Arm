@@ -246,7 +246,7 @@ void ServerListenerThread::run() {
                         }
                         else{
                             messageToSend.push_front('1');
-                            emit stages(1);
+                            //emit stages(1);
                         }
 
                         break;

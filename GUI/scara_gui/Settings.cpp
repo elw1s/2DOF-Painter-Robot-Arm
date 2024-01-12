@@ -25,8 +25,8 @@ Settings::Settings(const QString& ipAddress, int port,const QList<QString>& colo
     connectButton->setObjectName("connectButton"); // Set object name to apply specific styles
 
     if(port == 0){
-        //lineEditIP->setText("192.168.164.193");
-        lineEditIP->setText("192.168.0.31");
+        lineEditIP->setText("192.168.164.193");
+        //lineEditIP->setText("192.168.0.31");
         lineEditPort->setText("8080");
     }
     else{
