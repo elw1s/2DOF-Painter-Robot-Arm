@@ -1,26 +1,48 @@
 
-# BrachioGraph C++ Implementation with GUI
+# 2DOF Painter and Gamer Robot Arm (DrawnPlay Buddy)
 
-This project is a direct translation of [BrachioGraph (Python) ](https://github.com/evildmp/BrachioGraph) into C++. The project includes a graphical interface developed with Qt6. This interface allows control of the BrachioGraph robot.
+## Overview
 
-## Structure
+This project entails the development of a 2DOF Painter and Gamer robot arm. The graphical interface is built using the Qt6 Framework. The project is specifically designed to run in a Linux environment and has been developed and tested on Ubuntu 22.04.
 
-* #### BrachioGraph
+[Project Video](https://youtu.be/x612WRot3eU?si=9mIUNRFD5gjYUwXO)
 
-It includes a direct translation of Python files. The Turtle feature is still under construction. It doesn't function virtually.
+## Materials and Resources
 
-* #### BrachioGraphWithServer
+For all the necessary materials and additional resources related to the project, please visit [BrachioGraph by Daniele Procida](www.brachiograph.art).
 
-This version is embedded within the BrachioGraph project and contains a TCPSocket that communicates with the GUI.
+## Deployment
 
-* #### GUI/scara_gui
+### a. Desktop Application
 
-It includes graphical interface files written with the Qt6 Framework.
+The graphical interface has been developed using Qt 6.6.1 on Ubuntu 22.04. Currently, there is no .deb or AppImage creator available for the specified Qt version. A .deb project has been prepared using "cpack," but for it to run, Qt 6.6.1 needs to be installed on the computer.
 
-* #### mobile_server and mobile
+[Download for Ubuntu 22.04](https://drive.google.com/file/d/17MyQS3QuPF5W_aw8DlFgdDgftv5PlcJc/view?usp=sharing)
 
-It contains files written for testing purposes to embed TCPSocket into the mobile application (Flutter + Dart).
+The most suitable method to run the program is to download the Qt Creator program, then open the project by selecting "Open Project" and choosing the "CMakeLists.txt" file (located in the folder where the source code is). Afterward, the program can be run with either the Debug or Release versions.
 
-* #### simulate_embedded
+[Download Qt](https://www.qt.io/download-qt-installer-oss?hsCtaTracking=99d9dd4f-5681-48d2-b096-470725510d34%7C074ddad0-fdef-4e53-8aa8-5e8a876d6ab4)
 
-It includes project files simulating the embedded system to test the server functionality of the embedded system.
+In order to utilize the "Open Gazebo" feature, it is essential to have the latest Docker version installed on your computer. To run Gazebo Virtualization, execute the following command inside the "brachiograph_ws/docker" directory. The execution time may vary around 10 minutes depending on the hardware of your computer.
+
+```bash
+  sudo ./build-and-run.sh
+```
+
+### b. Mobile Application
+
+The file with the .apk extension can be installed and run on the Android system.
+
+### c. Embedded System
+
+Firstly, the program needs to be run on Raspberry Pi. Connect to Raspberry Pi using the VNC Viewer program. Then navigate to the "Desktop/CSE396/BrachioGraphWithServer" folder. Open the terminal and execute the following command.
+
+```bash
+  cmake .. && make && clear && sudo ./server
+```
+
+After running the program on the Raspberry Pi, you should hear the motors running. The servos will move to their initial positions and be calibrated. Then, you can close the VNC Viewer program.
+
+## Usage
+
+After the embedded system is running, open either the Desktop or Mobile application. For the Desktop application, connect to the embedded system by entering the IP and Port in the Settings menu. Then, use the desired features of the applications to make the robot draw or play games. Have fun!
