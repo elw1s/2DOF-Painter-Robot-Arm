@@ -1,0 +1,1 @@
+/opt/scaragui/bin/scara_gui

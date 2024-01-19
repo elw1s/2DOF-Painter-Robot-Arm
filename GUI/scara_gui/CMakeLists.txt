@@ -9,7 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt6 COMPONENTS Network REQUIRED)
 find_package(Qt6 COMPONENTS Core Widgets PrintSupport REQUIRED)
@@ -117,6 +117,25 @@ install(TARGETS scara_gui
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+#Generate the deployment script for the target scara_gui
+qt_generate_deploy_app_script(
+	TARGET scara_gui
+	FILENAME_VARIABLE deploy_script
+	NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})
+
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(scara_gui)
 endif()
+
+set(CPACK_PACKAGE_NAME scara_gui)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Painter and Gamer Robot")
+set(CPACK_PACKAGE_VENDOR "DrawnPlayBuddy")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
+set(CPACK_VERBATIM_VARIABLES ON)
+set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/scaragui")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Arda Kilic k.kilic2019@gtu.edu.tr")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6, libgcc-s1")
+include(CPack)
