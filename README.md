@@ -35,7 +35,7 @@ The file with the .apk extension can be installed and run on the Android system.
 
 ### c. Embedded System
 
-Firstly, the program needs to be run on Raspberry Pi. Connect to Raspberry Pi using the VNC Viewer program. Then navigate to the "Desktop/CSE396/BrachioGraphWithServer" folder. Open the terminal and execute the following command.
+Firstly, the program needs to be run on Raspberry Pi. Connect to Raspberry Pi using the VNC Viewer program. Then navigate to the "BrachioGraphWithServer" folder. Open the terminal and execute the following command.
 
 ```bash
   cmake .. && make && clear && sudo ./server
