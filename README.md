@@ -9,7 +9,7 @@ This project entails the development of a 2DOF Painter and Gamer robot arm. The 
 
 ## Materials and Resources
 
-For all the necessary materials and additional resources related to the project, please visit [BrachioGraph by Daniele Procida](www.brachiograph.art).
+For all the necessary materials and additional resources related to the project, please visit [BrachioGraph by Daniele Procida](https://www.brachiograph.art/en/latest/).
 
 ## Deployment
 
