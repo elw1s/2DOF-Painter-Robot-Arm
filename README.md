@@ -7,6 +7,8 @@ This project entails the development of a 2DOF Painter and Gamer robot arm. The 
 
 [Project Video](https://youtu.be/x612WRot3eU?si=9mIUNRFD5gjYUwXO)
 
+![Robot image](https://github.com/elw1s/2DOF-Painter-Robot-Arm/assets/66280976/745f400f-53d0-419a-b141-731052d60ea9)
+
 ## Materials and Resources
 
 For all the necessary materials and additional resources related to the project, please visit [BrachioGraph by Daniele Procida](https://www.brachiograph.art/en/latest/).
